@@ -27,17 +27,19 @@ public class ControlOneAxisDrivetrain extends Command {
         double rightSpeed = Robot.m_oi.getLeftSpeed() * rspeed;
 
         Robot.myDrivetrain.control(leftSpeed, rightSpeed);
-        
+
         if (isTimedOut()) {
             double rDistance = Robot.myDrivetrain.getRawRightDistance();
-            double lDistance = Robot.myDrivetrain.getRawLeftDistance(); 
+            double lDistance = Robot.myDrivetrain.getRawLeftDistance();
             double error = rDistance - lDistance;
             Robot.myDrivetrain.resetDistance();
             lspeed += error * correction * Math.signum(rDistance); // correction for sign
 
             lspeed = Math.max(Math.min(lspeed, 1.0), 0.0);
 
-            System.out.println(String.format("timeout: control %.3f rD %.3f lD %.3f left %.3f right %.3f", Robot.m_oi.getLeftSpeed(), lDistance, rDistance, lspeed, rspeed));
+            System.out.println(
+                    String.format("timeout: control %.3f rD %.3f lD %.3f left %.3f right %.3f",
+                            Robot.m_oi.getLeftSpeed(), lDistance, rDistance, lspeed, rspeed));
 
             setTimeout(timeout);
         }
@@ -45,6 +47,6 @@ public class ControlOneAxisDrivetrain extends Command {
 
     protected boolean isFinished() {
         return false; // Run forever
-        //return true; // is broken, end now
+        // return true; // is broken, end now
     }
 }

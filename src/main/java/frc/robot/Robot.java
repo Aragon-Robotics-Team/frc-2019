@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.*;
 import edu.wpi.first.wpilibj.smartdashboard.*;
 import edu.wpi.first.wpilibj.CameraServer;
-
 import frc.robot.commands.Autonomous.*;
 import frc.robot.commands.Teleop.*;
 import frc.robot.commands.*;
@@ -22,10 +21,10 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotInit() {
 		m_oi = new Attack3(RobotMap.ATTACK3_JOYSTICK_0);
-		//m_oi = new F310(RobotMap.F310_JOYSTICK_0);
-		
+		// m_oi = new F310(RobotMap.F310_JOYSTICK_0);
+
 		System.out.println("init");
-		//CameraServer.getInstance().startAutomaticCapture();
+		// CameraServer.getInstance().startAutomaticCapture();
 	}
 
 	@Override
@@ -41,7 +40,7 @@ public class Robot extends TimedRobot {
 	public void disabledInit() {
 	}
 
-	
+
 	@Override
 	public void disabledPeriodic() {
 		Scheduler.getInstance().run();

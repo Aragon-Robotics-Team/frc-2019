@@ -6,7 +6,7 @@ import frc.robot.Robot;
 public class ResetDistance extends Command {
 
     public ResetDistance() {
-        //requires(Robot.myDrivetrain);
+        // requires(Robot.myDrivetrain);
     }
 
     protected void initialize() {
@@ -14,7 +14,7 @@ public class ResetDistance extends Command {
     }
 
     protected void execute() {
-        
+
     }
 
     protected boolean isFinished() {

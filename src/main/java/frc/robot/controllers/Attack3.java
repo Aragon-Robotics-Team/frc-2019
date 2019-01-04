@@ -2,7 +2,6 @@ package frc.robot.controllers;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.*;
-
 import frc.robot.commands.Teleop.*;
 
 public class Attack3 implements OI {
@@ -20,13 +19,13 @@ public class Attack3 implements OI {
 
 	public Attack3(int joystickPort) {
 		mainJoystick = new Joystick(joystickPort);
-		
+
 		slowModeButton = new JoystickButton(mainJoystick, 2);
 		b4 = new JoystickButton(mainJoystick, 4);
 		b5 = new JoystickButton(mainJoystick, 5);
 
-		//b4.whenPressed(new ControlArcadeDrivetrain());
-		//b5.whenPressed(new ControlOneAxisDrivetrain(0.9));
+		// b4.whenPressed(new ControlArcadeDrivetrain());
+		// b5.whenPressed(new ControlOneAxisDrivetrain(0.9));
 	}
 
 	public double getLeftSpeed() {
@@ -35,7 +34,7 @@ public class Attack3 implements OI {
 	}
 
 	public double getLeftRotation() {
-        System.out.println("rotate" + mainJoystick.getRawAxis(0));
+		System.out.println("rotate" + mainJoystick.getRawAxis(0));
 		return mainJoystick.getRawAxis(0);
 	}
 

@@ -11,7 +11,7 @@ public class Autonomous1 extends Command {
     }
 
     protected void initialize() {
-        
+
     }
 
     protected void execute() {
