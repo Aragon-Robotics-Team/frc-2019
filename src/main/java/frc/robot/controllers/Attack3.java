@@ -2,6 +2,7 @@ package frc.robot.controllers;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.*;
+import frc.robot.commands.Debug;
 import frc.robot.commands.Teleop.*;
 
 public class Attack3 implements OI {
@@ -26,6 +27,8 @@ public class Attack3 implements OI {
 
 		// b4.whenPressed(new ControlArcadeDrivetrain());
 		// b5.whenPressed(new ControlOneAxisDrivetrain(0.9));
+
+		b5.whenPressed(new Debug());
 	}
 
 	public double getLeftSpeed() {
