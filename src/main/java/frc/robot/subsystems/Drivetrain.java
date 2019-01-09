@@ -3,9 +3,11 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import edu.wpi.first.wpilibj.Encoder;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.Faults;
 // import edu.wpi.first.wpilibj.
 import frc.robot.RobotMap;
 
@@ -14,6 +16,8 @@ public class Drivetrain extends Subsystem {
 
     TalonSRX LeftWheels;
     TalonSRX RightWheels;
+    Faults leftFaults;
+    Faults rightFaults;
     DifferentialDrive differentialDrive;
     Encoder leftEncoder;
     Encoder rightEncoder;
@@ -26,6 +30,11 @@ public class Drivetrain extends Subsystem {
         RightWheels = new TalonSRX(RobotMap.RightWheelsCan);
         LeftWheels.setInverted(false);
         RightWheels.setInverted(true);
+        LeftWheels.setSensorPhase(false);
+        RightWheels.setSensorPhase(false);
+
+        leftFaults = new Faults();
+        rightFaults = new Faults();
 
         leftEncoder = new Encoder(1, 2, false, Encoder.EncodingType.k4X);
         leftEncoder.setDistancePerPulse(3.0 / 1024.0);
@@ -46,6 +55,15 @@ public class Drivetrain extends Subsystem {
         LeftWheels.set(ControlMode.PercentOutput, x);
         RightWheels.set(ControlMode.PercentOutput, y);
         // System.out.println("Control: " + x + " " + y);
+    }
+
+    public void refreshDashboard() {
+        refreshFaults();
+
+        SmartDashboard.putNumber("Sensor Vel", RightWheels.getSelectedSensorVelocity());
+        SmartDashboard.putNumber("Sensor Pos", RightWheels.getSelectedSensorPosition());
+        SmartDashboard.putNumber("Out %", RightWheels.getMotorOutputPercent());
+        SmartDashboard.putBoolean("Out Of Phase", rightFaults.SensorOutOfPhase);
     }
 
     public void controlArcade(double x, double y) {
@@ -94,5 +112,10 @@ public class Drivetrain extends Subsystem {
 
         leftEncoder.reset();
         rightEncoder.reset();
+    }
+
+    public void refreshFaults() {
+        LeftWheels.getFaults(leftFaults);
+        RightWheels.getFaults(rightFaults);
     }
 }

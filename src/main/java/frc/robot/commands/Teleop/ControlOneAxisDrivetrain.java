@@ -37,8 +37,9 @@ public class ControlOneAxisDrivetrain extends Command {
 
             lspeed = Math.max(Math.min(lspeed, 1.0), 0.0);
 
-            System.out.println(String.format("timeout: control %.3f rD %.3f lD %.3f left %.3f right %.3f",
-                    Robot.m_oi.getLeftSpeed(), lDistance, rDistance, lspeed, rspeed));
+            // System.out.println(String.format("timeout: control %.3f rD %.3f lD %.3f left %.3f
+            // right %.3f",
+            // Robot.m_oi.getLeftSpeed(), lDistance, rDistance, lspeed, rspeed));
 
             setTimeout(timeout);
         }
