@@ -8,10 +8,12 @@
     "**/.DS_Store": true,
     ".**/": true, // Hidden Folders
     "**/.**": true, // Hidden Files
-    "**gradle**": true, // Gradle files in root and gradle folder
-    "bin/": true, // bin folder
-    "build/": true, // build folder
-    "vendordeps/": true
+    "**/**gradle**": true, // Gradle files in root and gradle folder
+    "**/bin/": true, // bin folder
+    "**/build/": true, // build folder
+    "vendordeps/": true,
+    "**/lib": true, // vision/lib jars
+    "**/runCamera": true // vision/runCamera shell script
   },
   "wpilib.online": true,
   "java.format.settings.url": "https://raw.githubusercontent.com/google/styleguide/gh-pages/eclipse-java-google-style.xml",
