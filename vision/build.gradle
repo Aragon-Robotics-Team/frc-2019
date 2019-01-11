@@ -1,0 +1,79 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '4.0.3' apply false
+}
+
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'jaci.gradle.EmbeddedTools'
+
+mainClassName = 'frc.robot.vision.Main'
+
+repositories {
+    mavenCentral()
+    flatDir {
+        dirs '/usr/local/frc/java', 'lib'
+    }
+}
+
+dependencies {
+    compile 'com.google.code.gson:gson:2.8.5'
+
+    compile name: 'wpiutil'
+    compile name: 'ntcore'
+    compile name: 'cscore'
+    compile name: 'cameraserver'
+    compile name: 'opencv-344'
+}
+
+//wrapper {
+    //gradleVersion = '5.0'
+//}
+
+deploy {
+    targets {
+		target('rpi') {
+			directory = '/home/pi'
+			failOnMissing = true
+			timeout = 10
+			
+			//addresses << '10.8.40.96' //'raspberrypi.local'
+			//user = 'pi'
+			//password = '840robotics'
+			
+			locations {
+				ssh {
+					address = '10.8.40.96' //'raspberrypi.local'
+					user = 'pi'
+					password = '840robotics'
+				}
+			}
+		}
+	}
+	
+	artifacts {
+		all {
+			directory = '.'
+			targets << 'rpi'
+			
+			predeploy << { execute '/usr/bin/sudo /bin/mount -o remount,rw / ' }
+			predeploy << { execute '/usr/bin/sudo /bin/mount -o remount,rw /boot ' }
+			postdeploy << { execute '/usr/bin/sudo /bin/mount -o remount,ro / ' }
+			postdeploy << { execute '/usr/bin/sudo /bin/mount -o remount,ro /boot ' }
+		}
+		
+		fileArtifact('visionCombinedJar') {
+			file = file("build/libs/${project.name}-all.jar")
+			filename = 'uploaded.jar'
+			
+			postdeploy << { execute '/bin/chmod +x ./runCamera' }
+			
+			dependsOn('build')
+		}
+		
+		fileArtifact('visionRunCamera') {
+			file = file('runCamera')
+		}
+		
+	}
+}
