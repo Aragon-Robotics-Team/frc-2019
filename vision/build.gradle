@@ -34,7 +34,7 @@ deploy {
     targets {
 		target('rpi') {
 			directory = '/home/pi'
-			failOnMissing = true
+			failOnMissing = false
 			timeout = 10
 			
 			//addresses << '10.8.40.96' //'raspberrypi.local'
