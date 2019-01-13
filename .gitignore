@@ -159,5 +159,6 @@ bin/
 
 # End of https://www.gitignore.io/api/c++,java,linux,macos,gradle,windows,visualstudiocode
 
+vision/bin
 vision/build
 !vision/lib/*

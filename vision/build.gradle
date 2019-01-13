@@ -66,13 +66,13 @@ deploy {
 			file = file("build/libs/${project.name}-all.jar")
 			filename = 'uploaded.jar'
 			
-			postdeploy << { execute '/bin/chmod +x ./runCamera' }
-			
 			dependsOn('build')
 		}
 		
 		fileArtifact('visionRunCamera') {
 			file = file('runCamera')
+			
+			postdeploy << { execute '/bin/chmod +x ./runCamera' }
 		}
 		
 	}
