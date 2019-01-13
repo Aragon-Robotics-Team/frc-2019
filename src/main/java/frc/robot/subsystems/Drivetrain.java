@@ -60,10 +60,15 @@ public class Drivetrain extends Subsystem {
     public void refreshDashboard() {
         refreshFaults();
 
-        SmartDashboard.putNumber("Sensor Vel", RightWheels.getSelectedSensorVelocity());
-        SmartDashboard.putNumber("Sensor Pos", RightWheels.getSelectedSensorPosition());
-        SmartDashboard.putNumber("Out %", RightWheels.getMotorOutputPercent());
-        SmartDashboard.putBoolean("Out Of Phase", rightFaults.SensorOutOfPhase);
+        SmartDashboard.putNumber("Right Sensor Vel", RightWheels.getSelectedSensorVelocity());
+        SmartDashboard.putNumber("Right Sensor Pos", RightWheels.getSelectedSensorPosition());
+        SmartDashboard.putNumber("Right Out %", RightWheels.getMotorOutputPercent());
+        SmartDashboard.putBoolean("Right Out Of Phase", rightFaults.SensorOutOfPhase);
+
+        SmartDashboard.putNumber("Left Sensor Vel", LeftWheels.getSelectedSensorVelocity());
+        SmartDashboard.putNumber("Left Sensor Pos", LeftWheels.getSelectedSensorPosition());
+        SmartDashboard.putNumber("Left Out %", LeftWheels.getMotorOutputPercent());
+        SmartDashboard.putBoolean("Left Out Of Phase", leftFaults.SensorOutOfPhase);
     }
 
     public void controlArcade(double x, double y) {

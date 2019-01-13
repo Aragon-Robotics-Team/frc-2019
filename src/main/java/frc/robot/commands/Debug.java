@@ -16,6 +16,6 @@ public class Debug extends Command {
     }
 
     protected boolean isFinished() {
-        return true; // Run never
+        return false;
     }
 }
