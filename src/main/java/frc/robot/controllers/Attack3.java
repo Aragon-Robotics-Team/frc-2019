@@ -32,12 +32,12 @@ public class Attack3 implements OI {
 	}
 
 	public double getLeftSpeed() {
-		System.out.println("left" + mainJoystick.getRawAxis(1));
+		// System.out.println("left" + mainJoystick.getRawAxis(1));
 		return -1.0 * mainJoystick.getRawAxis(1);
 	}
 
 	public double getLeftRotation() {
-		System.out.println("rotate" + mainJoystick.getRawAxis(0));
+		// System.out.println("rotate" + mainJoystick.getRawAxis(0));
 		return mainJoystick.getRawAxis(0);
 	}
 
