@@ -19,7 +19,8 @@ public class Robot extends TimedRobot {
 	// Ran once when Game starts
 	@Override
 	public void robotInit() {
-		m_oi = new Attack3(RobotMap.ATTACK3_JOYSTICK_0);
+		m_oi = new SplitAttack3Controller(RobotMap.ATTACK3_JOYSTICK_0, RobotMap.ATTACK3_JOYSTICK_1);
+		// m_oi = new Attack3(RobotMap.ATTACK3_JOYSTICK_0);
 		// m_oi = new F310(RobotMap.F310_JOYSTICK_0);
 
 		System.out.println("init");
