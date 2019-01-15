@@ -3,11 +3,14 @@ package frc.robot.vision;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.HashMap;
+import java.util.Comparator;
 import org.opencv.core.*;
 import org.opencv.core.Core.*;
 import org.opencv.features2d.FeatureDetector;
@@ -24,6 +27,7 @@ import edu.wpi.first.vision.VisionPipeline;
  *
  * @author GRIP
  */
+
 public class Grip implements VisionPipeline {
 
 	// Outputs
@@ -33,6 +37,10 @@ public class Grip implements VisionPipeline {
 	private Mat cvDilateOutput = new Mat();
 	private ArrayList<MatOfPoint> findContoursOutput = new ArrayList<MatOfPoint>();
 	private ArrayList<MatOfPoint> filterContoursOutput = new ArrayList<MatOfPoint>();
+	private RotatedRect[] rects;
+	private double[] angles;
+	private ArrayList<VisionTarget> visionTargets = new ArrayList<VisionTarget>();
+
 
 	static {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
@@ -100,6 +108,9 @@ public class Grip implements VisionPipeline {
 				filterContoursMaxHeight, filterContoursSolidity, filterContoursMaxVertices,
 				filterContoursMinVertices, filterContoursMinRatio, filterContoursMaxRatio,
 				filterContoursOutput);
+
+		// step Find_targets I guess? I mean HELLO_FELLOW_ROBOT
+
 
 	}
 
@@ -311,6 +322,65 @@ public class Grip implements VisionPipeline {
 			if (ratio < minRatio || ratio > maxRatio)
 				continue;
 			output.add(contour);
+		}
+	}
+
+
+	class VisionTarget implements Serializable {
+		public double x;
+		public double y;
+
+		public VisionTarget(double x, double y) {
+			this.x = x;
+			this.y = y;
+		}
+	}
+
+	class RectComparator implements Comparator {
+		public int compare(RotatedRect a, RotatedRect b) {
+			return (int) (a.center.x - b.center.x);
+		}
+	}
+
+	public void getVisionTargets() {
+		getMinAreaRects(); // updates rects array
+		sortRectsByXPosition(); // in-place
+		getRect_angles();// updates
+
+
+
+	}
+
+	public void getMinAreaRects() {
+		rects = new RotatedRect[filterContoursOutput.size()];
+		for (int i = 0; i < filterContoursOutput.size(); i++) {
+			rects[i] = Imgproc.minAreaRect(new MatOfPoint2f(filterContoursOutput.get(i).toArray()));
+		}
+	}
+
+	public void sortRectsByXPosition() {
+		// assuming this is left to right for now, check RectComparator to fix
+		Arrays.sort(rects, new RectComparator());
+	}
+
+	public void getRect_angles() {
+		angles = new double[rects.length];
+		for (int i = 0; i < rects.length; i++) {
+
+			// don't touch... voodoo math inside
+			if (rects[i].size.width < rects[i].size.height) {
+				angles[i] = -1 * (rects[i].angle - 90);
+			} else {
+				angles[i] = rects[i].angle;
+			}
+
+			if (angles[i] > 90) {
+				angles[i] = -1 * (angles[i] - 180);
+			}
+			// this is... I'm too lazy to reverse engineer this out of the code, but it's known to
+			// work
+			angles[i] *= -1;
+
 		}
 	}
 
