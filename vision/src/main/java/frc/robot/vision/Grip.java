@@ -38,7 +38,6 @@ public class Grip implements VisionPipeline {
 	private ArrayList<MatOfPoint> findContoursOutput = new ArrayList<MatOfPoint>();
 	private ArrayList<MatOfPoint> filterContoursOutput = new ArrayList<MatOfPoint>();
 	private RotatedRect[] rects;
-	private double[] angles;
 	private ArrayList<VisionTarget> visionTargets = new ArrayList<VisionTarget>();
 
 
@@ -334,21 +333,38 @@ public class Grip implements VisionPipeline {
 			this.x = x;
 			this.y = y;
 		}
-	}
 
-	class RectComparator implements Comparator {
-		public int compare(RotatedRect a, RotatedRect b) {
-			return (int) (a.center.x - b.center.x);
+		public VisionTarget(RotatedRect r1, RotatedRect r2) {
+			this.x = (r1.center.x + r2.center.x) / 2;
+			this.y = (r1.center.y + r2.center.y) / 2;
 		}
 	}
 
 	public void getVisionTargets() {
-		getMinAreaRects(); // updates rects array
-		sortRectsByXPosition(); // in-place
-		getRect_angles();// updates
+		getMinAreaRects(); // fills rects array using contours
+
+		sortRectsByX(); // in-place. This is to identify pairs. not the perfect solution
+		for (int i = 0; i < rects.length - 1; i++) {
+			if (isTarget(rects[i], rects[i + 1])) {
+				visionTargets.add(new VisionTarget(rects[i], rects[i + 1]));
+			}
+		}
 
 
 
+	}
+
+	public boolean isTarget(RotatedRect rect1, RotatedRect rect2) {
+		double angleDiff = Math.abs(correct_angle(rect1) - correct_angle(rect2));
+		if (angleDiff < 110 && angleDiff > 70
+				&& Math.abs(
+						rect1.center.x - rect2.center.x) < (rect1.size.height + rect2.size.height)
+				&& Math.abs(
+						rect1.center.y - rect2.center.y) < (rect1.size.height + rect2.size.height)
+								/ 2)
+			return true;
+		else
+			return false;
 	}
 
 	public void getMinAreaRects() {
@@ -358,30 +374,34 @@ public class Grip implements VisionPipeline {
 		}
 	}
 
-	public void sortRectsByXPosition() {
-		// assuming this is left to right for now, check RectComparator to fix
+	class RectComparator implements Comparator<RotatedRect> {
+		public int compare(RotatedRect a, RotatedRect b) {
+			return (int) (a.center.x - b.center.x);
+		}
+	}
+
+	public void sortRectsByX() {
+		// assuming this is smallest to largest for now, check RectComparator to fix
 		Arrays.sort(rects, new RectComparator());
 	}
 
-	public void getRect_angles() {
-		angles = new double[rects.length];
-		for (int i = 0; i < rects.length; i++) {
-
-			// don't touch... voodoo math inside
-			if (rects[i].size.width < rects[i].size.height) {
-				angles[i] = -1 * (rects[i].angle - 90);
-			} else {
-				angles[i] = rects[i].angle;
-			}
-
-			if (angles[i] > 90) {
-				angles[i] = -1 * (angles[i] - 180);
-			}
-			// this is... I'm too lazy to reverse engineer this out of the code, but it's known to
-			// work
-			angles[i] *= -1;
-
+	public double correct_angle(RotatedRect rect) {
+		// don't touch... voodoo math inside
+		double angle;
+		if (rect.size.width < rect.size.height) {
+			angle = -1 * (rect.angle - 90);
+		} else {
+			angle = rect.angle;
 		}
+
+		if (angle > 90) {
+			angle = -1 * (angle - 180);
+		}
+		// this is... I'm too lazy to reverse engineer this out of the code, but it's known to
+		// work
+		angle *= -1;
+
+		return angle;
 	}
 
 
