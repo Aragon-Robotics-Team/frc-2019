@@ -6,4 +6,6 @@ public class RobotMap {
 
 	public static final int LeftWheelsCan = 5;
 	public static final int RightWheelsCan = 2;
+
+	public static final int PneumaticsCan0 = 1;
 }
