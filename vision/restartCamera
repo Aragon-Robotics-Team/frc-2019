@@ -1,0 +1,18 @@
+#!/bin/bash
+
+killall java
+ps -ef | grep -i 'camera' | grep -v 'grep' | awk '{print $2}' | xargs -r kill
+sleep 2
+killall -9 java
+ps -ef | grep -i 'camera' | grep -v 'grep' | awk '{print $2}' | xargs -r kill -9
+
+chown 1000:1000 runCamera
+tr -d '\r' < runCamera > runCamera.tmp
+rm -fdr runCamera
+mv runCamera.tmp runCamera
+chown 1000:1000 runCamera
+chmod +x runCamera
+
+bash ./runService
+
+sleep 2

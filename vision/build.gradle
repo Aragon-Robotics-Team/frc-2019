@@ -37,10 +37,6 @@ deploy {
 			failOnMissing = false
 			timeout = 10
 			
-			//addresses << '10.8.40.96' //'raspberrypi.local'
-			//user = 'pi'
-			//password = '840robotics'
-			
 			locations {
 				ssh {
 					address = '10.8.40.96' //'raspberrypi.local'
@@ -55,11 +51,15 @@ deploy {
 		all {
 			directory = '.'
 			targets << 'rpi'
-			
-			predeploy << { execute '/usr/bin/sudo /bin/mount -o remount,rw / ' }
-			predeploy << { execute '/usr/bin/sudo /bin/mount -o remount,rw /boot ' }
-			postdeploy << { execute '/usr/bin/sudo /bin/mount -o remount,ro / ' }
-			postdeploy << { execute '/usr/bin/sudo /bin/mount -o remount,ro /boot ' }
+		}
+		
+		commandArtifact('visionRW') {
+			command = '/usr/bin/sudo /bin/mount -o remount,rw / '
+			dependsOn('visionRWBoot')
+		}
+		
+		commandArtifact('visionRWBoot') {
+			command = '/usr/bin/sudo /bin/mount -o remount,rw /boot '
 		}
 		
 		fileArtifact('visionCombinedJar') {
@@ -67,21 +67,25 @@ deploy {
 			filename = 'uploaded.jar'
 			
 			dependsOn('build')
+			dependsOn('visionRW')
 		}
 		
 		fileArtifact('visionRunCamera') {
 			file = file('runCamera')
-			
-			postdeploy << { execute '/bin/chmod +x ./runCamera' }
+			dependsOn('visionRW')
 		}
 		
 		fileArtifact('visionRunService') {
-			file = file('runCamera')
+			file = file('restartCamera')
 			
-			postdeploy << { execute '/bin/bash ./restartCamera '}
+			postdeploy << { execute '/usr/bin/sudo /bin/bash ./restartCamera'}
 			
 			dependsOn('visionCombinedJar')
 			dependsOn('visionRunCamera')
+			dependsOn('visionRW')
+			
+			postdeploy << { execute '/usr/bin/sudo /bin/mount -o remount,ro / ' }
+			postdeploy << { execute '/usr/bin/sudo /bin/mount -o remount,ro /boot ' }
 		}
 	}
 }
