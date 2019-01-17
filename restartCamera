@@ -1,0 +1,3 @@
+killall java
+ps -ef | grep -i 'runcamera' | grep -v 'grep' | awk '{print $2}' | sudo xargs -r kill
+sleep 2

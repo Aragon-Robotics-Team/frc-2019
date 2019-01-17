@@ -75,5 +75,13 @@ deploy {
 			postdeploy << { execute '/bin/chmod +x ./runCamera' }
 		}
 		
+		fileArtifact('visionRunService') {
+			file = file('runCamera')
+			
+			postdeploy << { execute '/bin/bash ./restartCamera '}
+			
+			dependsOn('visionCombinedJar')
+			dependsOn('visionRunCamera')
+		}
 	}
 }
