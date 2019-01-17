@@ -55,7 +55,7 @@ deploy {
 		
 		commandArtifact('visionRW') {
 			command = '/usr/bin/sudo /bin/mount -o remount,rw / '
-			dependsOn('visionRWBoot')
+			dependsOn('deployVisionRWBootRpi')
 		}
 		
 		commandArtifact('visionRWBoot') {
@@ -67,12 +67,12 @@ deploy {
 			filename = 'uploaded.jar'
 			
 			dependsOn('build')
-			dependsOn('visionRW')
+			dependsOn('deployVisionRWRpi')
 		}
 		
 		fileArtifact('visionRunCamera') {
 			file = file('runCamera')
-			dependsOn('visionRW')
+			dependsOn('deployVisionRWRpi')
 		}
 		
 		fileArtifact('visionRunService') {
@@ -80,9 +80,9 @@ deploy {
 			
 			postdeploy << { execute '/usr/bin/sudo /bin/bash ./restartCamera'}
 			
-			dependsOn('visionCombinedJar')
-			dependsOn('visionRunCamera')
-			dependsOn('visionRW')
+			dependsOn('deployVisionCombinedJarRpi')
+			dependsOn('deployVisionRunCameraRpi')
+			dependsOn('deployVisionRWRpi')
 			
 			postdeploy << { execute '/usr/bin/sudo /bin/mount -o remount,ro / ' }
 			postdeploy << { execute '/usr/bin/sudo /bin/mount -o remount,ro /boot ' }
