@@ -6,14 +6,20 @@
     "**/.hg": true,
     "**/CVS": true,
     "**/.DS_Store": true,
-    ".**/": true, // Hidden Folders
-    "**/.**": true, // Hidden Files
-    "**gradle**": true, // Gradle files in root and gradle folder
-    "bin/": true, // bin folder
-    "build/": true, // build folder
-    "vendordeps/": true
+    "**/{,.}gradle**": true, // Everything gradle except .gradle files
+    "**/bin/": true, // bin folder
+    "**/build/": true, // build folder
+    "vendordeps/": true,
+    ".gitignore": false,
+    "**/.project": true,
+    "**/.gitattributes": true,
+    "**/.classpath": true,
+    "**/.settings": true,
+    "**/.wpilib": true,
+    "**/lib": true // vision/lib jars
   },
   "wpilib.online": true,
   "java.format.settings.url": "https://raw.githubusercontent.com/google/styleguide/gh-pages/eclipse-java-google-style.xml",
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
+  "files.eol": "\n"
 }

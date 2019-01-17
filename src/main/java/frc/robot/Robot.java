@@ -10,7 +10,6 @@ import frc.robot.commands.*;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.controllers.*;
 
-
 public class Robot extends TimedRobot {
 	public static OI m_oi;
 
@@ -39,7 +38,6 @@ public class Robot extends TimedRobot {
 	@Override
 	public void disabledInit() {
 	}
-
 
 	@Override
 	public void disabledPeriodic() {

@@ -22,12 +22,15 @@ import edu.wpi.cscore.VideoSource;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.vision.*;
+<<<<<<< HEAD
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
+=======
+>>>>>>> Julien
 
 public final class Main {
 	private static String configFile = "/boot/frc.json";
@@ -46,10 +49,13 @@ public final class Main {
 	private static VisionThread visionThread;
 	private static final Object imgLock = new Object();
 
+<<<<<<< HEAD
 	private static NetworkTableInstance inst;
 	private static NetworkTable table;
 	private static NetworkTableEntry xEntry;
 
+=======
+>>>>>>> Julien
 	private Main() {
 	}
 
@@ -165,6 +171,7 @@ public final class Main {
 	 * Main.
 	 */
 	public static void main(String... args) {
+<<<<<<< HEAD
 
 		inst = NetworkTableInstance.getDefault();
 		table = inst.getTable("datatable");
@@ -173,6 +180,8 @@ public final class Main {
 
 		// NetworkTableEntry xEntry = table.getEntry("X");
 
+=======
+>>>>>>> Julien
 		if (args.length > 0) {
 			configFile = args[0];
 		}
@@ -209,6 +218,7 @@ public final class Main {
 
 	public static void pipelineProcess(Grip pipeline) {
 		System.out.println(pipeline.filterContoursOutput());
+<<<<<<< HEAD
 
 
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -235,5 +245,7 @@ public final class Main {
 
 
 
+=======
+>>>>>>> Julien
 	}
 }
