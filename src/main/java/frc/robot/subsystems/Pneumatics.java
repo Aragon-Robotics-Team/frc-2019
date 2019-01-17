@@ -13,4 +13,12 @@ public class Pneumatics extends Subsystem {
 
     public void initDefaultCommand() {
     }
+
+    public void enableCompressor() {
+        compressor.setClosedLoopControl(true);
+    }
+
+    public void disableCompressor() {
+        compressor.setClosedLoopControl(false);
+    }
 }
