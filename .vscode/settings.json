@@ -20,6 +20,5 @@
   },
   "wpilib.online": true,
   "java.format.settings.url": "https://raw.githubusercontent.com/google/styleguide/gh-pages/eclipse-java-google-style.xml",
-  "editor.formatOnSave": true,
-  "files.eol": "\n"
+  "editor.formatOnSave": true
 }
