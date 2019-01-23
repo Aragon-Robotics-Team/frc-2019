@@ -18,6 +18,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import edu.wpi.cscore.CvSource;
 import edu.wpi.cscore.VideoSource;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -39,6 +40,8 @@ public final class Main {
 
 	private static VisionThread visionThread;
 	private static final Object imgLock = new Object();
+
+	public static CvSource AugmentCam;
 
 	private Main() {
 	}
@@ -143,6 +146,8 @@ public final class Main {
 		VideoSource camera =
 				CameraServer.getInstance().startAutomaticCapture(config.name, config.path);
 
+		AugmentCam = CameraServer.getInstance().putVideo("Augmented", 320, 240);
+
 		Gson gson = new GsonBuilder().create();
 
 		camera.setConfigJson(gson.toJson(config.config));
@@ -190,6 +195,7 @@ public final class Main {
 	}
 
 	public static void pipelineProcess(Grip pipeline) {
+		AugmentCam.putFrame(pipeline.AugmentCamOutput);
 		System.out.println(pipeline.filterContoursOutput());
 	}
 }
