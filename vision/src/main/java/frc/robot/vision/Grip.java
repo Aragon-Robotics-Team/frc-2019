@@ -35,10 +35,12 @@ public class Grip implements VisionPipeline {
 	private Mat hslThresholdOutput = new Mat();
 	private Mat cvErodeOutput = new Mat();
 	private Mat cvDilateOutput = new Mat();
+	public Mat AugmentCamOutput = new Mat();
 	private ArrayList<MatOfPoint> findContoursOutput = new ArrayList<MatOfPoint>();
 	private ArrayList<MatOfPoint> filterContoursOutput = new ArrayList<MatOfPoint>();
 	private RotatedRect[] rects;
 	private ArrayList<VisionTarget> visionTargets = new ArrayList<VisionTarget>();
+
 
 
 	static {
@@ -108,15 +110,17 @@ public class Grip implements VisionPipeline {
 				filterContoursMinVertices, filterContoursMinRatio, filterContoursMaxRatio,
 				filterContoursOutput);
 
-		// step Find_targets I guess? I mean HELLO_FELLOW_ROBOT
+		// step Find_targets I guess?
 		getVisionTargets();
 
-		// step
+		// step draw contours
 		for (int i = 0; i < filterContoursOutput.size(); i++) {
-			Imgproc.drawContours(source0, filterContoursOutput, i, new Scalar(255, 255, 255), -1);
+			Imgproc.drawContours(AugmentCamOutput, filterContoursOutput, i,
+					new Scalar(255, 255, 255), -1);
 		}
+		// step draw rectangles around visiontargets
 		for (int i = 0; i < visionTargets.size(); i++) {
-			Imgproc.rectangle(source0, visionTargets.get(i).bounding.tl(),
+			Imgproc.rectangle(AugmentCamOutput, visionTargets.get(i).bounding.tl(),
 					visionTargets.get(i).bounding.br(), new Scalar(120, 255, 120));
 		}
 	}

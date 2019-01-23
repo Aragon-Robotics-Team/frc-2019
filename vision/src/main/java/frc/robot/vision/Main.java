@@ -145,7 +145,7 @@ public final class Main {
 		System.out.println("Starting camera '" + config.name + "' on " + config.path);
 		VideoSource camera =
 				CameraServer.getInstance().startAutomaticCapture(config.name, config.path);
-
+		// setup a cvSource where you can put furames and it should just work
 		AugmentCam = CameraServer.getInstance().putVideo("Augmented", 320, 240);
 
 		Gson gson = new GsonBuilder().create();
