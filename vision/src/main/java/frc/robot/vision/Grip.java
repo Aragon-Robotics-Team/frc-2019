@@ -109,8 +109,16 @@ public class Grip implements VisionPipeline {
 				filterContoursOutput);
 
 		// step Find_targets I guess? I mean HELLO_FELLOW_ROBOT
+		getVisionTargets();
 
-
+		// step
+		for (int i = 0; i < filterContoursOutput.size(); i++) {
+			Imgproc.drawContours(source0, filterContoursOutput, i, new Scalar(255, 255, 255), -1);
+		}
+		for (int i = 0; i < visionTargets.size(); i++) {
+			Imgproc.rectangle(source0, visionTargets.get(i).bounding.tl(),
+					visionTargets.get(i).bounding.br(), new Scalar(120, 255, 120));
+		}
 	}
 
 	/**
@@ -328,15 +336,15 @@ public class Grip implements VisionPipeline {
 	class VisionTarget implements Serializable {
 		public double x;
 		public double y;
-
-		public VisionTarget(double x, double y) {
-			this.x = x;
-			this.y = y;
-		}
+		public Rect bounding;
 
 		public VisionTarget(RotatedRect r1, RotatedRect r2) {
+			// shit.. well:
+			// r1 is implied to be the left rectangle
+			// r2 is the right rectangle
 			this.x = (r1.center.x + r2.center.x) / 2;
 			this.y = (r1.center.y + r2.center.y) / 2;
+			this.bounding = new Rect(r1.boundingRect().tl(), r2.boundingRect().br());
 		}
 	}
 
