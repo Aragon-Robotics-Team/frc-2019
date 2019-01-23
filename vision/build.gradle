@@ -39,7 +39,7 @@ deploy {
 			
 			locations {
 				ssh {
-					address = '10.8.40.96' //'raspberrypi.local'
+					address = 'raspberrypi.local' //'10.8.40.96'
 					user = 'pi'
 					password = '840robotics'
 				}
@@ -72,17 +72,20 @@ deploy {
 		
 		fileArtifact('visionRunCamera') {
 			file = file('runCamera')
-			dependsOn('deployVisionRWRpi')
-		}
-		
-		fileArtifact('visionRunService') {
-			file = file('restartCamera')
-			
-			postdeploy << { execute '/usr/bin/sudo /bin/bash ./restartCamera'}
+			filename = 'runCamera.tmp'
 			
 			dependsOn('deployVisionCombinedJarRpi')
-			dependsOn('deployVisionRunCameraRpi')
 			dependsOn('deployVisionRWRpi')
+			
+			postdeploy << { execute '/usr/bin/sudo /bin/chown 1000:1000 ./runCamera.tmp'}
+			postdeploy << { execute 'tr -d \'\\r\' < "runCamera.tmp" | tee "runCamera"'}
+			postdeploy << { execute '/usr/bin/sudo /bin/chown 1000:1000 ./runCamera'}
+			postdeploy << { execute '/usr/bin/sudo /bin/chmod +x ./runCamera'}
+			postdeploy << { execute '/usr/bin/sudo /bin/rm -fdr ./runCamera.tmp'}
+			
+			postdeploy << { execute '/usr/bin/sudo /usr/bin/killall java'}
+			postdeploy << { execute '/usr/bin/sudo /usr/bin/killall -9 java'}
+			postdeploy << { execute '/usr/bin/sudo /bin/bash ./runService'}
 			
 			postdeploy << { execute '/usr/bin/sudo /bin/mount -o remount,ro / ' }
 			postdeploy << { execute '/usr/bin/sudo /bin/mount -o remount,ro /boot ' }
