@@ -37,13 +37,9 @@ deploy {
 			failOnMissing = false
 			timeout = 10
 			
-			//addresses << '10.8.40.96' //'raspberrypi.local'
-			//user = 'pi'
-			//password = '840robotics'
-			
 			locations {
 				ssh {
-					address = '10.8.40.96' //'raspberrypi.local'
+					address = 'raspberrypi.local' //'10.8.40.96'
 					user = 'pi'
 					password = '840robotics'
 				}
@@ -55,11 +51,15 @@ deploy {
 		all {
 			directory = '.'
 			targets << 'rpi'
-			
-			predeploy << { execute '/usr/bin/sudo /bin/mount -o remount,rw / ' }
-			predeploy << { execute '/usr/bin/sudo /bin/mount -o remount,rw /boot ' }
-			postdeploy << { execute '/usr/bin/sudo /bin/mount -o remount,ro / ' }
-			postdeploy << { execute '/usr/bin/sudo /bin/mount -o remount,ro /boot ' }
+		}
+		
+		commandArtifact('visionRW') {
+			command = '/usr/bin/sudo /bin/mount -o remount,rw / '
+			dependsOn('deployVisionRWBootRpi')
+		}
+		
+		commandArtifact('visionRWBoot') {
+			command = '/usr/bin/sudo /bin/mount -o remount,rw /boot '
 		}
 		
 		fileArtifact('visionCombinedJar') {
@@ -67,13 +67,28 @@ deploy {
 			filename = 'uploaded.jar'
 			
 			dependsOn('build')
+			dependsOn('deployVisionRWRpi')
 		}
 		
 		fileArtifact('visionRunCamera') {
 			file = file('runCamera')
+			filename = 'runCamera.tmp'
 			
-			postdeploy << { execute '/bin/chmod +x ./runCamera' }
+			dependsOn('deployVisionCombinedJarRpi')
+			dependsOn('deployVisionRWRpi')
+			
+			postdeploy << { execute '/usr/bin/sudo /bin/chown 1000:1000 ./runCamera.tmp'}
+			postdeploy << { execute 'tr -d \'\\r\' < "runCamera.tmp" | tee "runCamera"'}
+			postdeploy << { execute '/usr/bin/sudo /bin/chown 1000:1000 ./runCamera'}
+			postdeploy << { execute '/usr/bin/sudo /bin/chmod +x ./runCamera'}
+			postdeploy << { execute '/usr/bin/sudo /bin/rm -fdr ./runCamera.tmp'}
+			
+			postdeploy << { execute '/usr/bin/sudo /usr/bin/killall java'}
+			postdeploy << { execute '/usr/bin/sudo /usr/bin/killall -9 java'}
+			postdeploy << { execute '/usr/bin/sudo /bin/bash ./runService'}
+			
+			postdeploy << { execute '/usr/bin/sudo /bin/mount -o remount,ro / ' }
+			postdeploy << { execute '/usr/bin/sudo /bin/mount -o remount,ro /boot ' }
 		}
-		
 	}
 }
