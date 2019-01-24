@@ -35,7 +35,7 @@ public class F310 implements OI {
 	}
 
 	public double getLeftSpeed() {
-		System.out.println("left" + mainJoystick.getRawAxis(1));
+		// System.out.println("left" + mainJoystick.getRawAxis(1));
 		return -1.0 * mainJoystick.getRawAxis(1);
 	}
 
@@ -44,7 +44,7 @@ public class F310 implements OI {
 	}
 
 	public double getRightSpeed() {
-		System.out.println("right" + mainJoystick.getRawAxis(5));
+		// System.out.println("right" + mainJoystick.getRawAxis(5));
 		return -1.0 * mainJoystick.getRawAxis(5);
 	}
 

@@ -6,7 +6,7 @@
     "**/.hg": true,
     "**/CVS": true,
     "**/.DS_Store": true,
-    "**/{,.}gradle**": true, // Everything gradle except .gradle files
+    "**/{,.}gradle*": true, // Everything gradle except .gradle files
     "**/bin/": true, // bin folder
     "**/build/": true, // build folder
     "vendordeps/": true,
