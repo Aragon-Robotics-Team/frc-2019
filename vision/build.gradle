@@ -4,10 +4,10 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '4.0.3' apply false
 }
 
+mainClassName = 'frc.robot.vision.Main'
+
 apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'jaci.gradle.EmbeddedTools'
-
-mainClassName = 'frc.robot.vision.Main'
 
 repositories {
     mavenCentral()
@@ -24,6 +24,8 @@ dependencies {
     compile name: 'cscore'
     compile name: 'cameraserver'
     compile name: 'opencv-344'
+    compile name: 'wpilibj'
+    compile name: 'wpiHal'
 }
 
 //wrapper {
