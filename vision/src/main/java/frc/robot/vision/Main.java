@@ -151,8 +151,14 @@ public final class Main {
 		Gson gson = new GsonBuilder().create();
 
 		camera.setConfigJson(gson.toJson(config.config));
+		System.out.println("start visionthread");
+		visionThread = new VisionThread(camera, new Grip(), pipeline -> {
+			System.out.println("start callback pipeline");
+			AugmentCam.putFrame(pipeline.AugmentCamOutput);
+			System.out.println(pipeline.filterContoursOutput());
+		});
 
-		visionThread = new VisionThread(camera, new Grip(), Main::pipelineProcess);
+		visionThread.start();
 
 	}
 

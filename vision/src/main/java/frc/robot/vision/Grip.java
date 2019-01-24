@@ -29,6 +29,10 @@ import edu.wpi.first.vision.VisionPipeline;
  */
 
 public class Grip implements VisionPipeline {
+	public Grip() {
+		super();
+		System.out.println("Initiallized VisionPipeline");
+	}
 
 	// Outputs
 	private Mat normalizeOutput = new Mat();
@@ -51,6 +55,7 @@ public class Grip implements VisionPipeline {
 	 * This is the primary method that runs the entire pipeline and updates the outputs.
 	 */
 	public void process(Mat source0) {
+		System.out.println("process");
 		// Step Normalize0:
 		Mat normalizeInput = source0;
 		int normalizeType = Core.NORM_MINMAX;
