@@ -228,7 +228,6 @@ public final class Main {
 			try {
 				bos.close();
 			} catch (IOException ex) {
-				// ignore close exception
 			}
 		}
 

@@ -15,13 +15,16 @@ public class ByteArrayInput {
         NetworkTable table = inst.getTable("datatable");
         NetworkTableEntry xEntry = table.getEntry("X");
 
-        byte[] MyBytes = xEntry;
+        byte[] b = new byte[0];
+        b = xEntry.getRaw(b);
 
-        ByteArrayInputStream bis = new ByteArrayInputStream(MyBytes);
+        ByteArrayInputStream bis = new ByteArrayInputStream(b);
         ObjectInput in = null;
         try {
             in = new ObjectInputStream(bis);
-            Object GripImage = in.readObject();
+            Object GripImage = in.readByte();
+
+        } catch (IOException ex) {
 
         } finally {
             try {
