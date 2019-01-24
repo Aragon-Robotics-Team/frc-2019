@@ -39,7 +39,7 @@ deploy {
 			
 			locations {
 				ssh {
-					address = 'raspberrypi.local' //'10.8.40.96'
+					address = 'frcvision.local' //'10.8.40.96'
 					user = 'pi'
 					password = '840robotics'
 				}
