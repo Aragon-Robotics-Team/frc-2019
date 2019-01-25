@@ -3,6 +3,7 @@ package frc.robot.controllers;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.*;
 import frc.robot.commands.Teleop.*;
+import frc.robot.commands.Sol0On;
 
 public class Attack3 implements OI {
 	Joystick mainJoystick;
@@ -23,6 +24,8 @@ public class Attack3 implements OI {
 		slowModeButton = new JoystickButton(mainJoystick, 2);
 		b4 = new JoystickButton(mainJoystick, 4);
 		b5 = new JoystickButton(mainJoystick, 5);
+
+		b5.whileHeld(new Sol0On());
 
 		// b4.whenPressed(new ControlArcadeDrivetrain());
 		// b5.whenPressed(new ControlOneAxisDrivetrain(0.9));
