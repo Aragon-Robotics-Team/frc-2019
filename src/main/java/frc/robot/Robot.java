@@ -66,6 +66,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopInit() {
 		System.out.println("teleop");
+		myPneumatics.compressor.setClosedLoopControl(true);
 		myDrivetrain.resetDistance();
 		TeleopGroup teleop = new TeleopGroup();
 		teleop.start();
