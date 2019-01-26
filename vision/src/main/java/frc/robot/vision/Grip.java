@@ -117,6 +117,7 @@ public class Grip implements VisionPipeline {
 
 		// step Find_targets I guess?
 		getVisionTargets();
+		source0.copyTo(AugmentCamOutput);
 
 		// step draw contours
 		for (int i = 0; i < filterContoursOutput.size(); i++) {
