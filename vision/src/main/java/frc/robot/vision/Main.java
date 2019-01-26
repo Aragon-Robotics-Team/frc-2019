@@ -149,7 +149,7 @@ public final class Main {
 		System.out.println("Starting camera '" + config.name + "' on " + config.path);
 		CameraServer inst = CameraServer.getInstance();
 		UsbCamera camera = new UsbCamera(config.name, config.path);
-		MjpegServer server = inst.startAutomaticCapture(camera);
+		// MjpegServer server = inst.startAutomaticCapture(camera);
 
 		// setup a cvSource where you can put furames and it should just work
 		AugmentCam = inst.putVideo("Augmented", 320, 240);
@@ -160,7 +160,7 @@ public final class Main {
 		camera.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen);
 
 		if (config.streamConfig != null) {
-			server.setConfigJson(gson.toJson(config.streamConfig));
+			// server.setConfigJson(gson.toJson(config.streamConfig));
 		}
 
 		return camera;
@@ -197,12 +197,13 @@ public final class Main {
 
 		// start image processing on camera 0 if present
 		if (cameras.size() >= 1) {
-			VisionThread visionThread = new VisionThread(cameras.get(0), new Grip(), pipeline -> {
-				// do something with pipeline results
-				System.out.println("start callback pipeline");
-				AugmentCam.putFrame(pipeline.AugmentCamOutput);
-				System.out.println(pipeline.filterContoursOutput());
-			});
+			VisionThread visionThread =
+					new VisionThread(cameras.get(0), new GripPostProcessing(), pipeline -> {
+						// do something with pipeline results
+						System.out.println("start callback pipeline");
+						AugmentCam.putFrame(pipeline.AugmentCamOutput);
+						// System.out.println(pipeline.grip.filterContoursOutput());
+					});
 			/*
 			 * something like this for GRIP: VisionThread visionThread = new
 			 * VisionThread(cameras.get(0), new GripPipeline(), pipeline -> { ... });
