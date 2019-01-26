@@ -3,21 +3,19 @@ package frc.robot.vision;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.HashMap;
-import java.util.Comparator;
+import edu.wpi.first.vision.VisionPipeline;
 import org.opencv.core.*;
 import org.opencv.core.Core.*;
 import org.opencv.features2d.FeatureDetector;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.*;
 import org.opencv.objdetect.*;
-import edu.wpi.first.vision.VisionPipeline;
+import frc.robot.vision.GripInterface;
 
 /**
  * Grip class.
@@ -27,25 +25,17 @@ import edu.wpi.first.vision.VisionPipeline;
  *
  * @author GRIP
  */
-
-public class Grip implements VisionPipeline {
-	public Grip() {
-		super();
-		System.out.println("Initiallized VisionPipeline");
-	}
+public class Grip implements GripInterface {
 
 	// Outputs
-	private Mat normalizeOutput = new Mat();
 	private Mat hslThresholdOutput = new Mat();
+	private Mat rgbThresholdOutput = new Mat();
+	private Mat cvAddOutput = new Mat();
+	private Mat cvDilate0Output = new Mat();
 	private Mat cvErodeOutput = new Mat();
-	private Mat cvDilateOutput = new Mat();
-	public Mat AugmentCamOutput = new Mat();
+	private Mat cvDilate1Output = new Mat();
 	private ArrayList<MatOfPoint> findContoursOutput = new ArrayList<MatOfPoint>();
 	private ArrayList<MatOfPoint> filterContoursOutput = new ArrayList<MatOfPoint>();
-	private RotatedRect[] rects;
-	private ArrayList<VisionTarget> visionTargets = new ArrayList<VisionTarget>();
-
-
 
 	static {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
@@ -54,54 +44,70 @@ public class Grip implements VisionPipeline {
 	/**
 	 * This is the primary method that runs the entire pipeline and updates the outputs.
 	 */
+	@Override
 	public void process(Mat source0) {
-		System.out.println("process");
-		// Step Normalize0:
-		Mat normalizeInput = source0;
-		int normalizeType = Core.NORM_MINMAX;
-		double normalizeAlpha = 0.0;
-		double normalizeBeta = 255;
-		normalize(normalizeInput, normalizeType, normalizeAlpha, normalizeBeta, normalizeOutput);
-
 		// Step HSL_Threshold0:
-		Mat hslThresholdInput = normalizeOutput;
-		double[] hslThresholdHue = {0.0, 41.77474402730375};
-		double[] hslThresholdSaturation = {146.76258992805754, 255.0};
-		double[] hslThresholdLuminance = {0.0, 255.0};
+		Mat hslThresholdInput = source0;
+		double[] hslThresholdHue = {56.972550646190605, 84.745763249346};
+		double[] hslThresholdSaturation = {107.53717321372572, 255.0};
+		double[] hslThresholdLuminance = {64.83050847457626, 255.0};
 		hslThreshold(hslThresholdInput, hslThresholdHue, hslThresholdSaturation,
 				hslThresholdLuminance, hslThresholdOutput);
 
+		// Step RGB_Threshold0:
+		Mat rgbThresholdInput = source0;
+		double[] rgbThresholdRed = {0.0, 45.909095243974164};
+		double[] rgbThresholdGreen = {168.07909604519773, 255.0};
+		double[] rgbThresholdBlue = {0.0, 255.0};
+		rgbThreshold(rgbThresholdInput, rgbThresholdRed, rgbThresholdGreen, rgbThresholdBlue,
+				rgbThresholdOutput);
+
+		// Step CV_add0:
+		Mat cvAddSrc1 = hslThresholdOutput;
+		Mat cvAddSrc2 = rgbThresholdOutput;
+		cvAdd(cvAddSrc1, cvAddSrc2, cvAddOutput);
+
+		// Step CV_dilate0:
+		Mat cvDilate0Src = cvAddOutput;
+		Mat cvDilate0Kernel = new Mat();
+		Point cvDilate0Anchor = new Point(-1, -1);
+		double cvDilate0Iterations = 1.0;
+		int cvDilate0Bordertype = Core.BORDER_CONSTANT;
+		Scalar cvDilate0Bordervalue = new Scalar(-1);
+		cvDilate(cvDilate0Src, cvDilate0Kernel, cvDilate0Anchor, cvDilate0Iterations,
+				cvDilate0Bordertype, cvDilate0Bordervalue, cvDilate0Output);
+
 		// Step CV_erode0:
-		Mat cvErodeSrc = hslThresholdOutput;
+		Mat cvErodeSrc = cvDilate0Output;
 		Mat cvErodeKernel = new Mat();
 		Point cvErodeAnchor = new Point(-1, -1);
-		double cvErodeIterations = 8.0;
+		double cvErodeIterations = 2.0;
 		int cvErodeBordertype = Core.BORDER_CONSTANT;
 		Scalar cvErodeBordervalue = new Scalar(-1);
 		cvErode(cvErodeSrc, cvErodeKernel, cvErodeAnchor, cvErodeIterations, cvErodeBordertype,
 				cvErodeBordervalue, cvErodeOutput);
 
-		// Step CV_dilate0:
-		Mat cvDilateSrc = cvErodeOutput;
-		Mat cvDilateKernel = new Mat();
-		Point cvDilateAnchor = new Point(-1, -1);
-		double cvDilateIterations = 6.0;
-		int cvDilateBordertype = Core.BORDER_CONSTANT;
-		Scalar cvDilateBordervalue = new Scalar(-1);
-		cvDilate(cvDilateSrc, cvDilateKernel, cvDilateAnchor, cvDilateIterations,
-				cvDilateBordertype, cvDilateBordervalue, cvDilateOutput);
+		// Step CV_dilate1:
+		Mat cvDilate1Src = cvErodeOutput;
+		Mat cvDilate1Kernel = new Mat();
+		Point cvDilate1Anchor = new Point(-1, -1);
+		double cvDilate1Iterations = 1.0;
+		int cvDilate1Bordertype = Core.BORDER_CONSTANT;
+		Scalar cvDilate1Bordervalue = new Scalar(-1);
+		cvDilate(cvDilate1Src, cvDilate1Kernel, cvDilate1Anchor, cvDilate1Iterations,
+				cvDilate1Bordertype, cvDilate1Bordervalue, cvDilate1Output);
 
 		// Step Find_Contours0:
-		Mat findContoursInput = cvDilateOutput;
+		Mat findContoursInput = cvDilate1Output;
 		boolean findContoursExternalOnly = false;
 		findContours(findContoursInput, findContoursExternalOnly, findContoursOutput);
 
 		// Step Filter_Contours0:
 		ArrayList<MatOfPoint> filterContoursContours = findContoursOutput;
-		double filterContoursMinArea = 0.0;
-		double filterContoursMinPerimeter = 150.0;
+		double filterContoursMinArea = 75.0;
+		double filterContoursMinPerimeter = 0.0;
 		double filterContoursMinWidth = 0.0;
-		double filterContoursMaxWidth = 10000.0;
+		double filterContoursMaxWidth = 1000.0;
 		double filterContoursMinHeight = 0.0;
 		double filterContoursMaxHeight = 1000.0;
 		double[] filterContoursSolidity = {0, 100};
@@ -115,29 +121,6 @@ public class Grip implements VisionPipeline {
 				filterContoursMinVertices, filterContoursMinRatio, filterContoursMaxRatio,
 				filterContoursOutput);
 
-		// step Find_targets I guess?
-		getVisionTargets();
-		source0.copyTo(AugmentCamOutput);
-
-		// step draw contours
-		for (int i = 0; i < filterContoursOutput.size(); i++) {
-			Imgproc.drawContours(AugmentCamOutput, filterContoursOutput, i,
-					new Scalar(255, 255, 255), -1);
-		}
-		// step draw rectangles around visiontargets
-		for (int i = 0; i < visionTargets.size(); i++) {
-			Imgproc.rectangle(AugmentCamOutput, visionTargets.get(i).bounding.tl(),
-					visionTargets.get(i).bounding.br(), new Scalar(120, 255, 120));
-		}
-	}
-
-	/**
-	 * This method is a generated getter for the output of a Normalize.
-	 * 
-	 * @return Mat output from Normalize.
-	 */
-	public Mat normalizeOutput() {
-		return normalizeOutput;
 	}
 
 	/**
@@ -147,6 +130,33 @@ public class Grip implements VisionPipeline {
 	 */
 	public Mat hslThresholdOutput() {
 		return hslThresholdOutput;
+	}
+
+	/**
+	 * This method is a generated getter for the output of a RGB_Threshold.
+	 * 
+	 * @return Mat output from RGB_Threshold.
+	 */
+	public Mat rgbThresholdOutput() {
+		return rgbThresholdOutput;
+	}
+
+	/**
+	 * This method is a generated getter for the output of a CV_add.
+	 * 
+	 * @return Mat output from CV_add.
+	 */
+	public Mat cvAddOutput() {
+		return cvAddOutput;
+	}
+
+	/**
+	 * This method is a generated getter for the output of a CV_dilate.
+	 * 
+	 * @return Mat output from CV_dilate.
+	 */
+	public Mat cvDilate0Output() {
+		return cvDilate0Output;
 	}
 
 	/**
@@ -163,8 +173,8 @@ public class Grip implements VisionPipeline {
 	 * 
 	 * @return Mat output from CV_dilate.
 	 */
-	public Mat cvDilateOutput() {
-		return cvDilateOutput;
+	public Mat cvDilate1Output() {
+		return cvDilate1Output;
 	}
 
 	/**
@@ -187,19 +197,6 @@ public class Grip implements VisionPipeline {
 
 
 	/**
-	 * Normalizes or remaps the values of pixels in an image.
-	 * 
-	 * @param input  The image on which to perform the Normalize.
-	 * @param type   The type of normalization.
-	 * @param a      The minimum value.
-	 * @param b      The maximum value.
-	 * @param output The image in which to store the output.
-	 */
-	private void normalize(Mat input, int type, double a, double b, Mat output) {
-		Core.normalize(input, output, a, b, type);
-	}
-
-	/**
 	 * Segment an image based on hue, saturation, and luminance ranges.
 	 *
 	 * @param input  The image on which to perform the HSL threshold.
@@ -212,6 +209,32 @@ public class Grip implements VisionPipeline {
 		Imgproc.cvtColor(input, out, Imgproc.COLOR_BGR2HLS);
 		Core.inRange(out, new Scalar(hue[0], lum[0], sat[0]), new Scalar(hue[1], lum[1], sat[1]),
 				out);
+	}
+
+	/**
+	 * Segment an image based on color ranges.
+	 * 
+	 * @param input  The image on which to perform the RGB threshold.
+	 * @param red    The min and max red.
+	 * @param green  The min and max green.
+	 * @param blue   The min and max blue.
+	 * @param output The image in which to store the output.
+	 */
+	private void rgbThreshold(Mat input, double[] red, double[] green, double[] blue, Mat out) {
+		Imgproc.cvtColor(input, out, Imgproc.COLOR_BGR2RGB);
+		Core.inRange(out, new Scalar(red[0], green[0], blue[0]),
+				new Scalar(red[1], green[1], blue[1]), out);
+	}
+
+	/**
+	 * Calculates the sum of two Mats.
+	 * 
+	 * @param src1 the first Mat
+	 * @param src2 the second Mat
+	 * @param out  the Mat that is the sum of the two Mats
+	 */
+	private void cvAdd(Mat src1, Mat src2, Mat out) {
+		Core.add(src1, src2, out);
 	}
 
 	/**
@@ -343,85 +366,6 @@ public class Grip implements VisionPipeline {
 	}
 
 
-	class VisionTarget implements Serializable {
-		public double x;
-		public double y;
-		public Rect bounding;
-
-		public VisionTarget(RotatedRect r1, RotatedRect r2) {
-			// shit.. well:
-			// r1 is implied to be the left rectangle
-			// r2 is the right rectangle
-			this.x = (r1.center.x + r2.center.x) / 2;
-			this.y = (r1.center.y + r2.center.y) / 2;
-			this.bounding = new Rect(r1.boundingRect().tl(), r2.boundingRect().br());
-		}
-	}
-
-	public void getVisionTargets() {
-		getMinAreaRects(); // fills rects array using contours
-
-		sortRectsByX(); // in-place. This is to identify pairs. not the perfect solution
-		for (int i = 0; i < rects.length - 1; i++) {
-			if (isTarget(rects[i], rects[i + 1])) {
-				visionTargets.add(new VisionTarget(rects[i], rects[i + 1]));
-			}
-		}
-
-
-
-	}
-
-	public boolean isTarget(RotatedRect rect1, RotatedRect rect2) {
-		double angleDiff = Math.abs(correct_angle(rect1) - correct_angle(rect2));
-		if (angleDiff < 110 && angleDiff > 70
-				&& Math.abs(
-						rect1.center.x - rect2.center.x) < (rect1.size.height + rect2.size.height)
-				&& Math.abs(
-						rect1.center.y - rect2.center.y) < (rect1.size.height + rect2.size.height)
-								/ 2)
-			return true;
-		else
-			return false;
-	}
-
-	public void getMinAreaRects() {
-		rects = new RotatedRect[filterContoursOutput.size()];
-		for (int i = 0; i < filterContoursOutput.size(); i++) {
-			rects[i] = Imgproc.minAreaRect(new MatOfPoint2f(filterContoursOutput.get(i).toArray()));
-		}
-	}
-
-	class RectComparator implements Comparator<RotatedRect> {
-		public int compare(RotatedRect a, RotatedRect b) {
-			return (int) (a.center.x - b.center.x);
-		}
-	}
-
-	public void sortRectsByX() {
-		// assuming this is smallest to largest for now, check RectComparator to fix
-		Arrays.sort(rects, new RectComparator());
-	}
-
-	public double correct_angle(RotatedRect rect) {
-		// don't touch... voodoo math inside
-		double angle;
-		if (rect.size.width < rect.size.height) {
-			angle = -1 * (rect.angle - 90);
-		} else {
-			angle = rect.angle;
-		}
-
-		if (angle > 90) {
-			angle = -1 * (angle - 180);
-		}
-		// this is... I'm too lazy to reverse engineer this out of the code, but it's known to
-		// work
-		angle *= -1;
-
-		return angle;
-	}
-
-
 
 }
+
