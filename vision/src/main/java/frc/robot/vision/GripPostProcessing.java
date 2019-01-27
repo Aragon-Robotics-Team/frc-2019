@@ -19,6 +19,7 @@ public class GripPostProcessing implements VisionPipeline {
     public GripPostProcessing() {
         super();
         this.grip = new Grip();
+        Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 
     }
 
