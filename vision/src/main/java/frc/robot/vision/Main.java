@@ -197,5 +197,7 @@ public final class Main {
 	public static void pipelineProcess(Grip pipeline) {
 		AugmentCam.putFrame(pipeline.AugmentCamOutput);
 		System.out.println(pipeline.filterContoursOutput());
+
+		ByteArrayOutput.byteArrayOutput(pipeline);
 	}
 }
