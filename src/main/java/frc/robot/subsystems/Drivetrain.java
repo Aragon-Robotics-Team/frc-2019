@@ -49,9 +49,15 @@ public class Drivetrain extends Subsystem {
     }
 
     public void controlArcade(double x, double y) {
-        // differentialDrive.arcadeDrive(x*speedModifer, y*speedModifer, false);
-        // differentialDrive.arca
-        // System.out.println("Control: " + x + " " + y);
+        // Implementation stolen from DifferentialDrive.class WPILib
+
+        double maxInput = Math.copySign(Math.max(Math.abs(x), Math.abs(y)), x);
+
+        if (x * y >= 0.0) { // If both sign are the same
+            control(maxInput, x - y);
+        } else {
+            control(x + y, maxInput);
+        }
     }
 
     public void goForward(double x) {
