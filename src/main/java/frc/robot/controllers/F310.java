@@ -50,7 +50,8 @@ public class F310 implements OI {
 
 	public boolean getSlowMode() {
 		return false;
-	
+	}
+
 	public double getAngle() {
 		return Math.toDegrees(Math.atan2(getLeftRotation(), getLeftSpeed()));
 	}

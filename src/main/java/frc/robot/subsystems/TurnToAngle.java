@@ -16,7 +16,7 @@ public class TurnToAngle extends Subsystem implements PIDOutput {
     static final double kI = 0.0022;
     static final double kD = 0.15;
     static final double kF = 0.5;
-    
+
     static final double kToleranceDegrees = 5.0f;
 
     PIDController turnController;
@@ -36,7 +36,7 @@ public class TurnToAngle extends Subsystem implements PIDOutput {
         SmartDashboard.putNumber("Set Angle", currentAngle);
         SmartDashboard.putNumber("NavX Angle", Robot.myNavX.ahrs.getYaw());
         SmartDashboard.putNumber("Diff Angle", (Robot.myNavX.ahrs.getYaw() - currentAngle + 180) % 360 - 180);
-      
+        SmartDashboard.putNumber("PID Out", pidOut);
         SmartDashboard.putBoolean("NavX Enable", Robot.myNavX.isRunning());
 
         if (Robot.myNavX.isRunning() && enabled) {// && !turnController.onTarget()) {
