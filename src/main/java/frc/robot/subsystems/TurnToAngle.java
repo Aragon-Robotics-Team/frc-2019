@@ -35,7 +35,8 @@ public class TurnToAngle extends Subsystem implements PIDOutput {
     public void periodic() {
         SmartDashboard.putNumber("Set Angle", currentAngle);
         SmartDashboard.putNumber("NavX Angle", Robot.myNavX.ahrs.getYaw());
-        SmartDashboard.putNumber("Diff Angle", (Robot.myNavX.ahrs.getYaw() - currentAngle + 180) % 360 - 180);
+        SmartDashboard.putNumber("Diff Angle",
+                (Robot.myNavX.ahrs.getYaw() - currentAngle + 180) % 360 - 180);
         SmartDashboard.putNumber("PID Out", pidOut);
         SmartDashboard.putBoolean("NavX Enable", Robot.myNavX.isRunning());
 
@@ -49,6 +50,11 @@ public class TurnToAngle extends Subsystem implements PIDOutput {
     public void setAngle(double angle) {
         currentAngle = angle;
         turnController.setSetpoint(angle);
+    }
+
+    public void disableAndReset() {
+        enabled = false;
+        reset();
     }
 
     public void reset() {

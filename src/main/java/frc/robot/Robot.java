@@ -9,6 +9,7 @@ import frc.robot.commands.Teleop.*;
 import frc.robot.commands.*;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.NavX;
+import frc.robot.subsystems.TurnToAngle;
 import frc.robot.controllers.*;
 
 public class Robot extends TimedRobot {
@@ -17,6 +18,7 @@ public class Robot extends TimedRobot {
 	// Create subsystem instances here with public static Type var = new Type();
 	public static Drivetrain myDrivetrain = new Drivetrain();
 	public static NavX myNavX = new NavX();
+	public static TurnToAngle myAngle = new TurnToAngle();
 
 	// Ran once when Game starts
 	@Override
@@ -39,6 +41,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void disabledInit() {
+		myAngle.disableAndReset();
 	}
 
 	@Override
