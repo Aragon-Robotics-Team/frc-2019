@@ -18,14 +18,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import edu.wpi.cscore.CvSource;
-import edu.wpi.cscore.MjpegServer;
-import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.VideoSource;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.vision.VisionThread;
-import org.opencv.core.Mat;
+import edu.wpi.first.vision.*;
 
 public final class Main {
 	private static String configFile = "/boot/frc.json";
@@ -35,14 +31,14 @@ public final class Main {
 		public String name;
 		public String path;
 		public JsonObject config;
-		public JsonElement streamConfig;
 	}
 
 	public static int team;
 	public static boolean server;
-	public static List<CameraConfig> cameraConfigs = new ArrayList<>();
+	public static List<CameraConfig> cameras = new ArrayList<>();
 
-	public static CvSource AugmentCam;
+	private static VisionThread visionThread;
+	private static final Object imgLock = new Object();
 
 	private Main() {
 	}
@@ -76,12 +72,9 @@ public final class Main {
 		}
 		cam.path = pathElement.getAsString();
 
-		// stream properties
-		cam.streamConfig = config.get("stream");
-
 		cam.config = config;
 
-		cameraConfigs.add(cam);
+		cameras.add(cam);
 		return true;
 	}
 
@@ -145,25 +138,17 @@ public final class Main {
 	/**
 	 * Start running the camera.
 	 */
-	public static VideoSource startCamera(CameraConfig config) {
+	public static void startCamera(CameraConfig config) {
 		System.out.println("Starting camera '" + config.name + "' on " + config.path);
-		CameraServer inst = CameraServer.getInstance();
-		UsbCamera camera = new UsbCamera(config.name, config.path);
-		// MjpegServer server = inst.startAutomaticCapture(camera);
-
-		// setup a cvSource where you can put furames and it should just work
-		AugmentCam = inst.putVideo("Augmented", 320, 240);
+		VideoSource camera =
+				CameraServer.getInstance().startAutomaticCapture(config.name, config.path);
 
 		Gson gson = new GsonBuilder().create();
 
 		camera.setConfigJson(gson.toJson(config.config));
-		camera.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen);
 
-		if (config.streamConfig != null) {
-			// server.setConfigJson(gson.toJson(config.streamConfig));
-		}
+		visionThread = new VisionThread(camera, new Grip(), Main::pipelineProcess);
 
-		return camera;
 	}
 
 	/**
@@ -190,26 +175,8 @@ public final class Main {
 		}
 
 		// start cameras
-		List<VideoSource> cameras = new ArrayList<>();
-		for (CameraConfig cameraConfig : cameraConfigs) {
-			cameras.add(startCamera(cameraConfig));
-		}
-
-		// start image processing on camera 0 if present
-		if (cameras.size() >= 1) {
-			VisionThread visionThread =
-					new VisionThread(cameras.get(0), new GripPostProcessing(), pipeline -> {
-						// do something with pipeline results
-						System.out.println("start callback pipeline");
-						AugmentCam.putFrame(pipeline.AugmentCamOutput);
-						// System.out.println(pipeline.grip.filterContoursOutput());
-					});
-			/*
-			 * something like this for GRIP: VisionThread visionThread = new
-			 * VisionThread(cameras.get(0), new GripPipeline(), pipeline -> { ... });
-			 */
-			System.out.println("start visionthread");
-			visionThread.start();
+		for (CameraConfig camera : cameras) {
+			startCamera(camera);
 		}
 
 		// loop forever
@@ -220,5 +187,9 @@ public final class Main {
 				return;
 			}
 		}
+	}
+
+	public static void pipelineProcess(Grip pipeline) {
+		System.out.println(pipeline.filterContoursOutput());
 	}
 }

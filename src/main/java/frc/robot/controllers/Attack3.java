@@ -2,7 +2,9 @@ package frc.robot.controllers;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.Teleop.*;
+import frc.robot.commands.TestNavX;
 
 public class Attack3 implements OI {
 	Joystick mainJoystick;
@@ -10,6 +12,10 @@ public class Attack3 implements OI {
 	Button slowModeButton;
 	Button b4;
 	Button b5;
+	Button b3;
+	Button b2;
+	Button b10;
+	Button b7;
 
 	// button.whenPressed(new ExampleCommand());
 
@@ -24,8 +30,22 @@ public class Attack3 implements OI {
 		b4 = new JoystickButton(mainJoystick, 4);
 		b5 = new JoystickButton(mainJoystick, 5);
 
+		b3 = new JoystickButton(mainJoystick, 3);
+		b2 = new JoystickButton(mainJoystick, 2);
+
+		b10 = new JoystickButton(mainJoystick, 10);
+		b7 = new JoystickButton(mainJoystick, 7);
+
+		b4.whenPressed(new SetAngle(-90));
+		b5.whenPressed(new SetAngle(90));
+		b3.whenPressed(new SetAngle(0));
+		b2.whenPressed(new SetAngle(179.99));
+		b10.whenPressed(new ResetAngle());
+		b7.whenPressed(new ControlAngle());
+
 		// b4.whenPressed(new ControlArcadeDrivetrain());
 		// b5.whenPressed(new ControlOneAxisDrivetrain(0.9));
+		b4.whenPressed(new TestNavX());
 	}
 
 	public double getLeftSpeed() {
@@ -44,5 +64,11 @@ public class Attack3 implements OI {
 
 	public boolean getSlowMode() {
 		return slowModeButton.get();
+	}
+
+	public double getAngle() {
+		double angle = Math.toDegrees(Math.atan2(getLeftRotation(), getLeftSpeed()));
+		SmartDashboard.putNumber("Angle", angle);
+		return angle;
 	}
 }
