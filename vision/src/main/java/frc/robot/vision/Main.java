@@ -44,8 +44,6 @@ public final class Main {
 
 	public static CvSource AugmentCam;
 
-	public static CvSource AugmentCam;
-
 	private Main() {
 	}
 
@@ -222,7 +220,7 @@ public final class Main {
 				return;
 			}
 		}
-	}<<<<<<<HEAD
+	}
 
 	public static void pipelineProcess(Grip pipeline) {
 		AugmentCam.putFrame(pipeline.AugmentCamOutput);
