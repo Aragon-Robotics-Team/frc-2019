@@ -29,4 +29,19 @@ public class Pneumatics extends Subsystem {
         System.out.println(on);
         sol0.set(on);
     }
+
+    public boolean compressorStatus() {
+        boolean enabled = compressor.enabled();
+        return enabled;
+    }
+
+    public double compressorCurrent() {
+        double current = compressor.getCompressorCurrent();
+        return current;
+    }
+
+    public boolean pressureSwitchStatus() {
+        boolean pressureSwitch = compressor.getPressureSwitchValue();
+        return pressureSwitch;
+    }
 }
