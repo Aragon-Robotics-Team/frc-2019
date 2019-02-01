@@ -25,8 +25,6 @@ public class Drivetrain extends Subsystem {
     double rDistance;
 
     public Drivetrain() {
-
-
         LeftWheels = new BetterTalonSRX(RobotMap.LeftWheelsCan);
         RightWheels = new BetterTalonSRX(RobotMap.RightWheelsCan);
         LeftWheels.setInverted(false);
@@ -58,17 +56,25 @@ public class Drivetrain extends Subsystem {
         SmartDashboard.putNumber("Y", y);
     }
 
-    public void controlArcade(double x, double y) {
+    public void controlArcade(double x, double y) { // x is up/down; y is right/left
         // differentialDrive.arcadeDrive(x, y, false);
+        double rp = 0;
+        double lp = 0;
+        rp += x;
+        lp += x;
+        rp -= y;
+        lp += y;
+        control(lp, rp);
+
         // Implementation stolen from DifferentialDrive.class WPILib
 
-        double maxInput = Math.copySign(Math.max(Math.abs(x), Math.abs(y)), x);
+        // double maxInput = Math.copySign(Math.max(Math.abs(x), Math.abs(y)), x);
 
-        if (x * y >= 0.0) { // If both sign are the same
-            control(maxInput, x - y);
-        } else {
-            control(x + y, maxInput);
-        }
+        // if (x * y >= 0.0) { // If both sign are the same
+        // control(maxInput, x - y);
+        // } else {
+        // control(x + y, maxInput);
+        // }
     }
 
     public void goForward(double x) {
