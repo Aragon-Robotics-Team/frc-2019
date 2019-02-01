@@ -15,9 +15,9 @@ import frc.robot.RobotMap;
 public class Drivetrain extends Subsystem {
     static double speedModifer = -1.0;
 
-    TalonSRX LeftWheels;
-    TalonSRX RightWheels;
-    DifferentialDrive differentialDrive;
+    BetterTalonSRX LeftWheels;
+    BetterTalonSRX RightWheels;
+    // DifferentialDrive differentialDrive;
     Encoder leftEncoder;
     Encoder rightEncoder;
 
@@ -27,17 +27,13 @@ public class Drivetrain extends Subsystem {
     public Drivetrain() {
 
 
-        LeftWheels = new TalonSRX(10);
-        RightWheels = new TalonSRX(11);
+        LeftWheels = new BetterTalonSRX(RobotMap.LeftWheelsCan);
+        RightWheels = new BetterTalonSRX(RobotMap.RightWheelsCan);
         LeftWheels.setInverted(false);
         RightWheels.setInverted(true);
-        WPI_TalonSRX l = new WPI_TalonSRX(RobotMap.LeftWheelsCan);
-        WPI_TalonSRX r = new WPI_TalonSRX(RobotMap.RightWheelsCan);
 
-        r.setInverted(false);
-
-        differentialDrive = new DifferentialDrive(l, r);
-        Shuffleboard.getTab("a").add(differentialDrive);
+        // differentialDrive = new DifferentialDrive(LeftWheels, RightWheels);
+        // Shuffleboard.getTab("a").add(differentialDrive);
 
         leftEncoder = new Encoder(1, 2, false, Encoder.EncodingType.k4X);
         leftEncoder.setDistancePerPulse(3.0 / 1024.0);
@@ -55,24 +51,24 @@ public class Drivetrain extends Subsystem {
     }
 
     public void control(double x, double y) {
-        // LeftWheels.set(ControlMode.PercentOutput, x * 0.5);
-        // RightWheels.set(ControlMode.PercentOutput, y * 0.5);
+        LeftWheels.set(x);
+        RightWheels.set(y);
         // // System.out.println("Control: " + x + " " + y);
         SmartDashboard.putNumber("X", x);
         SmartDashboard.putNumber("Y", y);
     }
 
     public void controlArcade(double x, double y) {
-        differentialDrive.arcadeDrive(x, y, false);
-        // // Implementation stolen from DifferentialDrive.class WPILib
+        // differentialDrive.arcadeDrive(x, y, false);
+        // Implementation stolen from DifferentialDrive.class WPILib
 
-        // double maxInput = Math.copySign(Math.max(Math.abs(x), Math.abs(y)), x);
+        double maxInput = Math.copySign(Math.max(Math.abs(x), Math.abs(y)), x);
 
-        // if (x * y >= 0.0) { // If both sign are the same
-        // control(maxInput, x - y);
-        // } else {
-        // control(x + y, maxInput);
-        // }
+        if (x * y >= 0.0) { // If both sign are the same
+            control(maxInput, x - y);
+        } else {
+            control(x + y, maxInput);
+        }
     }
 
     public void goForward(double x) {

@@ -7,5 +7,6 @@ public class TeleopGroup extends CommandGroup {
     public TeleopGroup() {
         // addSequential(new ControlDrivetrain());
         // addSequential(new ControlAngle());
+        addSequential(new ControlArcadeDrivetrain());
     }
 }

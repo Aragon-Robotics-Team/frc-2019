@@ -147,7 +147,7 @@ public final class Main {
 
 		camera.setConfigJson(gson.toJson(config.config));
 
-		visionThread = new VisionThread(camera, new Grip(), Main::pipelineProcess);
+		visionThread = new VisionThread(camera, new GripPostProcessing(), Main::pipelineProcess);
 
 	}
 
@@ -189,7 +189,7 @@ public final class Main {
 		}
 	}
 
-	public static void pipelineProcess(Grip pipeline) {
-		System.out.println(pipeline.filterContoursOutput());
+	public static void pipelineProcess(GripPostProcessing pipeline) {
+		// System.out.println(pipeline.filterContoursOutput());
 	}
 }

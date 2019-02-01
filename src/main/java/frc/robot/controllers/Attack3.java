@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.Teleop.*;
+import frc.robot.util.Deadband;
 import frc.robot.commands.TestNavX;
 
 public class Attack3 implements OI {
@@ -16,6 +17,8 @@ public class Attack3 implements OI {
 	Button b2;
 	Button b10;
 	Button b7;
+
+	static Deadband deadband = new Deadband(0, 0.1);
 
 	// button.whenPressed(new ExampleCommand());
 
@@ -50,16 +53,16 @@ public class Attack3 implements OI {
 
 	public double getLeftSpeed() {
 		// System.out.println("left" + mainJoystick.getRawAxis(1));
-		return -1.0 * mainJoystick.getRawAxis(1);
+		return -1.0 * deadband.calc(mainJoystick.getRawAxis(1));
 	}
 
 	public double getLeftRotation() {
 		// System.out.println("rotate" + mainJoystick.getRawAxis(0));
-		return mainJoystick.getRawAxis(0);
+		return deadband.calc(mainJoystick.getRawAxis(0));
 	}
 
 	public double getRightSpeed() {
-		return getLeftSpeed();
+		return deadband.calc(getLeftSpeed());
 	}
 
 	public boolean getSlowMode() {
