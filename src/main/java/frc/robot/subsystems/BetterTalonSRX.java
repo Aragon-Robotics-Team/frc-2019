@@ -8,9 +8,17 @@ import frc.robot.util.Deadband;
 public class BetterTalonSRX extends TalonSRX implements SpeedController {
     double speed;
     static Deadband deadband = new Deadband(0.125, 0); // Warning: 0 deadband!;
+    public static final int timeout = 30; // milliseconds
+
+    public BetterTalonSRX(int deviceNumber, boolean invert) {
+        super(deviceNumber);
+        configFactoryDefault(timeout);
+        setInverted(invert);
+        configOpenloopRamp(2);
+    }
 
     public BetterTalonSRX(int deviceNumber) {
-        super(deviceNumber);
+        this(deviceNumber, false);
     }
 
     public void set(double output) {

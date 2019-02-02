@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.*;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.*;
 import edu.wpi.first.cameraserver.CameraServer;
 import frc.robot.commands.Autonomous.*;
@@ -28,6 +29,7 @@ public class Robot extends TimedRobot {
 
 		System.out.println("init");
 		// CameraServer.getInstance().startAutomaticCapture();
+		Shuffleboard.getTab("Drive").add(new SetOpenloopRamp());
 	}
 
 	@Override
