@@ -21,6 +21,8 @@ public class Drivetrain extends Subsystem {
     double lDistance;
     double rDistance;
 
+    double qsAccumulator;
+
     public Drivetrain() {
         LeftWheels = new TalonSRX(RobotMap.LeftWheelsCan);
         RightWheels = new TalonSRX(RobotMap.RightWheelsCan);
@@ -58,6 +60,64 @@ public class Drivetrain extends Subsystem {
         } else {
             control(x + y, maxInput);
         }
+    }
+
+    public void controlCheezy(double x, double y, boolean quickTurn) {
+        // Implementation stolen from DifferentialDrive.class WPILib
+
+        final double qsThreshold = 0.2;
+        final double qsAlpha = 0.1;
+
+        double turn;
+        boolean overPower;
+
+        if (quickTurn) {
+            if (Math.abs(x) < qsThreshold) {
+                qsAccumulator = (1 - qsAlpha) * qsAccumulator + qsAlpha * y * 2;
+            }
+            overPower = true;
+            turn = y;
+        } else {
+            overPower = false;
+            turn = Math.abs(x) * y - qsAccumulator;
+
+            if (qsAccumulator > 1) {
+                qsAccumulator -= 1;
+            } else if (qsAccumulator < -1) {
+                qsAccumulator += 1;
+            } else {
+                qsAccumulator = 0.0;
+            }
+        }
+
+        double left = x + turn;
+        double right = x - turn;
+
+        // If rotation is overpowered, reduce both outputs to within acceptable range
+        if (overPower) {
+            if (left > 1.0) {
+                right -= left - 1.0;
+                left = 1.0;
+            } else if (right > 1.0) {
+                left -= right - 1.0;
+                right = 1.0;
+            } else if (left < -1.0) {
+                right -= left + 1.0;
+                left = -1.0;
+            } else if (right < -1.0) {
+                left -= right + 1.0;
+                right = -1.0;
+            }
+        }
+
+        // Normalize the wheel speeds
+        double maxMagnitude = Math.max(Math.abs(left), Math.abs(right));
+        if (maxMagnitude > 1.0) {
+            left /= maxMagnitude;
+            right /= maxMagnitude;
+        }
+
+        control(left, right);
     }
 
     public void goForward(double x) {
