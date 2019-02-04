@@ -8,6 +8,7 @@ import frc.robot.commands.Autonomous.*;
 import frc.robot.commands.Teleop.*;
 import frc.robot.commands.*;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Vacuum;
 import frc.robot.controllers.*;
 
 public class Robot extends TimedRobot {
@@ -15,6 +16,7 @@ public class Robot extends TimedRobot {
 
 	// Create subsystem instances here with public static Type var = new Type();
 	public static Drivetrain myDrivetrain = new Drivetrain();
+	public static Vacuum myVacuum = new Vacuum();
 
 	// Ran once when Game starts
 	@Override
