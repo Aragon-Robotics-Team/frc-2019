@@ -3,21 +3,17 @@ package frc.robot.vision;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.HashMap;
-import edu.wpi.first.vision.VisionPipeline;
 import org.opencv.core.*;
 import org.opencv.core.Core.*;
 import org.opencv.features2d.FeatureDetector;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.*;
 import org.opencv.objdetect.*;
-import frc.robot.vision.GripInterface;
 
 /**
  * Grip class.
@@ -31,17 +27,11 @@ public class Grip implements GripInterface {
 
 	// Outputs
 	private Mat hslThresholdOutput = new Mat();
-	private Mat rgbThresholdOutput = new Mat();
-	private Mat cvAddOutput = new Mat();
 	private Mat cvDilate0Output = new Mat();
 	private Mat cvErodeOutput = new Mat();
 	private Mat cvDilate1Output = new Mat();
 	private ArrayList<MatOfPoint> findContoursOutput = new ArrayList<MatOfPoint>();
 	private ArrayList<MatOfPoint> filterContoursOutput = new ArrayList<MatOfPoint>();
-	private RotatedRect[] rects;
-	private ArrayList<VisionTarget> visionTargets = new ArrayList<VisionTarget>();
-
-
 
 	static {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
@@ -50,7 +40,6 @@ public class Grip implements GripInterface {
 	/**
 	 * This is the primary method that runs the entire pipeline and updates the outputs.
 	 */
-	@Override
 	public void process(Mat source0) {
 		// Step HSL_Threshold0:
 		Mat hslThresholdInput = source0;
@@ -60,21 +49,8 @@ public class Grip implements GripInterface {
 		hslThreshold(hslThresholdInput, hslThresholdHue, hslThresholdSaturation,
 				hslThresholdLuminance, hslThresholdOutput);
 
-		// Step RGB_Threshold0:
-		Mat rgbThresholdInput = source0;
-		double[] rgbThresholdRed = {0.0, 45.909095243974164};
-		double[] rgbThresholdGreen = {168.07909604519773, 255.0};
-		double[] rgbThresholdBlue = {0.0, 255.0};
-		rgbThreshold(rgbThresholdInput, rgbThresholdRed, rgbThresholdGreen, rgbThresholdBlue,
-				rgbThresholdOutput);
-
-		// Step CV_add0:
-		Mat cvAddSrc1 = hslThresholdOutput;
-		Mat cvAddSrc2 = rgbThresholdOutput;
-		cvAdd(cvAddSrc1, cvAddSrc2, cvAddOutput);
-
 		// Step CV_dilate0:
-		Mat cvDilate0Src = cvAddOutput;
+		Mat cvDilate0Src = hslThresholdOutput;
 		Mat cvDilate0Kernel = new Mat();
 		Point cvDilate0Anchor = new Point(-1, -1);
 		double cvDilate0Iterations = 1.0;
@@ -127,28 +103,24 @@ public class Grip implements GripInterface {
 				filterContoursMinVertices, filterContoursMinRatio, filterContoursMaxRatio,
 				filterContoursOutput);
 
-		// step Find_targets I guess?
-		getVisionTargets();
-
-		// step draw contours
-		for (int i = 0; i < filterContoursOutput.size(); i++) {
-			Imgproc.drawContours(AugmentCamOutput, filterContoursOutput, i,
-					new Scalar(255, 255, 255), -1);
-		}
-		// step draw rectangles around visiontargets
-		for (int i = 0; i < visionTargets.size(); i++) {
-			Imgproc.rectangle(AugmentCamOutput, visionTargets.get(i).bounding.tl(),
-					visionTargets.get(i).bounding.br(), new Scalar(120, 255, 120));
-		}
 	}
 
 	/**
-	 * This method is a generated getter for the output of a RGB_Threshold.
+	 * This method is a generated getter for the output of a HSL_Threshold.
 	 * 
-	 * @return Mat output from RGB_Threshold.
+	 * @return Mat output from HSL_Threshold.
 	 */
-	public Mat rgbThresholdOutput() {
-		return rgbThresholdOutput;
+	public Mat hslThresholdOutput() {
+		return hslThresholdOutput;
+	}
+
+	/**
+	 * This method is a generated getter for the output of a CV_dilate.
+	 * 
+	 * @return Mat output from CV_dilate.
+	 */
+	public Mat cvDilate0Output() {
+		return cvDilate0Output;
 	}
 
 	/**
@@ -201,32 +173,6 @@ public class Grip implements GripInterface {
 		Imgproc.cvtColor(input, out, Imgproc.COLOR_BGR2HLS);
 		Core.inRange(out, new Scalar(hue[0], lum[0], sat[0]), new Scalar(hue[1], lum[1], sat[1]),
 				out);
-	}
-
-	/**
-	 * Segment an image based on color ranges.
-	 * 
-	 * @param input  The image on which to perform the RGB threshold.
-	 * @param red    The min and max red.
-	 * @param green  The min and max green.
-	 * @param blue   The min and max blue.
-	 * @param output The image in which to store the output.
-	 */
-	private void rgbThreshold(Mat input, double[] red, double[] green, double[] blue, Mat out) {
-		Imgproc.cvtColor(input, out, Imgproc.COLOR_BGR2RGB);
-		Core.inRange(out, new Scalar(red[0], green[0], blue[0]),
-				new Scalar(red[1], green[1], blue[1]), out);
-	}
-
-	/**
-	 * Calculates the sum of two Mats.
-	 * 
-	 * @param src1 the first Mat
-	 * @param src2 the second Mat
-	 * @param out  the Mat that is the sum of the two Mats
-	 */
-	private void cvAdd(Mat src1, Mat src2, Mat out) {
-		Core.add(src1, src2, out);
 	}
 
 	/**
@@ -355,86 +301,6 @@ public class Grip implements GripInterface {
 				continue;
 			output.add(contour);
 		}
-	}
-
-
-	class VisionTarget implements Serializable {
-		public double x;
-		public double y;
-		public Rect bounding;
-
-		public VisionTarget(RotatedRect r1, RotatedRect r2) {
-			// shit.. well:
-			// r1 is implied to be the left rectangle
-			// r2 is the right rectangle
-			this.x = (r1.center.x + r2.center.x) / 2;
-			this.y = (r1.center.y + r2.center.y) / 2;
-			this.bounding = new Rect(r1.boundingRect().tl(), r2.boundingRect().br());
-		}
-	}
-
-	public void getVisionTargets() {
-		getMinAreaRects(); // fills rects array using contours
-
-		sortRectsByX(); // in-place. This is to identify pairs. not the perfect solution
-		for (int i = 0; i < rects.length - 1; i++) {
-			if (isTarget(rects[i], rects[i + 1])) {
-				visionTargets.add(new VisionTarget(rects[i], rects[i + 1]));
-			}
-		}
-
-
-
-	}
-
-	public boolean isTarget(RotatedRect rect1, RotatedRect rect2) {
-		double angleDiff = Math.abs(correct_angle(rect1) - correct_angle(rect2));
-		if (angleDiff < 110 && angleDiff > 70
-				&& Math.abs(
-						rect1.center.x - rect2.center.x) < (rect1.size.height + rect2.size.height)
-				&& Math.abs(
-						rect1.center.y - rect2.center.y) < (rect1.size.height + rect2.size.height)
-								/ 2)
-			return true;
-		else
-			return false;
-	}
-
-	public void getMinAreaRects() {
-		rects = new RotatedRect[filterContoursOutput.size()];
-		for (int i = 0; i < filterContoursOutput.size(); i++) {
-			rects[i] = Imgproc.minAreaRect(new MatOfPoint2f(filterContoursOutput.get(i).toArray()));
-		}
-	}
-
-	class RectComparator implements Comparator<RotatedRect> {
-		public int compare(RotatedRect a, RotatedRect b) {
-			return (int) (a.center.x - b.center.x);
-		}
-	}
-
-	public void sortRectsByX() {
-		// assuming this is smallest to largest for now, check RectComparator to fix
-		Arrays.sort(rects, new RectComparator());
-	}
-
-	public double correct_angle(RotatedRect rect) {
-		// don't touch... voodoo math inside
-		double angle;
-		if (rect.size.width < rect.size.height) {
-			angle = -1 * (rect.angle - 90);
-		} else {
-			angle = rect.angle;
-		}
-
-		if (angle > 90) {
-			angle = -1 * (angle - 180);
-		}
-		// this is... I'm too lazy to reverse engineer this out of the code, but it's known to
-		// work
-		angle *= -1;
-
-		return angle;
 	}
 
 
