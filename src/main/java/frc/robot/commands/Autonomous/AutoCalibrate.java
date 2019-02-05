@@ -20,12 +20,14 @@ public class AutoCalibrate extends Command implements PIDOutput {
     public final int failThreshold = 3; // how many amplitudes to consider for failed P-value
     public final int succeedThreshold = 10; // how many amplitudes to consider for successful
                                             // P-value
-    public final int failAvgRatio = .05 // fails if greater than x% gain/loss ratio
+    public final double failAvgRatio = .05; // fails if greater than x% gain/loss ratio
 
     public int stage = 0; // 0 = tuning P to steady oscillations
     public double p = 0.02;
     public double i = 0;
     public double d = 0;
+
+    public double 
 
     public double rotCounter = 0;
     public double period;
@@ -73,8 +75,10 @@ public class AutoCalibrate extends Command implements PIDOutput {
                 if (isExtreme(lastDatapoint, dp)) {
                     addAmplitude(lastPeak, lastDatapoint);
                 }
-                if (amplitudes.size() > failThreshold) {
+                if (amplitudes.size() > failThreshold) {    
+                    if(isFailedP(amplitudes, failThreshold, failAvgRatio)){
 
+                    }
                 }
                 break;
         }
@@ -141,17 +145,17 @@ public class AutoCalibrate extends Command implements PIDOutput {
         return 0.0;
     }
 
-    public boolean isFailedP() {
+    public int isFailedP(ArrayList<Double> amplitudes, int failThreshold, double failAvgRatio) {
         int size = amplitudes.size();
         double sum = 0;
         for (int i = 0; i < (size - failThreshold) - 1; i++) {
             sum += amplitudes.get(i) / amplitudes.get(i + 1);
         }
         sum /= (size - 1);
-        if (sum > 1 + failAvgRatio || sum < 1 - failAvgRatio) {
-            return true;
+        if (sum > 1 + failAvgRatio ) {
+            return 1;
         }
-        return false;
+        return 0;
     }
 
     public boolean isFinished() {
