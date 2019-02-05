@@ -143,39 +143,12 @@ public class Grip implements GripInterface {
 	}
 
 	/**
-	 * This method is a generated getter for the output of a HSL_Threshold.
-	 * 
-	 * @return Mat output from HSL_Threshold.
-	 */
-	public Mat hslThresholdOutput() {
-		return hslThresholdOutput;
-	}
-
-	/**
 	 * This method is a generated getter for the output of a RGB_Threshold.
 	 * 
 	 * @return Mat output from RGB_Threshold.
 	 */
 	public Mat rgbThresholdOutput() {
 		return rgbThresholdOutput;
-	}
-
-	/**
-	 * This method is a generated getter for the output of a CV_add.
-	 * 
-	 * @return Mat output from CV_add.
-	 */
-	public Mat cvAddOutput() {
-		return cvAddOutput;
-	}
-
-	/**
-	 * This method is a generated getter for the output of a CV_dilate.
-	 * 
-	 * @return Mat output from CV_dilate.
-	 */
-	public Mat cvDilate0Output() {
-		return cvDilate0Output;
 	}
 
 	/**
