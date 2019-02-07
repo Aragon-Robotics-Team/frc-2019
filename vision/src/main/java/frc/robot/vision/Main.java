@@ -227,5 +227,5 @@ public final class Main {
 		ByteArrayOutput.byteArrayOutput(pipeline);
 		AugmentCam.putFrame(pipeline.AugmentCamOutput);
 
-	}=======>>>>>>>targetIdentification
+	}
 }
