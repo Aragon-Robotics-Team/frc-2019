@@ -19,7 +19,7 @@ public class AutoCalibrate extends Command implements PIDOutput {
 
     // hyperparameters - stage1
     public final int fail_threshold = 3; // how many amplitudes to consider for failed P-value
-    public final int succeed_threshold = 4; // how many successive fail-checks to pass until success
+    public final int succeed_threshold = 7; // how many successive fail-checks to pass until success
                                             // a check is made each new amplitude, so 4-3
     public final double fail_avg_ratio = .05; // fails if greater than x% gain/loss ratio
 
@@ -31,63 +31,84 @@ public class AutoCalibrate extends Command implements PIDOutput {
     public double pidOut;
 
     // control flow variables
-    public int stage = 0; // 0 = reset and init, 1 = testing p-value
-    public double pmax = p;
-    public double pmin = p;
-    public double failchecks = 0;
+    public int stage = -1; // 0 = reset and init, 1 = testing p-value
+    public double pmax;
+    public double pmin;
+    public double failchecks;
 
-    // Data Storage variables    
+    // Data Storage variables
     public Timer timer;
     public double period;
-    public double error;
-    public double target = 0;
-    public ArrayList<Double> datapoints = new ArrayList<Double>();
-    public ArrayList<Double> amplitudes = new ArrayList<Double>();
+    public ArrayList<Double> datapoints;
+    public ArrayList<Double> amplitudes;
+    public ArrayList<Double> halfPeriods;
     public double lastDatapoint;
-    public double lastPeak = test_offset;
-
-
-
+    public double lastPeak;
+    public double lastPeakTime;
     public int lastPeakType = -1; // -1 = valley/-angle peak, 1 = peak/+angle peak
 
-    public AutoCalibrate(double target) {
+    // resulting constants
+    public double kp, ki, kd, ku, tu;
+
+    public AutoCalibrate() {
         requires(Robot.myNavX);
         requires(Robot.myDrivetrain);
-        this.target = target;
     }
 
     protected void initialize() {
+        stage = -1;
         amplitudes.add(lastPeak);
         timer.start();
         Robot.myNavX.ahrs.zeroYaw();
         // 0/360
         pidC = new PIDController(p, i, d, Robot.myNavX.ahrs, this);
-        pidC.setSetpoint(target);
+        pidC.setSetpoint(test_offset);
         pidC.setInputRange(-180.0f, 180.0f);
-        pidC.setOutputRange(-5.0, 5.0);
+        pidC.setOutputRange(-1.0, 1.0);
         pidC.setContinuous(true);
         pidC.disable();
-        pidC.enable();
     }
 
     protected void execute() {
         double dp = getAngle(); // datapoint
         switch (stage) {
             case -1:
-                // stop robot
-                timer.reset();
-                pidC = new PIDController(0, 0, 0, Robot.myNavX.ahrs, this);
+                // stop/reset robot
+                pidC.disable();
+                pidC.reset();
+                pidC.setPID(p, i, d);
+                Robot.myNavX.ahrs.zeroYaw();
+                System.out.println("stopping and reseting robot");
+                System.out.println("P: " + p + "\nI: " + i + "\nD: " + d);
+
+                // control flow vars
                 stage = 0;
+                pmax = p;
+                pmin = p;
+                failchecks = 0;
+
+                // data storage vars
+                timer.reset();
+                datapoints = new ArrayList<Double>();
+                amplitudes = new ArrayList<Double>();
+                halfPeriods = new ArrayList<Double>();
+                lastPeak = test_offset;
+                lastPeakType = -1;
+
                 break;
             case 0:
-                // reset robot to test new P value
-                if(timer.hasPeriodPassed(1000))
+                // wait out timer
+                if (timer.get() >= 2) {
+                    pidC.enable();
+                    lastPeakTime = timer.get();
+                    stage = 1;
+                }
                 break;
             case 1:
                 // monitor amplitudes
                 if (isExtreme(lastDatapoint, dp)) {
                     addAmplitude(lastPeak, lastDatapoint);
-
+                    addHalfPeriod(lastPeakTime, timer.get());
                     // use binary search to iterate towards optimal-P
                     if (amplitudes.size() > fail_threshold) {
                         int failstate = isFailedP(amplitudes, fail_threshold, fail_avg_ratio);
@@ -119,7 +140,16 @@ public class AutoCalibrate extends Command implements PIDOutput {
                                 failchecks++;
                                 if (failchecks == succeed_threshold) {
                                     stage = 2;
-                                    System.out.println("Ku (ultimate gain) = " + p);
+                                    ku = p;
+                                    tu = getAvgPeriod(halfPeriods);
+                                    kp = getFinalP(ku);
+                                    ki = getFinalI(ku, tu);
+                                    kd = getFinalD(ku, tu);
+                                    System.out.println("ku: " + ku);
+                                    System.out.println("tu: " + tu);
+                                    System.out.println("kp: " + kp);
+                                    System.out.println("ki: " + ki);
+                                    System.out.println("kd: " + kd);
                                 }
                         }
 
@@ -127,16 +157,16 @@ public class AutoCalibrate extends Command implements PIDOutput {
                 }
                 break;
 
+            case 2:
+                // should be be complete
+                break;
+
         }
         addDataPoint(dp);
     }
 
-    public void recordAngle() {
-
-    }
-
     public double getAngle() {
-        return (Robot.myNavX.ahrs.getYaw() + test_offset);
+        return (Robot.myNavX.ahrs.getYaw());
     }
 
     // public double getAngleUnlooped() {
@@ -160,6 +190,11 @@ public class AutoCalibrate extends Command implements PIDOutput {
     public void addAmplitude(double lastPeak, double currentPeak) {
         amplitudes.add(Math.abs(lastPeak - currentPeak) / 2);
         lastPeak = currentPeak;
+    }
+
+    public void addHalfPeriod(double lastPeakTime, double currentPeakTime) {
+        halfPeriods.add(currentPeakTime - lastPeakTime);
+        lastPeakTime = currentPeakTime;
     }
 
     public boolean isPeak(double lastDataPoint, double dp) {
@@ -187,10 +222,6 @@ public class AutoCalibrate extends Command implements PIDOutput {
         return isValley(lastDataPoint, dp);
     }
 
-    public double getLoss() {
-        return 0.0;
-    }
-
     public int isFailedP(ArrayList<Double> amplitudes, int fail_threshold, double fail_avg_ratio) {
         // 1 = amplitudes growing, -1 = shrinking amplitudes, 0 = stable amplitudes?
         int size = amplitudes.size();
@@ -207,9 +238,32 @@ public class AutoCalibrate extends Command implements PIDOutput {
         return 0;
     }
 
+    public double getAvgPeriod(ArrayList<Double> halfPeriods) {
+        double sum = 0;
+        for (Double val : halfPeriods) {
+            sum += val;
+        }
+        return sum * 2 / halfPeriods.size();
+    }
+
+    public double getFinalP(double ku) {
+        return 0.2 * ku;
+    }
+
+    public double getFinalI(double ku, double tu) {
+        return 0.4 * ku / tu;
+    }
+
+    public double getFinalD(double ku, double tu) {
+        return ku * tu / 15;
+    }
+
     public boolean isFinished() {
         // placeholder
-        return true;
+        if (stage == 2) {
+            return true;
+        }
+        return false;
     }
 
     public void pidWrite(double output) {
