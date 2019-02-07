@@ -54,7 +54,7 @@ public class Robot extends TimedRobot {
 	public void autonomousInit() {
 		System.out.println("auto");
 		myDrivetrain.resetDistance();
-		AutonomousGroup auto = new AutonomousGroup();
+		AutoCalibrate auto = new AutoCalibrate();
 		auto.start();
 		Robot.myNavX.zeroYaw();
 	}

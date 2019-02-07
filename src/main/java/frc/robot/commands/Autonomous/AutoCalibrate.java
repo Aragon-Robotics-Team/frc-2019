@@ -1,13 +1,17 @@
 package frc.robot.commands.Autonomous;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDOutput;
-import edu.wpi.first.wpilibj.PIDSource;
+import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.Robot;
 import java.util.ArrayList;
-import com.kauailabs.navx.frc.AHRS;
+import java.util.Map;
 
 public class AutoCalibrate extends Command implements PIDOutput {
     // calibrates PID constants.
@@ -50,18 +54,32 @@ public class AutoCalibrate extends Command implements PIDOutput {
     // resulting constants
     public double kp, ki, kd, ku, tu;
 
+    private ShuffleboardTab tab;
+    private NetworkTableEntry stageWidget;
+    private NetworkTableEntry pidOutWidget;
+
     public AutoCalibrate() {
         requires(Robot.myNavX);
         requires(Robot.myDrivetrain);
     }
 
     protected void initialize() {
+        tab = Shuffleboard.getTab("AutoCalibrate");
+        stageWidget = tab.add("Stage", stage).withWidget(BuiltInWidgets.kTextView).getEntry();
+        tab.add("NavX", (Sendable) Robot.myNavX.ahrs);
+        Map<String, Object> properties = Map.of("min", -1, "max", 1);
+        pidOutWidget = tab.add("PID Output", 0).withWidget(BuiltInWidgets.kDial)
+                .withProperties(properties).getEntry();
+
         stage = -1;
-        amplitudes.add(lastPeak);
+        System.out.println("Stage: -1");
+        timer = new Timer();
+        timer.reset();
         timer.start();
         Robot.myNavX.ahrs.zeroYaw();
         // 0/360
         pidC = new PIDController(p, i, d, Robot.myNavX.ahrs, this);
+        tab.add(pidC);
         pidC.setSetpoint(test_offset);
         pidC.setInputRange(-180.0f, 180.0f);
         pidC.setOutputRange(-1.0, 1.0);
@@ -83,6 +101,7 @@ public class AutoCalibrate extends Command implements PIDOutput {
 
                 // control flow vars
                 stage = 0;
+                System.out.println("Stage: 0");
                 pmax = p;
                 pmin = p;
                 failchecks = 0;
@@ -92,8 +111,11 @@ public class AutoCalibrate extends Command implements PIDOutput {
                 datapoints = new ArrayList<Double>();
                 amplitudes = new ArrayList<Double>();
                 halfPeriods = new ArrayList<Double>();
+                lastDatapoint = test_offset;
                 lastPeak = test_offset;
                 lastPeakType = -1;
+                datapoints.add(test_offset);
+                amplitudes.add(lastPeak);
 
                 break;
             case 0:
@@ -102,6 +124,7 @@ public class AutoCalibrate extends Command implements PIDOutput {
                     pidC.enable();
                     lastPeakTime = timer.get();
                     stage = 1;
+                    System.out.println("Stage: 1");
                 }
                 break;
             case 1:
@@ -124,6 +147,7 @@ public class AutoCalibrate extends Command implements PIDOutput {
                                     stage = -1; // reset and try new p-value
 
                                 }
+                                System.out.println("Stage: -1");
                                 break;
                             case -1:
                                 pmin = p;
@@ -135,11 +159,13 @@ public class AutoCalibrate extends Command implements PIDOutput {
                                     p = (pmin + pmax) / 2;
                                     stage = -1; // reset and try new p-value
                                 }
+                                System.out.println("Stage: -1");
                                 break;
                             case 0:
                                 failchecks++;
                                 if (failchecks == succeed_threshold) {
                                     stage = 2;
+                                    System.out.println("Stage: 2");
                                     ku = p;
                                     tu = getAvgPeriod(halfPeriods);
                                     kp = getFinalP(ku);
@@ -163,6 +189,7 @@ public class AutoCalibrate extends Command implements PIDOutput {
 
         }
         addDataPoint(dp);
+        stageWidget.setNumber(stage);
     }
 
     public double getAngle() {
@@ -269,7 +296,8 @@ public class AutoCalibrate extends Command implements PIDOutput {
     public void pidWrite(double output) {
         pidOut = output;
         Robot.myDrivetrain.controlArcade(0, output);
+        if (pidOutWidget != null) {
+            pidOutWidget.setNumber(output);
+        }
     }
 }
-
-
