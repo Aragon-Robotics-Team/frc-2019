@@ -8,4 +8,6 @@ public interface OI {
 	public double getRightSpeed();
 
 	public boolean getSlowMode();
+
+	public double getAngle();
 }
