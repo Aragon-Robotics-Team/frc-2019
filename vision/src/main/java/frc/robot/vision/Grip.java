@@ -24,7 +24,7 @@ import edu.wpi.first.vision.VisionPipeline;
  *
  * @author GRIP
  */
-public class Grip implements GripInterface {
+public class Grip implements VisionPipeline {
 
 	// Outputs
 	private Mat normalizeOutput = new Mat();

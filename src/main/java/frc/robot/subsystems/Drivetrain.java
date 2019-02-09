@@ -21,7 +21,7 @@ public class Drivetrain extends Subsystem {
 
     BetterTalonSRX LeftWheels;
     BetterTalonSRX RightWheels;
-    // DifferentialDrive differentialDrive;
+    DifferentialDrive differentialDrive;
     Encoder leftEncoder;
     Encoder rightEncoder;
 
@@ -33,9 +33,6 @@ public class Drivetrain extends Subsystem {
     public Drivetrain() {
         LeftWheels = new BetterTalonSRX(RobotMap.LeftWheelsCan, false);
         RightWheels = new BetterTalonSRX(RobotMap.RightWheelsCan, true);
-
-        // differentialDrive = new DifferentialDrive(LeftWheels, RightWheels);
-        // Shuffleboard.getTab("a").add(differentialDrive);
 
         leftEncoder = new Encoder(1, 2, false, Encoder.EncodingType.k4X);
         leftEncoder.setDistancePerPulse(3.0 / 1024.0);
@@ -59,9 +56,7 @@ public class Drivetrain extends Subsystem {
     public void control(double x, double y) {
         LeftWheels.set(x);
         RightWheels.set(y);
-        // // System.out.println("Control: " + x + " " + y);
-        SmartDashboard.putNumber("X", x);
-        SmartDashboard.putNumber("Y", y);
+        // System.out.println("Control: " + x + " " + y);
     }
 
     public void controlArcade(double x, double y) { // x is up/down; y is right/left
@@ -97,8 +92,8 @@ public class Drivetrain extends Subsystem {
     }
 
     public void setOpenloopRamp(double ramp) {
-        LeftWheels.configOpenloopRamp(ramp, BetterTalonSRX.timeout);
-        RightWheels.configOpenloopRamp(ramp, BetterTalonSRX.timeout);
+        LeftWheels.configOpenloopRamp(ramp);
+        RightWheels.configOpenloopRamp(ramp);
     }
 
     public double getLeftRate() {

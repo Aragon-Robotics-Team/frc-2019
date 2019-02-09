@@ -6,7 +6,6 @@ import frc.robot.Robot;
 public class SetOpenloopRamp extends Command {
 
     public SetOpenloopRamp() {
-        // requires(Robot.myDrivetrain);
     }
 
     protected void initialize() {

@@ -3,7 +3,6 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import com.kauailabs.navx.frc.AHRS;
 
 public class NavX extends Subsystem {
@@ -18,8 +17,6 @@ public class NavX extends Subsystem {
         } catch (RuntimeException ex) {
             DriverStation.reportError("Can't start NavX", true);
         }
-
-        Shuffleboard.getTab("a").add("NavX", ahrs);
     }
 
     public void initDefaultCommand() {

@@ -1,4 +1,4 @@
-package frc.robot.commands.Teleop;
+package frc.robot.commands.angle;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
@@ -6,11 +6,7 @@ import frc.robot.Robot;
 public class SetAngle extends Command {
     double angle;
 
-    boolean m_runWhenDisabled = true;
-
     public SetAngle(double angle) {
-        // requires(Robot.myDrivetrain);
-        // requires(Robot.myAngle);
         this.angle = angle;
     }
 

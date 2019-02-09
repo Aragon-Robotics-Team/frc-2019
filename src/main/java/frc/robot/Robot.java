@@ -29,7 +29,6 @@ public class Robot extends TimedRobot {
 
 		System.out.println("init");
 		// CameraServer.getInstance().startAutomaticCapture();
-		Shuffleboard.getTab("Drive").add(new SetOpenloopRamp());
 	}
 
 	@Override
@@ -73,8 +72,6 @@ public class Robot extends TimedRobot {
 		myDrivetrain.resetDistance();
 		TeleopGroup teleop = new TeleopGroup();
 		teleop.start();
-		TestNavX command = new TestNavX();
-		command.start();
 	}
 
 	@Override
@@ -84,6 +81,9 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void testInit() {
+		Shuffleboard.getTab("Drive").add(new SetOpenloopRamp());
+		TestNavX command = new TestNavX();
+		command.start();
 	}
 
 	@Override

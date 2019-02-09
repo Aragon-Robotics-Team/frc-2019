@@ -28,8 +28,6 @@ public class TurnToAngle extends Subsystem implements PIDOutput {
         turnController.setAbsoluteTolerance(kToleranceDegrees);
         turnController.setContinuous(true);
         turnController.disable();
-
-        Shuffleboard.getTab("a").add(turnController);
     }
 
     public void periodic() {

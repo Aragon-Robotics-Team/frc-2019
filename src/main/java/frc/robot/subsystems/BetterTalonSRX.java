@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -15,8 +16,8 @@ public class BetterTalonSRX extends TalonSRX implements SpeedController {
         super(deviceNumber);
         configFactoryDefault(timeout);
         setInverted(invert);
-        configOpenloopRamp(2);
-        this.setNeutralMode(NeutralMode.Brake);
+        configOpenloopRamp(0.5);
+        setNeutralMode(NeutralMode.Brake);
     }
 
     public BetterTalonSRX(int deviceNumber) {
@@ -41,6 +42,10 @@ public class BetterTalonSRX extends TalonSRX implements SpeedController {
 
     public void stopMotor() {
         set(0);
+    }
+
+    public ErrorCode configOpenloopRamp(double seconds) {
+        return configOpenloopRamp(2, timeout); // seconds
     }
 
     public void pidWrite(double output) {

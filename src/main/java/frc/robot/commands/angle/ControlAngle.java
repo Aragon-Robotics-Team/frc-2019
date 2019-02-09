@@ -1,12 +1,10 @@
-package frc.robot.commands.Teleop;
+package frc.robot.commands.angle;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
 public class ControlAngle extends Command {
     public ControlAngle() {
-        // requires(Robot.myDrivetrain);
-        // requires(Robot.myAngle);
     }
 
     protected void initialize() {

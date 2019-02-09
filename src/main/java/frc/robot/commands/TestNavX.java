@@ -4,15 +4,12 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.kauailabs.navx.frc.AHRS;
 import frc.robot.Robot;
-import frc.robot.subsystems.NavX;
 
 public class TestNavX extends Command {
     public TestNavX() {
-        requires(Robot.myNavX);
     }
 
     protected void initialize() {
-
     }
 
     protected void execute() {
