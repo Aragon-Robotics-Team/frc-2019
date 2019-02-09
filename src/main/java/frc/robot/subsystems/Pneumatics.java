@@ -6,12 +6,12 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap;
 
 public class Pneumatics extends Subsystem {
-    public Compressor compressor;
-    public Solenoid sol0;
+    Compressor compressor;
+    Solenoid sol0;
 
     public Pneumatics() {
-        compressor = new Compressor(RobotMap.PneumaticsCan0);
-        sol0 = new Solenoid(RobotMap.PneumaticsCan0, RobotMap.PneumaticsSol0);
+        compressor = new Compressor(RobotMap.PneumaticsCan);
+        sol0 = new Solenoid(RobotMap.PneumaticsCan, RobotMap.PneumaticsSol0);
     }
 
     public void initDefaultCommand() {

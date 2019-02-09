@@ -39,7 +39,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void disabledInit() {
-		myPneumatics.compressor.setClosedLoopControl(false);
+		myPneumatics.disableCompressor();
 	}
 
 	@Override
@@ -50,7 +50,7 @@ public class Robot extends TimedRobot {
 	// Ran once when Autonomus stage starts
 	@Override
 	public void autonomousInit() {
-		myPneumatics.compressor.setClosedLoopControl(true);
+		myPneumatics.enableCompressor();
 		System.out.println("auto");
 		myDrivetrain.resetDistance();
 		AutonomousGroup auto = new AutonomousGroup();
@@ -66,7 +66,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopInit() {
 		System.out.println("teleop");
-		myPneumatics.compressor.setClosedLoopControl(true);
+		myPneumatics.enableCompressor();
 		myDrivetrain.resetDistance();
 		TeleopGroup teleop = new TeleopGroup();
 		teleop.start();
