@@ -15,6 +15,7 @@ import java.util.Map;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 // import edu.wpi.first.wpilibj.
 import frc.robot.RobotMap;
+import frc.robot.util.BetterTalonSRX;
 
 public class Drivetrain extends Subsystem {
     static double speedModifer = -1.0;
@@ -33,6 +34,9 @@ public class Drivetrain extends Subsystem {
     public Drivetrain() {
         LeftWheels = new BetterTalonSRX(RobotMap.LeftWheelsCan, false);
         RightWheels = new BetterTalonSRX(RobotMap.RightWheelsCan, true);
+        ShuffleboardTab tab = Shuffleboard.getTab("Drive")
+        LeftWheels.addShuffleboard(tab);
+        LeftWheels.addShuffleboard(tab);
 
         leftEncoder = new Encoder(1, 2, false, Encoder.EncodingType.k4X);
         leftEncoder.setDistancePerPulse(3.0 / 1024.0);
