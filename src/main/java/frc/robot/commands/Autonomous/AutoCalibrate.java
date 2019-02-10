@@ -3,6 +3,7 @@ package frc.robot.commands.Autonomous;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDOutput;
+import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
@@ -15,7 +16,8 @@ import java.util.Map;
 
 public class AutoCalibrate extends Command implements PIDOutput {
     // calibrates PID constants.
-    // Uses Ziegler–Nichols method: https://en.wikipedia.org/wiki/Ziegler%E2%80%93Nichols_method
+    // Uses Ziegler–Nichols method:
+    // https://en.wikipedia.org/wiki/Ziegler%E2%80%93Nichols_method
     // (accessed 2/4/2019)
 
     // hyperparameters - stage0
@@ -26,14 +28,15 @@ public class AutoCalibrate extends Command implements PIDOutput {
     public final int succeed_threshold = 7; // how many successive fail-checks to pass until success
                                             // a check is made each new amplitude, so 4-3
     public final double fail_avg_ratio = .05; // fails if greater than x% gain/loss ratio
-
+    public final double est_max_angle_delta = 10;
     // robot control variables
-    public double p = 0.02;
+    public double p = 0.16;
     public double i = 0;
     public double d = 0;
+    public double f = 1 / est_max_angle_delta; // feedforward gain. (multiplied by a model written
+                                               // in PIDBase)
     public PIDController pidC;
     public double pidOut;
-
     // control flow variables
     public int stage = -1; // 0 = reset and init, 1 = testing p-value
     public double pmax;
@@ -78,10 +81,12 @@ public class AutoCalibrate extends Command implements PIDOutput {
         timer.start();
         Robot.myNavX.ahrs.zeroYaw();
         // 0/360
-        pidC = new PIDController(p, i, d, Robot.myNavX.ahrs, this);
+        pidC = new PIDController(p, i, d, f, Robot.myNavX.ahrs, this);
+        Robot.myNavX.ahrs.setPIDSourceType(PIDSourceType.kDisplacement);
         tab.add(pidC);
         pidC.setSetpoint(test_offset);
         pidC.setInputRange(-180.0f, 180.0f);
+
         pidC.setOutputRange(-1.0, 1.0);
         pidC.setContinuous(true);
         pidC.disable();
@@ -193,7 +198,19 @@ public class AutoCalibrate extends Command implements PIDOutput {
     }
 
     public double getAngle() {
-        return (Robot.myNavX.ahrs.getYaw());
+        return rollover(Robot.myNavX.ahrs.getYaw() - test_offset);
+    }
+
+    public double rollover(double angle) {
+        angle += 180;
+        while (angle < 0) {
+            angle += 360;
+        }
+        while (angle > 360) {
+            angle -= 360;
+        }
+        return angle - 180;
+
     }
 
     // public double getAngleUnlooped() {
@@ -225,7 +242,8 @@ public class AutoCalibrate extends Command implements PIDOutput {
     }
 
     public boolean isPeak(double lastDataPoint, double dp) {
-        // returns whether the last datapoint is a peak, based on it's neighbors and the direction
+        // returns whether the last datapoint is a peak, based on it's neighbors and the
+        // direction
         // it should be turning
         if (lastPeakType == -1 && lastDatapoint >= dp) {
             return true;
@@ -234,7 +252,8 @@ public class AutoCalibrate extends Command implements PIDOutput {
     }
 
     public boolean isValley(double lastDataPoint, double dp) {
-        // returns whether the last datapoint is a peak, based on it's neighbors and the direction
+        // returns whether the last datapoint is a peak, based on it's neighbors and the
+        // direction
         // it should be turning
         if (lastPeakType == 1 && lastDatapoint <= dp) {
             return true;

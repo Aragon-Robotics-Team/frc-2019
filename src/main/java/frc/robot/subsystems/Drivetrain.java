@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -8,9 +9,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import edu.wpi.first.wpilibj.Encoder;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import java.util.Map;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 // import edu.wpi.first.wpilibj.
 import frc.robot.RobotMap;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+
+
 
 public class Drivetrain extends Subsystem {
     static double speedModifer = -1.0;
@@ -24,7 +31,18 @@ public class Drivetrain extends Subsystem {
     double lDistance;
     double rDistance;
 
+    public ShuffleboardTab tab;
+    public NetworkTableEntry xEntry;
+    public NetworkTableEntry yEntry;
+
     public Drivetrain() {
+
+        tab = Shuffleboard.getTab("AutoCalibrate");
+        Map<String, Object> properties = Map.of("min", -1, "max", 1);
+        xEntry = tab.add("ActualX", 0).withWidget(BuiltInWidgets.kGraph).withProperties(properties)
+                .getEntry();
+        yEntry = tab.add("ActualY", 0).withWidget(BuiltInWidgets.kGraph).withProperties(properties)
+                .getEntry();
         LeftWheels = new BetterTalonSRX(RobotMap.LeftWheelsCan);
         RightWheels = new BetterTalonSRX(RobotMap.RightWheelsCan);
         LeftWheels.setInverted(false);
@@ -54,10 +72,13 @@ public class Drivetrain extends Subsystem {
         // // System.out.println("Control: " + x + " " + y);
         SmartDashboard.putNumber("X", x);
         SmartDashboard.putNumber("Y", y);
+        xEntry.setDouble(x);
+        yEntry.setDouble(y);
     }
 
     public void controlArcade(double x, double y) { // x is up/down; y is right/left
         // differentialDrive.arcadeDrive(x, y, false);
+
         double rp = 0;
         double lp = 0;
         rp += x;
