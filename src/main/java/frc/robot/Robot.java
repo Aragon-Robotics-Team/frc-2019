@@ -11,6 +11,7 @@ import frc.robot.commands.*;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.NavX;
 import frc.robot.subsystems.TurnToAngle;
+import frc.robot.subsystems.Pneumatics;
 import frc.robot.controllers.*;
 
 public class Robot extends TimedRobot {
@@ -20,6 +21,7 @@ public class Robot extends TimedRobot {
 	public static Drivetrain myDrivetrain = new Drivetrain();
 	public static NavX myNavX = new NavX();
 	public static TurnToAngle myAngle = new TurnToAngle();
+	public static Pneumatics myPneumatics = new Pneumatics();
 
 	// Ran once when Game starts
 	@Override
@@ -43,6 +45,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void disabledInit() {
 		myAngle.disableAndReset();
+		myPneumatics.disableCompressor();
 	}
 
 	@Override
@@ -53,6 +56,7 @@ public class Robot extends TimedRobot {
 	// Ran once when Autonomus stage starts
 	@Override
 	public void autonomousInit() {
+		myPneumatics.enableCompressor();
 		System.out.println("auto");
 		myDrivetrain.resetDistance();
 		AutonomousGroup auto = new AutonomousGroup();
@@ -69,6 +73,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopInit() {
 		System.out.println("teleop");
+		myPneumatics.enableCompressor();
 		myDrivetrain.resetDistance();
 		TeleopGroup teleop = new TeleopGroup();
 		teleop.start();
