@@ -35,8 +35,10 @@ public class BetterTalonSRX extends TalonSRX implements SpeedController {
     }
 
     public void addShuffleboard(ShuffleboardTab tab) {
-        tab.add(encoderSendable);
-        tab.add(motorSendable);
+        int id = this.getDeviceID();
+        System.out.println("InitTab" + id);
+        tab.add("BetterSRX " + id + " Encoder", encoderSendable);
+        tab.add("BetterSRX " + id + " Motor", motorSendable);
     }
 
     public void set(double output) {
@@ -93,7 +95,7 @@ class SendableEncoderSRX extends SendableBase {
     }
 
     public void initSendable(SendableBuilder builder) {
-        builder.setSmartDashboardType("BetterSRX");
+        builder.setSmartDashboardType("Quadrature Encoder");
         builder.addDoubleProperty("Speed", talon::getEncoderRate, null);
         builder.addDoubleProperty("Distance", talon::getEncoderPos, null);
         builder.addDoubleProperty("Distance per Tick", this::getDistancePerTick, null);
@@ -111,7 +113,8 @@ class SendableMotorSRX extends SendableBase {
     public void initSendable(SendableBuilder builder) {
         builder.setSmartDashboardType("Speed Controller");
         builder.setActuator(true);
-        // builder.setSafeState(this::setDisabled);
+        builder.setSafeState(() -> {
+        });
         builder.addDoubleProperty("Value", talon::getRate, talon::set);
     }
 }

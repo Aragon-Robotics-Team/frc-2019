@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import edu.wpi.first.wpilibj.Encoder;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -34,9 +35,9 @@ public class Drivetrain extends Subsystem {
     public Drivetrain() {
         LeftWheels = new BetterTalonSRX(RobotMap.LeftWheelsCan, false);
         RightWheels = new BetterTalonSRX(RobotMap.RightWheelsCan, true);
-        ShuffleboardTab tab = Shuffleboard.getTab("Drive")
+        ShuffleboardTab tab = Shuffleboard.getTab("Drive");
         LeftWheels.addShuffleboard(tab);
-        LeftWheels.addShuffleboard(tab);
+        RightWheels.addShuffleboard(tab);
 
         leftEncoder = new Encoder(1, 2, false, Encoder.EncodingType.k4X);
         leftEncoder.setDistancePerPulse(3.0 / 1024.0);
