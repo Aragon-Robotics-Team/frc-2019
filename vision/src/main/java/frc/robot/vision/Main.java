@@ -21,12 +21,11 @@ import com.google.gson.JsonParser;
 import edu.wpi.cscore.VideoSource;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.vision.*;
+import edu.wpi.first.vision.VisionThread;
 
 public final class Main {
 	private static String configFile = "/boot/frc.json";
 
-	@SuppressWarnings("MemberName")
 	public static class CameraConfig {
 		public String name;
 		public String path;
@@ -81,7 +80,6 @@ public final class Main {
 	/**
 	 * Read configuration file.
 	 */
-	@SuppressWarnings("PMD.CyclomaticComplexity")
 	public static boolean readConfig() {
 		// parse file
 		JsonElement top;

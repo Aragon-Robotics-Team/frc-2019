@@ -1,8 +1,8 @@
 package frc.robot.controllers;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.buttons.*;
-import frc.robot.commands.Teleop.*;
+import edu.wpi.first.wpilibj.buttons.Button;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import frc.robot.util.Deadband;
 
 public class Attack3 implements OI {

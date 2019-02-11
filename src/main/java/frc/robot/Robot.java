@@ -1,18 +1,18 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.command.*;
+import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.*;
-import edu.wpi.first.cameraserver.CameraServer;
-import frc.robot.commands.Autonomous.*;
-import frc.robot.commands.Teleop.*;
-import frc.robot.commands.*;
+import frc.robot.commands.SetOpenloopRamp;
+import frc.robot.commands.TestNavX;
+import frc.robot.commands.Autonomous.AutonomousGroup;
+import frc.robot.commands.Teleop.TeleopGroup;
+import frc.robot.controllers.Attack3;
+import frc.robot.controllers.OI;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.NavX;
-import frc.robot.subsystems.TurnToAngle;
 import frc.robot.subsystems.Pneumatics;
-import frc.robot.controllers.*;
+import frc.robot.subsystems.TurnToAngle;
 
 public class Robot extends TimedRobot {
 	public static OI m_oi;
@@ -59,7 +59,6 @@ public class Robot extends TimedRobot {
 	public void autonomousInit() {
 		myPneumatics.enableCompressor();
 		System.out.println("auto");
-		myDrivetrain.resetDistance();
 		AutonomousGroup auto = new AutonomousGroup();
 		auto.start();
 		Robot.myNavX.zeroYaw();
@@ -75,7 +74,6 @@ public class Robot extends TimedRobot {
 	public void teleopInit() {
 		System.out.println("teleop");
 		myPneumatics.enableCompressor();
-		myDrivetrain.resetDistance();
 		TeleopGroup teleop = new TeleopGroup();
 		teleop.start();
 	}

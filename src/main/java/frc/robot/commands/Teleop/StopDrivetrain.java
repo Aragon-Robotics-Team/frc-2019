@@ -11,7 +11,6 @@ public class StopDrivetrain extends Command {
 
     protected void initialize() {
         Robot.myDrivetrain.stop();
-        Robot.myDrivetrain.resetDistance();
     }
 
     protected void execute() {
@@ -19,6 +18,6 @@ public class StopDrivetrain extends Command {
     }
 
     protected boolean isFinished() {
-        return false; // Exit instantly
+        return false;
     }
 }
