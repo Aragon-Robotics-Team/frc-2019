@@ -13,7 +13,6 @@ public class SetOpenloopRamp extends Command {
     }
 
     protected void execute() {
-
     }
 
     protected boolean isFinished() {

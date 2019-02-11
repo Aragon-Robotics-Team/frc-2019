@@ -10,7 +10,6 @@ public class ControlArcadeDrivetrain extends Command {
     }
 
     protected void initialize() {
-        Robot.myDrivetrain.resetDistance();
     }
 
     protected void execute() {
@@ -23,6 +22,6 @@ public class ControlArcadeDrivetrain extends Command {
     }
 
     protected boolean isFinished() {
-        return false; // Run forever
+        return false;
     }
 }

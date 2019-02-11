@@ -1,9 +1,10 @@
 package frc.robot.controllers;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.buttons.*;
-import frc.robot.commands.Teleop.*;
-import frc.robot.commands.*;
+import edu.wpi.first.wpilibj.buttons.Button;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import frc.robot.commands.Teleop.ControlArcadeDrivetrain;
+import frc.robot.commands.Teleop.ControlDrivetrain;
 
 public class F310 implements OI {
 	Joystick mainJoystick;
@@ -29,8 +30,6 @@ public class F310 implements OI {
 		buttonUp = new JoystickButton(mainJoystick, 4);
 
 		buttonDown.whenPressed(new ControlDrivetrain());
-		buttonLeft.whenPressed(new ControlOneAxisDrivetrain(0.9));
-		buttonRight.whenPressed(new ResetDistance()); // StopDrivetrain
 		buttonUp.whenPressed(new ControlArcadeDrivetrain());
 	}
 
