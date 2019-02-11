@@ -9,6 +9,7 @@ import frc.robot.commands.Autonomous.*;
 import frc.robot.commands.Teleop.*;
 import frc.robot.commands.*;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.NavX;
 import frc.robot.subsystems.TurnToAngle;
 import frc.robot.subsystems.Pneumatics;
@@ -22,6 +23,7 @@ public class Robot extends TimedRobot {
 	public static NavX myNavX = new NavX();
 	public static TurnToAngle myAngle = new TurnToAngle();
 	public static Pneumatics myPneumatics = new Pneumatics();
+	public static Lift myLift = new Lift();
 
 	// Ran once when Game starts
 	@Override

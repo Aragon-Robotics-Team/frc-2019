@@ -36,8 +36,8 @@ public class Drivetrain extends Subsystem {
         LeftWheels = new BetterTalonSRX(RobotMap.LeftWheelsCan, false);
         RightWheels = new BetterTalonSRX(RobotMap.RightWheelsCan, true);
         ShuffleboardTab tab = Shuffleboard.getTab("Drive");
-        LeftWheels.addShuffleboard(tab);
-        RightWheels.addShuffleboard(tab);
+        LeftWheels.addShuffleboard(tab, "Left Wheels");
+        RightWheels.addShuffleboard(tab, "Right Wheels");
 
         leftEncoder = new Encoder(1, 2, false, Encoder.EncodingType.k4X);
         leftEncoder.setDistancePerPulse(3.0 / 1024.0);

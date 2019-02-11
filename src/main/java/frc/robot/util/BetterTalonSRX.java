@@ -34,11 +34,9 @@ public class BetterTalonSRX extends TalonSRX implements SpeedController {
         this(deviceNumber, false);
     }
 
-    public void addShuffleboard(ShuffleboardTab tab) {
-        int id = this.getDeviceID();
-        System.out.println("InitTab" + id);
-        tab.add("BetterSRX " + id + " Encoder", encoderSendable);
-        tab.add("BetterSRX " + id + " Motor", motorSendable);
+    public void addShuffleboard(ShuffleboardTab tab, String name) {
+        tab.add(name + " Encoder", encoderSendable);
+        tab.add(name + " Motor", motorSendable);
     }
 
     public void set(double output) {
