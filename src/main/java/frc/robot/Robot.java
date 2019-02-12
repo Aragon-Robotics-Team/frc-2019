@@ -5,8 +5,8 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import frc.robot.commands.SetOpenloopRamp;
 import frc.robot.commands.TestNavX;
-import frc.robot.commands.Autonomous.AutonomousGroup;
-import frc.robot.commands.Teleop.TeleopGroup;
+import frc.robot.commands.autonomous.AutonomousGroup;
+import frc.robot.commands.teleop.TeleopGroup;
 import frc.robot.controllers.Attack3;
 import frc.robot.controllers.OI;
 import frc.robot.subsystems.Drivetrain;
@@ -33,16 +33,10 @@ public class Robot extends TimedRobot {
 		// m_oi = new F310(RobotMap.F310_JOYSTICK_0);
 
 		System.out.println("init");
-		// CameraServer.getInstance().startAutomaticCapture();
 	}
 
 	@Override
 	public void robotPeriodic() {
-		// SmartDashboard.putNumber("Joystick Up/Down", m_oi.getLeftSpeed());
-		// SmartDashboard.putNumber("L Rate", myDrivetrain.getLeftRate());
-		// SmartDashboard.putNumber("R Rate", myDrivetrain.getRightRate());
-		// SmartDashboard.putNumber("L Dist", myDrivetrain.getLeftDistance());
-		// SmartDashboard.putNumber("R Dist", myDrivetrain.getRightDistance());
 	}
 
 	@Override

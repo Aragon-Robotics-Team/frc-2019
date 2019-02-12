@@ -1,4 +1,4 @@
-package frc.robot.commands.Teleop;
+package frc.robot.commands.teleop;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import frc.robot.commands.lift.ControlLiftJoystick;
