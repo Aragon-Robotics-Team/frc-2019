@@ -75,6 +75,10 @@ public class BetterTalonSRX extends TalonSRX implements SpeedController {
         return configOpenloopRamp(2, timeout); // seconds
     }
 
+    public void resetEncoder() {
+        setSelectedSensorPosition(0, 0, 0);
+    }
+
     public void pidWrite(double output) {
         set(output);
     }

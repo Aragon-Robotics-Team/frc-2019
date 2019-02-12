@@ -1,10 +1,11 @@
 package frc.robot.commands.Teleop;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
+import frc.robot.commands.lift.ControlLiftJoystick;
 
 public class TeleopGroup extends CommandGroup {
 
     public TeleopGroup() {
-        addSequential(new ControlDrivetrain());
+        addSequential(new ControlLiftJoystick());
     }
 }
