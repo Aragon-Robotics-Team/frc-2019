@@ -36,6 +36,7 @@ public class Lift extends Subsystem {
     public void setVelocity(double velocity) {
         // controller.set(velocity);
         double position = ((velocity + 1) * 61111) / 2;
+        System.out.println(position);
         controller.setMagic(position);
     }
 }

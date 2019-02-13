@@ -20,13 +20,13 @@ public class Drivetrain extends Subsystem {
     public Drivetrain() {
         LeftWheels = new BetterTalonSRX(RobotMap.LeftWheelsCan, false);
         RightWheels = new BetterTalonSRX(RobotMap.RightWheelsCan, true);
-        ShuffleboardTab tab = Shuffleboard.getTab("Drive");
-        LeftWheels.addShuffleboard(tab, "Left Wheels");
-        RightWheels.addShuffleboard(tab, "Right Wheels");
+        // ShuffleboardTab tab = Shuffleboard.getTab("Drive");
+        // LeftWheels.addShuffleboard(tab, "Left Wheels");
+        // RightWheels.addShuffleboard(tab, "Right Wheels");
 
-        rampSet =
-                Shuffleboard.getTab("Drive").add("Ramp", 0).withWidget(BuiltInWidgets.kNumberSlider)
-                        .withProperties(Map.of("Min", 0, "Max", 5)).getEntry();
+        // rampSet =
+        // Shuffleboard.getTab("Drive").add("Ramp", 0).withWidget(BuiltInWidgets.kNumberSlider)
+        // .withProperties(Map.of("Min", 0, "Max", 5)).getEntry();
     }
 
     public void initDefaultCommand() {

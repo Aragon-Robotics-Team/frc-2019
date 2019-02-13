@@ -18,6 +18,12 @@ public class BetterTalonSRX extends TalonSRX implements SpeedController {
     SendableEncoderSRX encoderSendable;
     SendableMotorSRX motorSendable;
 
+    private enum ControlType {
+        Percent, Magic;
+    }
+
+    private ControlType lastControlType = ControlType.Percent;
+
     public BetterTalonSRX(int deviceNumber, boolean invert, boolean encoderInvert) {
         super(deviceNumber);
         configFactoryDefault(timeout);
@@ -53,21 +59,37 @@ public class BetterTalonSRX extends TalonSRX implements SpeedController {
     }
 
     public void set(double output) {
+        if (lastControlType == ControlType.Percent) {
+            setPercent(output);
+        } else if (lastControlType == ControlType.Magic) {
+            setMagic(output);
+        } else {
+            throw new IndexOutOfBoundsException();
+        }
+    }
+
+    public void setPercent(double output) {
+        lastControlType = ControlType.Percent;
+
         output = deadband.calc(output);
 
         set(ControlMode.PercentOutput, output);
     }
 
     public void setMagic(double output) {
+        lastControlType = ControlType.Magic;
+
         set(ControlMode.MotionMagic, output);
     }
 
     public double get() {
-        return getMotorOutputPercent();
-    }
-
-    public double getMagic() {
-        return getClosedLoopTarget();
+        if (lastControlType == ControlType.Percent) {
+            return getMotorOutputPercent();
+        } else if (lastControlType == ControlType.Magic) {
+            return getClosedLoopTarget();
+        } else {
+            throw new IndexOutOfBoundsException();
+        }
     }
 
     public void disable() {
@@ -131,6 +153,11 @@ class SendableEncoderSRX extends SendableBase {
         builder.addDoubleProperty("Speed", talon::getEncoderRate, null);
         builder.addDoubleProperty("Distance", talon::getEncoderPos, null);
         builder.addDoubleProperty("Distance per Tick", this::getDistancePerTick, null);
+
+        builder.addDoubleProperty("ClosedLoopError", talon::getClosedLoopError, null);
+        builder.addDoubleProperty("ClosedLoopTarget", talon::getClosedLoopTarget, null);
+        builder.addDoubleProperty("ActTrajVelocity", talon::getActiveTrajectoryVelocity, null);
+        builder.addDoubleProperty("ActTrajPosition", talon::getActiveTrajectoryPosition, null);
     }
 }
 
@@ -147,6 +174,6 @@ class SendableMotorSRX extends SendableBase {
         builder.setActuator(true);
         builder.setSafeState(() -> {
         });
-        builder.addDoubleProperty("Value", talon::getRate, talon::set);
+        builder.addDoubleProperty("Value", talon::get, talon::set);
     }
 }
