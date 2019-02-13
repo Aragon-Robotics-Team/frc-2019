@@ -38,10 +38,8 @@ public class Lift extends Subsystem {
         controller.resetEncoder();
     }
 
-    public void setVelocity(double velocity) {
-        // controller.set(velocity);
-        double position = ((velocity + 1) * 6111) / 2;
-        System.out.println(position);
+    public void setInch(double inches) {
+        double position = ((inches + 1) * 6111) / 2;
         controller.setMagic(position);
     }
 }

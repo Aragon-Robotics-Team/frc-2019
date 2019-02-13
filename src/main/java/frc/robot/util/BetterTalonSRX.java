@@ -18,11 +18,11 @@ public class BetterTalonSRX extends TalonSRX implements SpeedController {
     SendableEncoderSRX encoderSendable;
     SendableMotorSRX motorSendable;
 
-    private enum ControlType {
+    enum ControlType {
         Percent, Magic;
     }
 
-    private ControlType lastControlType = ControlType.Percent;
+    ControlType lastControlType = ControlType.Percent;
 
     public BetterTalonSRX(int deviceNumber, boolean invert, boolean encoderInvert) {
         super(deviceNumber);
