@@ -8,4 +8,6 @@ public class PIDGains {
 
     public int kV = 0; // Velocity
     public int kA = 0; // Acceleration
+
+    public int maxError = 0;
 }

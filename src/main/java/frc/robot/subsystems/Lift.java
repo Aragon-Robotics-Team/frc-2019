@@ -17,13 +17,18 @@ public class Lift extends Subsystem {
         controller = new BetterTalonSRX(RobotMap.LiftCan, false, true);
 
         PIDGains gains = new PIDGains();
-        gains.kP = 2.00687;
+        gains.kP = 8;
         gains.kV = 150;
         gains.kA = 300;
+        gains.maxError = 25;
+
+        controller.setPID(gains);
 
         tab = Shuffleboard.getTab("Lift");
         controller.addShuffleboard(tab, "Lift");
         tab.add(new ResetLiftEncoder());
+
+        controller.setMagic(0);
     }
 
     public void initDefaultCommand() {
