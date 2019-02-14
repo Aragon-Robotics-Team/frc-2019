@@ -1,0 +1,222 @@
+{
+  "tabPane": [
+    {
+      "title": "Intake",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "tiles": {
+          "6,1": {
+            "size": [
+              3,
+              3
+            ],
+            "content": {
+              "_type": "Network Table Tree",
+              "_source0": "network_table:///Shuffleboard/Intake/Intake Encoder",
+              "_title": "Shuffleboard/Intake/Intake Encoder"
+            }
+          },
+          "6,0": {
+            "size": [
+              3,
+              1
+            ],
+            "content": {
+              "_type": "Number Bar",
+              "_source0": "network_table:///Shuffleboard/Intake/Intake Motor/Value",
+              "_title": "Shuffleboard/Intake/Intake Motor/Value",
+              "Range/Min": -1.0,
+              "Range/Max": 1.0,
+              "Range/Center": 0.0,
+              "Visuals/Num tick marks": 5.0,
+              "Visuals/Show text": true
+            }
+          },
+          "3,2": {
+            "size": [
+              3,
+              1
+            ],
+            "content": {
+              "_type": "Number Slider",
+              "_source0": "network_table:///Shuffleboard/Intake/Intake Encoder/Wanted Inches",
+              "_title": "/Shuffleboard/Intake/Intake Encoder/Wanted Inches",
+              "Slider Settings/Min": -1.0,
+              "Slider Settings/Max": 1.0,
+              "Slider Settings/Block increment": 0.0625
+            }
+          },
+          "3,1": {
+            "size": [
+              3,
+              1
+            ],
+            "content": {
+              "_type": "Number Slider",
+              "_source0": "network_table:///Shuffleboard/Intake/Intake Encoder/Current Inches",
+              "_title": "Shuffleboard/Intake/Intake Encoder/Current Inches",
+              "Slider Settings/Min": -1.0,
+              "Slider Settings/Max": 1.0,
+              "Slider Settings/Block increment": 0.0625
+            }
+          },
+          "0,0": {
+            "size": [
+              3,
+              3
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///Shuffleboard/Intake/Intake Encoder/Distance",
+              "_title": "Shuffleboard/Intake/Intake Encoder/Distance",
+              "Graph/Visible time": 30.0,
+              "Visible data/Shuffleboard/Intake/Intake Encoder/Distance": true
+            }
+          },
+          "3,0": {
+            "size": [
+              3,
+              1
+            ],
+            "content": {
+              "_type": "Command",
+              "_source0": "network_table:///Shuffleboard/Intake/ResetIntakeEncoder",
+              "_title": "Shuffleboard/Intake/ResetIntakeEncoder"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Lift",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "tiles": {
+          "6,1": {
+            "size": [
+              3,
+              3
+            ],
+            "content": {
+              "_type": "Network Table Tree",
+              "_source0": "network_table:///Shuffleboard/Lift/Lift Encoder",
+              "_title": "Shuffleboard/Lift/Lift Encoder"
+            }
+          },
+          "3,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Number Slider",
+              "_source0": "network_table:///Shuffleboard/Lift/Lift Encoder/Wanted Inches",
+              "_title": "Shuffleboard/Lift/Lift Encoder/Wanted Inches",
+              "Slider Settings/Min": 0.0,
+              "Slider Settings/Max": 0.01,
+              "Slider Settings/Block increment": 0.0625
+            }
+          },
+          "4,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Number Slider",
+              "_source0": "network_table:///Shuffleboard/Lift/Lift Encoder/Wanted Inches",
+              "_title": "Shuffleboard/Lift/Lift Encoder/Wanted Inches",
+              "Slider Settings/Min": -5.0,
+              "Slider Settings/Max": -4.99,
+              "Slider Settings/Block increment": 0.0625
+            }
+          },
+          "3,2": {
+            "size": [
+              3,
+              1
+            ],
+            "content": {
+              "_type": "Number Slider",
+              "_source0": "network_table:///Shuffleboard/Lift/Lift Encoder/Wanted Inches",
+              "_title": "Shuffleboard/Lift/Lift Encoder/Wanted Inches",
+              "Slider Settings/Min": 0.0,
+              "Slider Settings/Max": 24.0,
+              "Slider Settings/Block increment": 0.0625
+            }
+          },
+          "0,0": {
+            "size": [
+              3,
+              3
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///Shuffleboard/Lift/Lift Encoder/Distance",
+              "_title": "Shuffleboard/Lift/Lift Encoder/Distance",
+              "Graph/Visible time": 30.0,
+              "Visible data/Shuffleboard/Lift/Lift Encoder/Distance": true
+            }
+          },
+          "6,0": {
+            "size": [
+              3,
+              1
+            ],
+            "content": {
+              "_type": "Number Bar",
+              "_source0": "network_table:///Shuffleboard/Lift/Lift Motor/Value",
+              "_title": "Shuffleboard/Lift/Lift Motor/Value",
+              "Range/Min": -1.0,
+              "Range/Max": 1.0,
+              "Range/Center": 0.0,
+              "Visuals/Num tick marks": 5.0,
+              "Visuals/Show text": true
+            }
+          },
+          "3,0": {
+            "size": [
+              3,
+              1
+            ],
+            "content": {
+              "_type": "Command",
+              "_source0": "network_table:///Shuffleboard/Lift/ResetLiftEncoder",
+              "_title": "Shuffleboard/Lift/ResetLiftEncoder"
+            }
+          },
+          "3,1": {
+            "size": [
+              3,
+              1
+            ],
+            "content": {
+              "_type": "Number Slider",
+              "_source0": "network_table:///Shuffleboard/Lift/Lift Encoder/Current Inches",
+              "_title": "Shuffleboard/Lift/Lift Encoder/Current Inches",
+              "Slider Settings/Min": 0.0,
+              "Slider Settings/Max": 24.0,
+              "Slider Settings/Block increment": 0.0625
+            }
+          }
+        }
+      }
+    }
+  ],
+  "windowGeometry": {
+    "x": -8.0,
+    "y": -8.0,
+    "width": 1936.0,
+    "height": 1056.0
+  }
+}

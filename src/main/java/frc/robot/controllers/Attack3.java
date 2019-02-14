@@ -41,7 +41,7 @@ public class Attack3 implements OI {
 		b4.whenPressed(new SetIntakePosition(Intake.Position.Stowed));
 		b5.whenPressed(new SetIntakePosition(Intake.Position.Horizontal));
 		b3.whenPressed(new SetIntakePosition(Intake.Position.Intake));
-		trigger.toggleWhenActive(new HoldVacuumOn());
+		trigger.whileHeld(new HoldVacuumOn());
 
 		// b3 = new JoystickButton(mainJoystick, 3);
 		// b2 = new JoystickButton(mainJoystick, 2);
