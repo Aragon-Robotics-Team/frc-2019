@@ -14,6 +14,7 @@ import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.NavX;
 import frc.robot.subsystems.Pneumatics;
 import frc.robot.subsystems.TurnToAngle;
+import frc.robot.subsystems.Intake;
 
 public class Robot extends TimedRobot {
 	public static OI m_oi;
@@ -24,6 +25,7 @@ public class Robot extends TimedRobot {
 	public static TurnToAngle myAngle = new TurnToAngle();
 	public static Pneumatics myPneumatics = new Pneumatics();
 	public static Lift myLift = new Lift();
+	public static Intake myIntake = new Intake();
 
 	// Ran once when Game starts
 	@Override

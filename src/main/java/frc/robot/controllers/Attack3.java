@@ -3,6 +3,7 @@ package frc.robot.controllers;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import frc.robot.commands.intake.HoldVacuumOn;
 import frc.robot.util.Deadband;
 
 public class Attack3 implements OI {
@@ -11,6 +12,7 @@ public class Attack3 implements OI {
 	Button slowModeButton;
 	Button b4;
 	Button b5;
+	Button trigger;
 	// Button b3;
 	// Button b2;
 	// Button b10;
@@ -30,6 +32,9 @@ public class Attack3 implements OI {
 		slowModeButton = new JoystickButton(mainJoystick, 2);
 		b4 = new JoystickButton(mainJoystick, 4);
 		b5 = new JoystickButton(mainJoystick, 5);
+
+		trigger = new JoystickButton(mainJoystick, 1);
+		trigger.toggleWhenActive(new HoldVacuumOn());
 
 		// b3 = new JoystickButton(mainJoystick, 3);
 		// b2 = new JoystickButton(mainJoystick, 2);

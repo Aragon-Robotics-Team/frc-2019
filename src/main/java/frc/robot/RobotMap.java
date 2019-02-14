@@ -12,4 +12,6 @@ public class RobotMap {
 	public static final int PneumaticsSol0 = 0;
 
 	public static final int LiftCan = 3;
+
+	public static final int VacuumPwm = 0;
 }
