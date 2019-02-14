@@ -74,6 +74,7 @@ public class Robot extends TimedRobot {
 		myPneumatics.enableCompressor();
 		TeleopGroup teleop = new TeleopGroup();
 		teleop.start();
+		myIntake.resetEncoder();
 	}
 
 	@Override
