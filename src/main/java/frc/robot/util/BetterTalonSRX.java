@@ -18,6 +18,8 @@ public class BetterTalonSRX extends TalonSRX implements SpeedController {
     SendableEncoderSRX encoderSendable;
     SendableMotorSRX motorSendable;
 
+    public double ticksPerInch;
+
     enum ControlType {
         Percent, Magic;
     }
@@ -86,7 +88,7 @@ public class BetterTalonSRX extends TalonSRX implements SpeedController {
     public void setMagic(double output) {
         lastControlType = ControlType.Magic;
 
-        set(ControlMode.MotionMagic, output);
+        set(ControlMode.MotionMagic, output * ticksPerInch);
     }
 
     public double get() {
@@ -121,6 +123,14 @@ public class BetterTalonSRX extends TalonSRX implements SpeedController {
         setSelectedSensorPosition(0, 0, timeout);
     }
 
+    public double getSet() {
+        return getClosedLoopTarget() / ticksPerInch;
+    }
+
+    public double getInch() {
+        return getEncoderPos() / ticksPerInch;
+    }
+
     public void setPID(PIDGains pid) {
         config_kP(0, pid.kP, timeout);
         config_kI(0, pid.kI, timeout);
@@ -138,61 +148,28 @@ public class BetterTalonSRX extends TalonSRX implements SpeedController {
     }
 }
 
+
 class SendableEncoderSRX extends SendableBase {
     BetterTalonSRX talon;
-    double set;
 
     public SendableEncoderSRX(BetterTalonSRX talon) {
         this.talon = talon;
     }
 
-    public double getDistancePerTick() {
-        return 1680;
-    }
-
-    public double getClosedLoopError() {
-        return talon.getClosedLoopError(0);
-    }
-
-    public double getClosedLoopTarget() {
-        return talon.getClosedLoopTarget(0);
-    }
-
-    public double getActiveTrajectoryVelocity() {
-        return talon.getActiveTrajectoryVelocity(0);
-    }
-
-    public double getActiveTrajectoryPosition() {
-        return talon.getActiveTrajectoryPosition(0);
-    }
-
-    public double getSet() {
-        return set;
-    }
-
-    public void setSet(double set) {
-        this.set = set;
-        talon.setMagic(set * 254.625);
-    }
-
-    public double getInch() {
-        return talon.getEncoderPos() / 254.625;
-    }
-
     public void initSendable(SendableBuilder builder) {
         builder.addDoubleProperty("Speed", talon::getEncoderRate, null);
         builder.addDoubleProperty("Distance", talon::getEncoderPos, null);
-        builder.addDoubleProperty("Distance per Tick", this::getDistancePerTick, null);
 
-        builder.addDoubleProperty("ClosedLoopError", this::getClosedLoopError, null);
-        builder.addDoubleProperty("ClosedLoopTarget", this::getClosedLoopTarget, null);
-        builder.addDoubleProperty("ActTrajVelocity", this::getActiveTrajectoryVelocity, null);
-        builder.addDoubleProperty("ActTrajPosition", this::getActiveTrajectoryPosition, null);
+        builder.addDoubleProperty("ClosedLoopError", talon::getClosedLoopError, null);
+        builder.addDoubleProperty("ClosedLoopTarget", talon::getClosedLoopTarget, null);
+        builder.addDoubleProperty("ActTrajVelocity", talon::getActiveTrajectoryVelocity, null);
+        builder.addDoubleProperty("ActTrajPosition", talon::getActiveTrajectoryPosition, null);
 
-        builder.addDoubleProperty("Wanted Inches", this::getSet, this::setSet);
-        builder.addDoubleProperty("Current Inches", this::getInch, null);
+        builder.addDoubleProperty("Wanted Inches", talon::getSet, talon::set);
+        builder.addDoubleProperty("Current Inches", talon::getInch, null);
     }
 }
+
 
 class SendableMotorSRX extends SendableBase {
     BetterTalonSRX talon;

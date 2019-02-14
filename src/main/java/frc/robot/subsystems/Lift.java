@@ -15,6 +15,7 @@ public class Lift extends Subsystem {
 
     public Lift() {
         controller = new BetterTalonSRX(RobotMap.LiftCan, false, true);
+        controller.ticksPerInch = 254.625;
 
         PIDGains gains = new PIDGains();
         gains.kP = 8;
@@ -36,10 +37,5 @@ public class Lift extends Subsystem {
 
     public void resetEncoder() {
         controller.resetEncoder();
-    }
-
-    public void setInch(double inches) {
-        double position = ((inches + 1) * 6111) / 2;
-        controller.setMagic(position);
     }
 }
