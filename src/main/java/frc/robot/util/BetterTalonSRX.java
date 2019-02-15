@@ -32,6 +32,7 @@ public class BetterTalonSRX extends TalonSRX implements SpeedController {
 
         TalonSRXConfiguration config = new TalonSRXConfiguration();
         config.openloopRamp = 0.1;
+        config.clearPositionOnLimitF = true;
         configAllSettings(config, timeout);
 
         setSensorPhase(encoderInvert);
@@ -141,6 +142,14 @@ public class BetterTalonSRX extends TalonSRX implements SpeedController {
         configMotionAcceleration(pid.kA, timeout);
 
         configAllowableClosedloopError(0, pid.maxError, timeout);
+    }
+
+    public boolean getForwardLimitSwitch() {
+        return getSensorCollection().isFwdLimitSwitchClosed();
+    }
+
+    public boolean getReverseLimitSwitch() {
+        return getSensorCollection().isRevLimitSwitchClosed();
     }
 
     public void pidWrite(double output) {
