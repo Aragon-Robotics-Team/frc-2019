@@ -9,7 +9,7 @@ import frc.robot.util.BetterTalonSRX;
 import frc.robot.util.PIDGains;
 
 public class Lift extends Subsystem {
-    BetterTalonSRX controller;
+    public BetterTalonSRX controller;
 
     ShuffleboardTab tab;
 
