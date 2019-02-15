@@ -9,14 +9,14 @@ public class HoldVacuumOn extends Command {
     }
 
     protected void initialize() {
-        Robot.myIntake.on();
+        Robot.myIntake.setVacuum(true);
     }
 
     protected void execute() {
     }
 
     protected void end() {
-        Robot.myIntake.off();
+        Robot.myIntake.setVacuum(false);
     }
 
     protected boolean isFinished() {

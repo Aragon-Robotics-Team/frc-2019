@@ -15,11 +15,11 @@ public class Drivetrain extends Subsystem {
 
     public Drivetrain() {
         BetterTalonSRXConfig leftConfig = new BetterTalonSRXConfig();
-        leftController = new BetterTalonSRX(RobotMap.LeftWheelsCan, leftConfig);
+        leftController = new BetterTalonSRX(RobotMap.DRIVETRAIN_LEFT_MAIN_CAN, leftConfig);
 
         BetterTalonSRXConfig rightConfig = new BetterTalonSRXConfig();
         rightConfig.invert = true;
-        rightController = new BetterTalonSRX(RobotMap.RightWheelsCan, rightConfig);
+        rightController = new BetterTalonSRX(RobotMap.DRIVETRAIN_RIGHT_MAIN_CAN, rightConfig);
 
         tab = Shuffleboard.getTab("Drive");
         leftController.addShuffleboard(tab, "Left Wheels");

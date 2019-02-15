@@ -6,12 +6,14 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.RobotMap;
 import frc.robot.commands.intake.ResetIntakeEncoder;
+import frc.robot.util.BetterSolenoid;
 import frc.robot.util.BetterTalonSRX;
 import frc.robot.util.BetterTalonSRXConfig;
 
 public class Intake extends Subsystem {
     BetterTalonSRX controller;
     Talon vacuumController;
+    BetterSolenoid pistonController;
 
     ShuffleboardTab tab;
 
@@ -35,33 +37,39 @@ public class Intake extends Subsystem {
         config.motionCruiseVelocity = 255;
         config.motionAcceleration = 500;
 
-        controller = new BetterTalonSRX(RobotMap.IntakeCan, config);
+        controller = new BetterTalonSRX(RobotMap.INTAKE_CAN, config);
 
         tab = Shuffleboard.getTab("Intake");
         controller.addShuffleboard(tab, "Intake");
         tab.add(new ResetIntakeEncoder());
 
-        vacuumController = new Talon(RobotMap.VacuumPwm);
+        vacuumController = new Talon(RobotMap.INTAKE_VACUUM_PWM);
         vacuumController.setSafetyEnabled(false);
 
-        off();
-        setPos(Position.Stowed);
+        pistonController = new BetterSolenoid(RobotMap.INTAKE_PISTON);
+
+        setVacuum(false);
+        setPosition(Position.Stowed);
     }
 
     public void resetEncoder() {
         controller.resetEncoder();
     }
 
-    public void setPos(Position pos) {
-        controller.setMagic(pos.pos);
+    public void setPosition(Position position) {
+        controller.setMagic(position.pos);
     }
 
-    public void on() {
-        vacuumController.set(1.0);
+    public void setVacuum(boolean on) {
+        if (on) {
+            vacuumController.set(1.0);
+        } else {
+            vacuumController.set(0.0);
+        }
     }
 
-    public void off() {
-        vacuumController.set(0.0);
+    public void setPiston(boolean on) {
+        pistonController.set(on);
     }
 
     public void initDefaultCommand() {

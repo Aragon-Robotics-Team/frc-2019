@@ -23,7 +23,7 @@ public class Lift extends Subsystem {
         config.motionCruiseVelocity = 150;
         config.motionAcceleration = 300;
 
-        controller = new BetterTalonSRX(RobotMap.LiftCan, config);
+        controller = new BetterTalonSRX(RobotMap.LIFT_CAN, config);
 
         tab = Shuffleboard.getTab("Lift");
         controller.addShuffleboard(tab, "Lift");

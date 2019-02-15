@@ -5,14 +5,14 @@ public class RobotMap {
 	public static final int ATTACK3_JOYSTICK_0 = 1;
 	public static final int ATTACK3_JOYSTICK_1 = 4;
 
-	public static final int LeftWheelsCan = 2;
-	public static final int RightWheelsCan = 6;
+	public static final int DRIVETRAIN_LEFT_MAIN_CAN = 2;
+	public static final int DRIVETRAIN_RIGHT_MAIN_CAN = 6;
 
-	public static final int PneumaticsCan = 1;
-	public static final int PneumaticsSol0 = 0;
+	public static final int PNEUMATICS_CONTROL_MODULE_CAN = 1;
 
-	public static final int LiftCan = 3;
+	public static final int LIFT_CAN = 3;
 
-	public static final int IntakeCan = 5;
-	public static final int VacuumPwm = 0;
+	public static final int INTAKE_CAN = 5;
+	public static final int INTAKE_VACUUM_PWM = 0;
+	public static final int INTAKE_PISTON = 0;
 }

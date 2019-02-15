@@ -12,7 +12,7 @@ public class SetIntakePosition extends Command {
     }
 
     protected void initialize() {
-        Robot.myIntake.setPos(pos);
+        Robot.myIntake.setPosition(pos);
     }
 
     protected void execute() {
