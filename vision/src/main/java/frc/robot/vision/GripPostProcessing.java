@@ -25,16 +25,19 @@ public class GripPostProcessing implements VisionPipeline {
 
     public void process(Mat source0) {
         grip.process(source0);
+        visionTargets = getVisionTargets(grip);
 
-        getVisionTargets();
+        rects = getMinAreaRects(grip);
+
         System.out.println(source0.cols() + " " + source0.rows());
         source0.copyTo(AugmentCamOutput);
 
-        // step draw contours
         for (int i = 0; i < grip.filterContoursOutput().size(); i++) {
+            // step draw contours
             Imgproc.drawContours(AugmentCamOutput, grip.filterContoursOutput(), i,
-                    new Scalar(120, 120, 120), 1);
+                    new Scalar(255, 120, 120), 1);
         }
+
         // step draw rectangles around visiontargets
         for (int i = 0; i < visionTargets.size(); i++) {
             Imgproc.rectangle(AugmentCamOutput, visionTargets.get(i).bounding.tl(),
@@ -59,19 +62,20 @@ public class GripPostProcessing implements VisionPipeline {
         }
     }
 
-    public void getVisionTargets() {
-        getMinAreaRects(); // fills rects array using contours
+    public ArrayList<VisionTarget> getVisionTargets(GripInterface grips) {
+        RotatedRect[] rects = getMinAreaRects(grip); // fills rects array using contours
 
-        sortRectsByX(); // in-place. This is to identify pairs. not the perfect solution
-        visionTargets = new ArrayList<VisionTarget>();
+        // in-place. This is to identify pairs. not the perfect solution
+        rects = sortRectsByX(rects);
+        ArrayList<VisionTarget> visionTargets = new ArrayList<VisionTarget>();
+
         for (int i = 0; i < rects.length - 1; i++) {
             if (isTarget(rects[i], rects[i + 1])) {
                 visionTargets.add(new VisionTarget(rects[i], rects[i + 1]));
             }
         }
 
-
-
+        return visionTargets;
     }
 
     public boolean isTarget(RotatedRect rect1, RotatedRect rect2) {
@@ -87,12 +91,13 @@ public class GripPostProcessing implements VisionPipeline {
             return false;
     }
 
-    public void getMinAreaRects() {
+    public RotatedRect[] getMinAreaRects(GripInterface grip) {
         rects = new RotatedRect[grip.filterContoursOutput().size()];
         for (int i = 0; i < grip.filterContoursOutput().size(); i++) {
             rects[i] = Imgproc
                     .minAreaRect(new MatOfPoint2f(grip.filterContoursOutput().get(i).toArray()));
         }
+        return rects;
     }
 
     class RectComparator implements Comparator<RotatedRect> {
@@ -101,9 +106,10 @@ public class GripPostProcessing implements VisionPipeline {
         }
     }
 
-    public void sortRectsByX() {
+    public RotatedRect[] sortRectsByX(RotatedRect[] rects) {
         // assuming this is smallest to largest for now, check RectComparator to fix
         Arrays.sort(rects, new RectComparator());
+        return rects;
     }
 
     public double correct_angle(RotatedRect rect) {
