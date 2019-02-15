@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.RobotMap;
 import frc.robot.commands.lift.ResetLiftEncoder;
 import frc.robot.util.BetterTalonSRX;
-import frc.robot.util.PIDGains;
+import frc.robot.util.BetterTalonSRXConfig;
 
 public class Lift extends Subsystem {
     public BetterTalonSRX controller;
@@ -14,16 +14,16 @@ public class Lift extends Subsystem {
     ShuffleboardTab tab;
 
     public Lift() {
-        controller = new BetterTalonSRX(RobotMap.LiftCan, false, true);
-        controller.ticksPerInch = 254.625;
+        BetterTalonSRXConfig config = new BetterTalonSRXConfig();
+        config.invert = false;
+        config.invertEncoder = true;
+        config.ticksPerInch = 254.625;
+        config.slot0.kP = 8.0;
+        config.slot0.allowableClosedloopError = 25;
+        config.motionCruiseVelocity = 150;
+        config.motionAcceleration = 300;
 
-        PIDGains gains = new PIDGains();
-        gains.kP = 8;
-        gains.kV = 150;
-        gains.kA = 300;
-        gains.maxError = 25;
-
-        controller.setPID(gains);
+        controller = new BetterTalonSRX(RobotMap.LiftCan, config);
 
         tab = Shuffleboard.getTab("Lift");
         controller.addShuffleboard(tab, "Lift");

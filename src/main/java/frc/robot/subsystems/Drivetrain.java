@@ -8,33 +8,35 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.RobotMap;
 import frc.robot.util.BetterTalonSRX;
+import frc.robot.util.BetterTalonSRXConfig;
 
 public class Drivetrain extends Subsystem {
-    static double speedModifer = -1.0;
+    BetterTalonSRX leftController;
+    BetterTalonSRX rightController;
 
-    BetterTalonSRX LeftWheels;
-    BetterTalonSRX RightWheels;
+    ShuffleboardTab tab;
 
     public NetworkTableEntry rampSet;
 
     public Drivetrain() {
-        LeftWheels = new BetterTalonSRX(RobotMap.LeftWheelsCan, false);
-        RightWheels = new BetterTalonSRX(RobotMap.RightWheelsCan, true);
-        // ShuffleboardTab tab = Shuffleboard.getTab("Drive");
-        // LeftWheels.addShuffleboard(tab, "Left Wheels");
-        // RightWheels.addShuffleboard(tab, "Right Wheels");
+        BetterTalonSRXConfig leftConfig = new BetterTalonSRXConfig();
+        leftController = new BetterTalonSRX(RobotMap.LeftWheelsCan, leftConfig);
 
-        // rampSet =
-        // Shuffleboard.getTab("Drive").add("Ramp", 0).withWidget(BuiltInWidgets.kNumberSlider)
-        // .withProperties(Map.of("Min", 0, "Max", 5)).getEntry();
+        BetterTalonSRXConfig rightConfig = new BetterTalonSRXConfig();
+        rightConfig.invert = true;
+        rightController = new BetterTalonSRX(RobotMap.RightWheelsCan, rightConfig);
+
+        tab = Shuffleboard.getTab("Drive");
+        leftController.addShuffleboard(tab, "Left Wheels");
+        rightController.addShuffleboard(tab, "Right Wheels");
     }
 
     public void initDefaultCommand() {
     }
 
     public void control(double x, double y) {
-        LeftWheels.set(x);
-        RightWheels.set(y);
+        leftController.set(x);
+        rightController.set(y);
         // System.out.println("Control: " + x + " " + y);
     }
 

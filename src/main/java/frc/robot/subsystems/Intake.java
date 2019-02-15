@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.RobotMap;
 import frc.robot.commands.intake.ResetIntakeEncoder;
 import frc.robot.util.BetterTalonSRX;
-import frc.robot.util.PIDGains;
+import frc.robot.util.BetterTalonSRXConfig;
 
 public class Intake extends Subsystem {
     BetterTalonSRX controller;
@@ -26,16 +26,16 @@ public class Intake extends Subsystem {
     }
 
     public Intake() {
-        controller = new BetterTalonSRX(RobotMap.IntakeCan, true, true);
-        controller.ticksPerInch = 4111;
+        BetterTalonSRXConfig config = new BetterTalonSRXConfig();
+        config.invert = true;
+        config.invertEncoder = true;
+        config.ticksPerInch = 4111;
+        config.slot0.kP = 8;
+        config.slot0.allowableClosedloopError = 5;
+        config.motionCruiseVelocity = 255;
+        config.motionAcceleration = 500;
 
-        PIDGains gains = new PIDGains();
-        gains.kP = 8;
-        gains.kV = 225;
-        gains.kA = 500;
-        gains.maxError = 5;
-
-        controller.setPID(gains);
+        controller = new BetterTalonSRX(RobotMap.IntakeCan, config);
 
         tab = Shuffleboard.getTab("Intake");
         controller.addShuffleboard(tab, "Intake");
