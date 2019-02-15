@@ -40,6 +40,7 @@ public class BetterTalonSRX {
         resetEncoder();
 
         sendable = new SendableSRX(this);
+        deadband = config.deadband;
 
         timeout = 0;
     }
