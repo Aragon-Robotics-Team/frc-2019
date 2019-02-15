@@ -1,9 +1,6 @@
 package frc.robot.subsystems;
 
-import java.util.Map;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.RobotMap;
@@ -15,8 +12,6 @@ public class Drivetrain extends Subsystem {
     BetterTalonSRX rightController;
 
     ShuffleboardTab tab;
-
-    public NetworkTableEntry rampSet;
 
     public Drivetrain() {
         BetterTalonSRXConfig leftConfig = new BetterTalonSRXConfig();
@@ -64,16 +59,9 @@ public class Drivetrain extends Subsystem {
 
     public void goForward(double x) {
         control(x, x);
-        // System.out.println("Control: " + x);
     }
 
     public void stop() {
         control(0, 0);
-        // System.out.println("stop");
-    }
-
-    public void setOpenloopRamp(double ramp) {
-        LeftWheels.configOpenloopRamp(ramp);
-        RightWheels.configOpenloopRamp(ramp);
     }
 }

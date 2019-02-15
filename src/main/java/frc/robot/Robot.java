@@ -2,8 +2,6 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import frc.robot.commands.SetOpenloopRamp;
 import frc.robot.commands.TestNavX;
 import frc.robot.commands.autonomous.AutonomousGroup;
 import frc.robot.commands.teleop.TeleopGroup;
@@ -84,7 +82,6 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void testInit() {
-		Shuffleboard.getTab("Drive").add(new SetOpenloopRamp());
 		TestNavX command = new TestNavX();
 		command.start();
 	}
