@@ -11,7 +11,7 @@ import frc.robot.util.BetterTalonSRX;
 import frc.robot.util.BetterTalonSRXConfig;
 
 public class Intake extends Subsystem {
-    BetterTalonSRX controller;
+    public BetterTalonSRX controller;
     Talon vacuumController;
     BetterSolenoid pistonController;
 
@@ -33,7 +33,7 @@ public class Intake extends Subsystem {
         config.invertEncoder = true;
         config.ticksPerInch = 4111;
         config.slot0.kP = 8;
-        config.slot0.allowableClosedloopError = 5;
+        config.slot0.allowableClosedloopError = 0;
         config.motionCruiseVelocity = 255;
         config.motionAcceleration = 500;
 

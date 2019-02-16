@@ -22,7 +22,7 @@ public class BetterTalonSRXConfig extends TalonSRXConfiguration {
         openloopRamp = 0.1;
         nominalOutputForward = 0.1;
         nominalOutputReverse = 0.1;
-        clearPositionOnLimitF = true;
+        clearPositionOnLimitR = true;
 
         // Todo: current limit, voltage compensation
     }
