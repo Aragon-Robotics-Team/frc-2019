@@ -15,9 +15,12 @@ public class Drivetrain extends Subsystem {
 
     public Drivetrain() {
         BetterTalonSRXConfig leftConfig = new BetterTalonSRXConfig();
+        leftConfig.isConnected = RobotMap.DRIVETRAIN_LEFT_MAIN_INSTALLED;
+        leftConfig.invert = false;
         leftController = new BetterTalonSRX(RobotMap.DRIVETRAIN_LEFT_MAIN_CAN, leftConfig);
 
         BetterTalonSRXConfig rightConfig = new BetterTalonSRXConfig();
+        rightConfig.isConnected = RobotMap.DRIVETRAIN_RIGHT_MAIN_INSTALLED;
         rightConfig.invert = true;
         rightController = new BetterTalonSRX(RobotMap.DRIVETRAIN_RIGHT_MAIN_CAN, rightConfig);
 
@@ -32,7 +35,6 @@ public class Drivetrain extends Subsystem {
     public void control(double x, double y) {
         leftController.set(x);
         rightController.set(y);
-        // System.out.println("Control: " + x + " " + y);
     }
 
     public void controlArcade(double x, double y) { // x is up/down; y is right/left

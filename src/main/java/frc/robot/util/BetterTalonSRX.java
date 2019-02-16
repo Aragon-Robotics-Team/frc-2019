@@ -1,5 +1,6 @@
 package frc.robot.util;
 
+import static org.mockito.Mockito.mock;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
@@ -15,6 +16,8 @@ public class BetterTalonSRX {
     double ticksPerInch;
     int timeout = 300; // milliseconds
     SendableSRX sendable;
+    double lastOutput;
+    boolean isReal;
 
     enum ControlType {
         Percent, Magic;
@@ -23,7 +26,7 @@ public class BetterTalonSRX {
     ControlType lastControlType = ControlType.Percent;
 
     public BetterTalonSRX(int deviceNumber, BetterTalonSRXConfig config) {
-        talon = new TalonSRX(deviceNumber);
+        talon = config.isConnected ? (new TalonSRX(deviceNumber)) : mock(TalonSRX.class);
         talon.configFactoryDefault(timeout);
 
         talon.configAllSettings(config, timeout);
@@ -43,6 +46,7 @@ public class BetterTalonSRX {
         deadband = config.deadband;
 
         timeout = 0;
+        isReal = config.isConnected;
     }
 
     public BetterTalonSRX(int deviceNumber) {
@@ -67,22 +71,22 @@ public class BetterTalonSRX {
 
     public void setPercent(double output) {
         lastControlType = ControlType.Percent;
+        lastOutput = deadband.calc(output);
 
-        output = deadband.calc(output);
-
-        talon.set(ControlMode.PercentOutput, output);
+        talon.set(ControlMode.PercentOutput, lastOutput);
     }
 
     public void setMagic(double output) {
         lastControlType = ControlType.Magic;
+        lastOutput = output;
 
-        talon.set(ControlMode.MotionMagic, output * ticksPerInch);
+        talon.set(ControlMode.MotionMagic, lastOutput * ticksPerInch);
     }
 
     // Getting Output
 
     public double get() {
-        return talon.getMotorOutputPercent();
+        return isReal ? talon.getMotorOutputPercent() : lastOutput;
     }
 
     // Encoder

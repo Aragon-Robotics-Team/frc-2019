@@ -15,6 +15,7 @@ public class Lift extends Subsystem {
 
     public Lift() {
         BetterTalonSRXConfig config = new BetterTalonSRXConfig();
+        config.isConnected = RobotMap.LIFT_INSTALLED;
         config.invert = false;
         config.invertEncoder = true;
         config.ticksPerInch = 254.625;

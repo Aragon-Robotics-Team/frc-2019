@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import static org.mockito.Mockito.mock;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -29,6 +30,7 @@ public class Intake extends Subsystem {
 
     public Intake() {
         BetterTalonSRXConfig config = new BetterTalonSRXConfig();
+        config.isConnected = RobotMap.INTAKE_INSTALLED;
         config.invert = true;
         config.invertEncoder = true;
         config.ticksPerInch = 4111;
@@ -43,10 +45,13 @@ public class Intake extends Subsystem {
         controller.addShuffleboard(tab, "Intake");
         tab.add(new ResetIntakeEncoder());
 
-        vacuumController = new Talon(RobotMap.INTAKE_VACUUM_PWM);
+        vacuumController =
+                RobotMap.INTAKE_VACUUM_INSTALLED ? (new Talon(RobotMap.INTAKE_VACUUM_PWM))
+                        : mock(Talon.class);
         vacuumController.setSafetyEnabled(false);
 
-        pistonController = new BetterSolenoid(RobotMap.INTAKE_PISTON);
+        pistonController =
+                new BetterSolenoid(RobotMap.INTAKE_PISTON_PORT, RobotMap.INTAKE_PISTON_INSTALLED);
 
         setVacuum(false);
         setPosition(Position.Stowed);
