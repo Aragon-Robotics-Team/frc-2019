@@ -47,6 +47,7 @@ public class BetterTalonSRX {
 
         timeout = 0;
         isReal = config.isConnected;
+        ticksPerInch = config.ticksPerInch;
     }
 
     public BetterTalonSRX(int deviceNumber) {

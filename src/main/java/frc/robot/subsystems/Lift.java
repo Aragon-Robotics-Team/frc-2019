@@ -13,6 +13,16 @@ public class Lift extends Subsystem {
 
     ShuffleboardTab tab;
 
+    public enum Position {
+        HATCH_1(0.0), PORT_1(6.0), HATCH_2(12.0), PORT_2(24.0);
+
+        double pos;
+
+        private Position(double pos) {
+            this.pos = pos;
+        }
+    }
+
     public Lift() {
         BetterTalonSRXConfig config = new BetterTalonSRXConfig();
         config.isConnected = RobotMap.LIFT_INSTALLED;
@@ -38,5 +48,9 @@ public class Lift extends Subsystem {
 
     public void resetEncoder() {
         controller.resetEncoder();
+    }
+
+    public void setPosition(Position position) {
+        controller.setMagic(position.pos);
     }
 }
