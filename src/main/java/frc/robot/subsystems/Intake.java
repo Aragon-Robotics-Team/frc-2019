@@ -19,7 +19,7 @@ public class Intake extends Subsystem {
     ShuffleboardTab tab;
 
     public enum Position {
-        Stowed(0.0), Intake(0.6), Horizontal(1.0);
+        Stowed(0.0), Intake(0.75), Horizontal(1.0);
 
         double pos;
 
@@ -33,7 +33,7 @@ public class Intake extends Subsystem {
         config.isConnected = RobotMap.INTAKE_INSTALLED;
         config.invert = true;
         config.invertEncoder = true;
-        config.ticksPerInch = 4111;
+        config.ticksPerInch = 4552;
         config.slot0.kP = 8;
         config.slot0.allowableClosedloopError = 0;
         config.motionCruiseVelocity = 255;

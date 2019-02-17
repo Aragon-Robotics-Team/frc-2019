@@ -102,6 +102,7 @@ public class BetterTalonSRX {
 
     public void resetEncoder() {
         talon.setSelectedSensorPosition(0, 0, timeout);
+        setMagic(0.0);
     }
 
     public double getInch() {
@@ -145,5 +146,7 @@ class SendableSRX extends SendableBase {
 
         builder.addDoubleProperty("Wanted Inches", talon::getSet, talon::set);
         builder.addDoubleProperty("Current Inches", talon::getInch, null);
+
+        builder.addBooleanProperty("Reverse Limit", talon::getReverseLimitSwitch, null);
     }
 }
