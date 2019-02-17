@@ -4,8 +4,11 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import frc.robot.commands.intake.HoldVacuumOn;
+import frc.robot.commands.intake.QuickPiston;
 import frc.robot.commands.intake.SetIntakePosition;
+import frc.robot.commands.lift.SetLiftPosition;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Lift;
 import frc.robot.util.Deadband;
 
 public class Attack3 implements OI {
@@ -16,6 +19,10 @@ public class Attack3 implements OI {
 	Button b5;
 	Button trigger;
 	Button b3;
+	Button b6;
+	Button b7;
+	Button b10;
+	Button b11;
 	// Button b3;
 	// Button b2;
 	// Button b10;
@@ -38,10 +45,20 @@ public class Attack3 implements OI {
 		b3 = new JoystickButton(mainJoystick, 3);
 		trigger = new JoystickButton(mainJoystick, 1);
 
+		b6 = new JoystickButton(mainJoystick, 6);
+		b7 = new JoystickButton(mainJoystick, 7);
+		b10 = new JoystickButton(mainJoystick, 10);
+		b11 = new JoystickButton(mainJoystick, 11);
+
 		b4.whenPressed(new SetIntakePosition(Intake.Position.Stowed));
 		b5.whenPressed(new SetIntakePosition(Intake.Position.Horizontal));
 		b3.whenPressed(new SetIntakePosition(Intake.Position.Intake));
 		trigger.whileHeld(new HoldVacuumOn());
+
+		b6.whenPressed(new QuickPiston());
+		b7.whenPressed(new SetLiftPosition(Lift.Position.HATCH_1));
+		b10.whenPressed(new SetLiftPosition(Lift.Position.HATCH_2));
+		b11.whenPressed(new SetLiftPosition(Lift.Position.PORT_1));
 
 		// b3 = new JoystickButton(mainJoystick, 3);
 		// b2 = new JoystickButton(mainJoystick, 2);

@@ -19,6 +19,7 @@ public class Pneumatics extends Subsystem {
     }
 
     public void setCompressor(boolean enabled) {
+        System.out.println("Compressor: " + enabled);
         compressor.setClosedLoopControl(enabled);
         this.enabled = enabled;
     }
