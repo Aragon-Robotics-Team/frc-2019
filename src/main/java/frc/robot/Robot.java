@@ -25,11 +25,14 @@ public class Robot extends TimedRobot {
 	public static Lift myLift = new Lift();
 	public static Intake myIntake = new Intake();
 
+	public static OI m_oi_2;
+
 	// Ran once when Game starts
 	@Override
 	public void robotInit() {
 		m_oi = new Attack3(RobotMap.ATTACK3_JOYSTICK_0);
-		// m_oi=new SplitAttack3Controller(RobotMap.ATTACK3_JOYSTICK_0,RobotMap.ATTACK3_JOYSTICK_1);
+		m_oi_2 = new Attack3(RobotMap.ATTACK3_JOYSTICK_1);
+		// m_oi=newSplitAttack3Controller(RobotMap.ATTACK3_JOYSTICK_0,RobotMap.ATTACK3_JOYSTICK_1);
 		// m_oi = new F310(RobotMap.F310_JOYSTICK_0);
 
 		System.out.println("init");
@@ -43,6 +46,7 @@ public class Robot extends TimedRobot {
 	public void disabledInit() {
 		myAngle.disableAndReset();
 		myPneumatics.setCompressor(false);
+		myIntake.disable();
 	}
 
 	@Override

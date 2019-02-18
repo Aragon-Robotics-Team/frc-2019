@@ -11,6 +11,11 @@ public class Deadband {
         this.deadband = deadband;
     }
 
+    public double calcAndSquare(double input) {
+        double output = calc(input);
+        return Math.copySign(output * output, output);
+    }
+
     public double calc(double input) {
         if (isDeadband(input)) {
             return 0;

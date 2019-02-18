@@ -1,6 +1,9 @@
 package frc.robot.subsystems;
 
 import static org.mockito.Mockito.mock;
+
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -61,6 +64,7 @@ public class Intake extends Subsystem {
     }
 
     public void setPosition(Position position) {
+        controller.setBrakeMode(true);
         controller.setMagic(position.pos);
     }
 
@@ -74,6 +78,10 @@ public class Intake extends Subsystem {
 
     public void setPiston(boolean on) {
         pistonController.set(on);
+    }
+
+    public void disable() {
+        controller.setBrakeMode(false);
     }
 
     public void initDefaultCommand() {

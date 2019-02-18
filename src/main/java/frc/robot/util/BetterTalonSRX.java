@@ -1,6 +1,9 @@
 package frc.robot.util;
 
 import static org.mockito.Mockito.mock;
+
+import java.util.function.Consumer;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
@@ -8,6 +11,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.SendableBase;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 public class BetterTalonSRX {
     Deadband deadband;
@@ -124,8 +128,15 @@ public class BetterTalonSRX {
     public boolean getReverseLimitSwitch() {
         return talon.getSensorCollection().isRevLimitSwitchClosed();
     }
-}
 
+    public void setBrakeMode(boolean brake) {
+        if (brake) {
+            talon.setNeutralMode(NeutralMode.Brake);
+        } else {
+            talon.setNeutralMode(NeutralMode.Coast);
+        }
+    }
+}
 
 class SendableSRX extends SendableBase {
     BetterTalonSRX talon;

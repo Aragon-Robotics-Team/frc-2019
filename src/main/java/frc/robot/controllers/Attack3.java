@@ -23,12 +23,14 @@ public class Attack3 implements OI {
 	Button b7;
 	Button b10;
 	Button b11;
+	Button b8;
+	Button b9;
 	// Button b3;
 	// Button b2;
 	// Button b10;
 	// Button b7;
 
-	static Deadband deadband = new Deadband(0, 0.1);
+	static Deadband deadband = new Deadband(0, 0.15);
 
 	// button.whenPressed(new ExampleCommand());
 
@@ -50,15 +52,23 @@ public class Attack3 implements OI {
 		b10 = new JoystickButton(mainJoystick, 10);
 		b11 = new JoystickButton(mainJoystick, 11);
 
+		b8 = new JoystickButton(mainJoystick, 8);
+		b9 = new JoystickButton(mainJoystick, 9);
+
 		b4.whenPressed(new SetIntakePosition(Intake.Position.Stowed));
 		b5.whenPressed(new SetIntakePosition(Intake.Position.Horizontal));
 		b3.whenPressed(new SetIntakePosition(Intake.Position.Intake));
-		trigger.whileHeld(new HoldVacuumOn());
+		// trigger.whileHeld(new HoldVacuumOn());
 
 		b6.whenPressed(new QuickPiston());
 		b7.whenPressed(new SetLiftPosition(Lift.Position.HATCH_1));
 		b10.whenPressed(new SetLiftPosition(Lift.Position.HATCH_2));
 		b11.whenPressed(new SetLiftPosition(Lift.Position.PORT_1));
+
+		HoldVacuumOn vacuum = new HoldVacuumOn();
+
+		b8.whenPressed(vacuum);
+		b9.cancelWhenPressed(vacuum);
 
 		// b3 = new JoystickButton(mainJoystick, 3);
 		// b2 = new JoystickButton(mainJoystick, 2);
@@ -87,7 +97,7 @@ public class Attack3 implements OI {
 
 	public double getLeftRotation() {
 		// System.out.println("rotate" + mainJoystick.getRawAxis(0));
-		return deadband.calc(mainJoystick.getRawAxis(0));
+		return deadband.calcAndSquare(mainJoystick.getRawAxis(0));
 	}
 
 	public double getRightSpeed() {
