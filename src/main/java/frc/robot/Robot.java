@@ -8,11 +8,12 @@ import frc.robot.commands.teleop.TeleopGroup;
 import frc.robot.controllers.Attack3;
 import frc.robot.controllers.OI;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.NavX;
 import frc.robot.subsystems.Pneumatics;
 import frc.robot.subsystems.TurnToAngle;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Vision;
 
 public class Robot extends TimedRobot {
 	public static OI m_oi;
@@ -24,6 +25,7 @@ public class Robot extends TimedRobot {
 	public static Pneumatics myPneumatics = new Pneumatics();
 	public static Lift myLift = new Lift();
 	public static Intake myIntake = new Intake();
+	public static Vision myVision = new Vision();
 
 	public static OI m_oi_2;
 

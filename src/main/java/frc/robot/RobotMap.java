@@ -16,6 +16,8 @@ public class RobotMap {
 	public static final int INTAKE_VACUUM_PWM = 0;
 	public static final int INTAKE_PISTON_PORT = 0;
 
+	public static final int VISION_LED_RELAY_PORT = 0;
+
 	public static final boolean PNEUMATICS_CONTROL_MODULE_INSTALLED = true;
 
 	public static final boolean DRIVETRAIN_LEFT_MAIN_INSTALLED = true;
@@ -28,4 +30,6 @@ public class RobotMap {
 	public static final boolean INTAKE_PISTON_INSTALLED = true;
 
 	public static final boolean NAVX_INSTALLED = true;
+
+	public static final boolean VISION_LED_RELAY_INSTALLED = true;
 }
