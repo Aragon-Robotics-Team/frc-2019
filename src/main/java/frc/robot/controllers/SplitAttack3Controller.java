@@ -1,6 +1,6 @@
 package frc.robot.controllers;
 
-public class SplitAttack3Controller implements OI {
+public class SplitAttack3Controller extends OI {
     Attack3 leftJoystick;
     Attack3 rightJoystick;
 
@@ -23,10 +23,5 @@ public class SplitAttack3Controller implements OI {
 
     public boolean getSlowMode() {
         return leftJoystick.getSlowMode() || rightJoystick.getSlowMode();
-    }
-
-    public double getAngle() {
-        double angle = Math.toDegrees(Math.atan2(getLeftRotation(), getLeftSpeed()));
-        return angle;
     }
 }

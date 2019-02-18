@@ -50,9 +50,11 @@ public class Drivetrain extends Subsystem {
 
         // Implementation stolen from DifferentialDrive.class WPILib
 
-        double maxInput = Math.copySign(Math.max(Math.abs(x), Math.abs(y)), x);
+        final double epsilon = 0.0001;
 
-        if (x * y >= 0.0) { // If both sign are the same
+        double maxInput = Math.copySign(Math.max(Math.abs(x), Math.abs(y)), (x + epsilon));
+
+        if ((x + epsilon) * y >= 0.0) { // If both sign are the same
             control(maxInput, x - y);
         } else {
             control(x + y, maxInput);

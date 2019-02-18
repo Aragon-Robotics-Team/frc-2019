@@ -11,7 +11,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Lift;
 import frc.robot.util.Deadband;
 
-public class Attack3 implements OI {
+public class Attack3 extends OI {
 	Joystick mainJoystick;
 
 	Button slowModeButton;
@@ -108,9 +108,4 @@ public class Attack3 implements OI {
 		return slowModeButton.get();
 	}
 
-	public double getAngle() {
-		double angle = Math.toDegrees(Math.atan2(getLeftRotation(), getLeftSpeed()));
-		// SmartDashboard.putNumber("Angle", angle);
-		return angle;
-	}
 }

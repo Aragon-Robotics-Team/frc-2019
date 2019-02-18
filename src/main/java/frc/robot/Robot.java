@@ -37,6 +37,8 @@ public class Robot extends TimedRobot {
 		// m_oi=newSplitAttack3Controller(RobotMap.ATTACK3_JOYSTICK_0,RobotMap.ATTACK3_JOYSTICK_1);
 		// m_oi = new F310(RobotMap.F310_JOYSTICK_0);
 
+		m_oi.addShuffleboard();
+
 		System.out.println("init");
 	}
 

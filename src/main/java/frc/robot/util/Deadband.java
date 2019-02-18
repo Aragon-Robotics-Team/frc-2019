@@ -7,7 +7,7 @@ public class Deadband {
 
     public Deadband(double minValue, double deadband) {
         this.minValue = minValue;
-        m = calcM(minValue);
+        m = calcM(minValue, deadband);
         this.deadband = deadband;
     }
 
@@ -26,7 +26,7 @@ public class Deadband {
         }
     }
 
-    private double calcM(double minValue) {
+    private static double calcM(double minValue, double deadband) {
         return (1.0 - minValue) / (1 - deadband);
     }
 

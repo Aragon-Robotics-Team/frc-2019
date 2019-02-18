@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import frc.robot.commands.teleop.ControlArcadeDrivetrain;
 import frc.robot.commands.teleop.ControlDrivetrain;
 
-public class F310 implements OI {
+public class F310 extends OI {
 	Joystick mainJoystick;
 
 	Button buttonDown;
@@ -49,9 +49,5 @@ public class F310 implements OI {
 
 	public boolean getSlowMode() {
 		return false;
-	}
-
-	public double getAngle() {
-		return Math.toDegrees(Math.atan2(getLeftRotation(), getLeftSpeed()));
 	}
 }
