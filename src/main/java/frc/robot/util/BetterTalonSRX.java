@@ -1,9 +1,6 @@
 package frc.robot.util;
 
 import static org.mockito.Mockito.mock;
-
-import java.util.function.Consumer;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
@@ -12,6 +9,7 @@ import edu.wpi.first.wpilibj.SendableBase;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.SensorCollection;
 
 public class BetterTalonSRX {
     Deadband deadband;
@@ -22,6 +20,7 @@ public class BetterTalonSRX {
     SendableSRX sendable;
     double lastOutput;
     boolean isReal;
+    SensorCollection sensorCollection;
 
     enum ControlType {
         Percent, Magic;
@@ -48,6 +47,8 @@ public class BetterTalonSRX {
 
         sendable = new SendableSRX(this);
         deadband = config.deadband;
+        sensorCollection =
+                config.isConnected ? talon.getSensorCollection() : mock(SensorCollection.class);
 
         timeout = 0;
         isReal = config.isConnected;
@@ -122,11 +123,11 @@ public class BetterTalonSRX {
     // Limit Switch
 
     public boolean getForwardLimitSwitch() {
-        return talon.getSensorCollection().isFwdLimitSwitchClosed();
+        return sensorCollection.isFwdLimitSwitchClosed();
     }
 
     public boolean getReverseLimitSwitch() {
-        return talon.getSensorCollection().isRevLimitSwitchClosed();
+        return sensorCollection.isRevLimitSwitchClosed();
     }
 
     public void setBrakeMode(boolean brake) {
@@ -137,6 +138,7 @@ public class BetterTalonSRX {
         }
     }
 }
+
 
 class SendableSRX extends SendableBase {
     BetterTalonSRX talon;

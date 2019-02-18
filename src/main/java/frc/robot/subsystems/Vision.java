@@ -3,10 +3,14 @@ package frc.robot.subsystems;
 import static org.mockito.Mockito.mock;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.RobotMap;
 
 public class Vision extends Subsystem {
     Relay ledController;
+
+    ShuffleboardTab tab;
 
     public Vision() {
         ledController =
@@ -14,6 +18,9 @@ public class Vision extends Subsystem {
                         : mock(Relay.class);
         ledController.setDirection(Relay.Direction.kForward);
         ledController.setSafetyEnabled(false);
+
+        tab = Shuffleboard.getTab("Vision");
+        tab.add(ledController);
 
         setLeds(false);
     }
