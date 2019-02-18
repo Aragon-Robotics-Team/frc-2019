@@ -19,7 +19,7 @@ public class Intake extends Subsystem {
     ShuffleboardTab tab;
 
     public enum Position {
-        Stowed(0.0), Intake(0.75), Horizontal(1.0);
+        Stowed(0.0), Intake(0.67), Horizontal(1.0);
 
         double pos;
 
@@ -45,13 +45,12 @@ public class Intake extends Subsystem {
         controller.addShuffleboard(tab, "Intake");
         tab.add(new ResetIntakeEncoder());
 
-        vacuumController =
-                RobotMap.INTAKE_VACUUM_INSTALLED ? (new Talon(RobotMap.INTAKE_VACUUM_PWM))
-                        : mock(Talon.class);
+        vacuumController = RobotMap.INTAKE_VACUUM_INSTALLED ? (new Talon(RobotMap.INTAKE_VACUUM_PWM))
+                : mock(Talon.class);
         vacuumController.setSafetyEnabled(false);
+        vacuumController.setInverted(true);
 
-        pistonController =
-                new BetterSolenoid(RobotMap.INTAKE_PISTON_PORT, RobotMap.INTAKE_PISTON_INSTALLED);
+        pistonController = new BetterSolenoid(RobotMap.INTAKE_PISTON_PORT, RobotMap.INTAKE_PISTON_INSTALLED);
 
         setVacuum(false);
         setPosition(Position.Stowed);

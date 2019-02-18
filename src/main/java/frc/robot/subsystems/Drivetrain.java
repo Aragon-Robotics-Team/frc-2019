@@ -33,8 +33,8 @@ public class Drivetrain extends Subsystem {
     }
 
     public void control(double x, double y) {
-        leftController.set(x);
-        rightController.set(y);
+        leftController.setPercent(x);
+        rightController.setPercent(y);
     }
 
     public void controlArcade(double x, double y) { // x is up/down; y is right/left
