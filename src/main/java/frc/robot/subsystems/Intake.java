@@ -1,9 +1,6 @@
 package frc.robot.subsystems;
 
 import static org.mockito.Mockito.mock;
-
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -22,7 +19,7 @@ public class Intake extends Subsystem {
     ShuffleboardTab tab;
 
     public enum Position {
-        Stowed(0.0), Intake(0.67), Horizontal(1.0);
+        Stowed(0.0), Intake(0.6), Horizontal(1.0);
 
         double pos;
 
@@ -48,12 +45,14 @@ public class Intake extends Subsystem {
         controller.addShuffleboard(tab, "Intake");
         tab.add(new ResetIntakeEncoder());
 
-        vacuumController = RobotMap.INTAKE_VACUUM_INSTALLED ? (new Talon(RobotMap.INTAKE_VACUUM_PWM))
-                : mock(Talon.class);
+        vacuumController =
+                RobotMap.INTAKE_VACUUM_INSTALLED ? (new Talon(RobotMap.INTAKE_VACUUM_PWM))
+                        : mock(Talon.class);
         vacuumController.setSafetyEnabled(false);
         vacuumController.setInverted(true);
 
-        pistonController = new BetterSolenoid(RobotMap.INTAKE_PISTON_PORT, RobotMap.INTAKE_PISTON_INSTALLED);
+        pistonController =
+                new BetterSolenoid(RobotMap.INTAKE_PISTON_PORT, RobotMap.INTAKE_PISTON_INSTALLED);
 
         setVacuum(false);
         setPosition(Position.Stowed);
