@@ -21,6 +21,11 @@ public class RobotMap {
 
 	public static final int VISION_LED_RELAY_PORT = 0;
 
+	public static final int RGB_LED_MAIN_PORT = 1;
+	public static final int RGB_LED_RED_PORT = 4;
+	public static final int RGB_LED_GREEN_PORT = 2;
+	public static final int RGB_LED_BLUE_PORT = 3;
+
 	public static final boolean PNEUMATICS_CONTROL_MODULE_INSTALLED = true;
 
 	public static final boolean DRIVETRAIN_LEFT_MAIN_INSTALLED = true;

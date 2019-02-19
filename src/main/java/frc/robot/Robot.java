@@ -12,6 +12,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.NavX;
 import frc.robot.subsystems.Pneumatics;
+import frc.robot.subsystems.RGB;
 import frc.robot.subsystems.TurnToAngle;
 import frc.robot.subsystems.Vision;
 
@@ -26,6 +27,7 @@ public class Robot extends TimedRobot {
 	public static Lift myLift = new Lift();
 	public static Intake myIntake = new Intake();
 	public static Vision myVision = new Vision();
+	public static RGB myRGB = new RGB();
 
 	// Ran once when Game starts
 	@Override
