@@ -3,6 +3,7 @@ package frc.robot.controllers;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import frc.robot.RobotMap;
 import frc.robot.commands.intake.HoldVacuumOn;
 import frc.robot.commands.intake.QuickPiston;
 import frc.robot.commands.intake.SetIntakePosition;
@@ -92,12 +93,12 @@ public class Attack3 extends OI {
 
 	public double getLeftSpeed() {
 		// System.out.println("left" + mainJoystick.getRawAxis(1));
-		return -1.0 * deadband.calc(mainJoystick.getRawAxis(1));
+		return -1.0 * deadband.calc(mainJoystick.getRawAxis(1), RobotMap.JOYSTICK_SQUARE_THROTTLE);
 	}
 
 	public double getLeftRotation() {
 		// System.out.println("rotate" + mainJoystick.getRawAxis(0));
-		return deadband.calcAndSquare(mainJoystick.getRawAxis(0));
+		return deadband.calc(mainJoystick.getRawAxis(0), RobotMap.JOYSTICK_SQUARE_TURN);
 	}
 
 	public double getRightSpeed() {

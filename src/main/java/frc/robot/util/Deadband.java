@@ -11,19 +11,26 @@ public class Deadband {
         this.deadband = deadband;
     }
 
-    public double calcAndSquare(double input) {
-        double output = calc(input);
-        return Math.copySign(output * output, output);
+    public double calc(double input) {
+        return calc(input, false);
     }
 
-    public double calc(double input) {
+    public double calc(double input, boolean square) {
+        double output;
+
         if (isDeadband(input)) {
-            return 0;
+            output = 0;
         } else if (input > 0) {
-            return m * (input - deadband) + minValue;
+            output = m * (input - deadband) + minValue;
         } else {
-            return m * (input + deadband) - minValue;
+            output = m * (input + deadband) - minValue;
         }
+
+        if (square) {
+            output = Math.copySign(output * output, output);
+        }
+
+        return output;
     }
 
     private static double calcM(double minValue, double deadband) {

@@ -5,6 +5,9 @@ public class RobotMap {
 	public static final int ATTACK3_JOYSTICK_0 = 1;
 	public static final int ATTACK3_JOYSTICK_1 = 4;
 
+	public static final boolean JOYSTICK_SQUARE_THROTTLE = true;
+	public static final boolean JOYSTICK_SQUARE_TURN = true;
+
 	public static final int DRIVETRAIN_LEFT_MAIN_CAN = 2;
 	public static final int DRIVETRAIN_RIGHT_MAIN_CAN = 6;
 
