@@ -14,7 +14,9 @@ public class RGB extends Subsystem {
     Talon blueController;
     Talon greenController;
 
-    float[] color;
+    boolean on;
+    float[] hsv = new float[3];
+    float[] rgb = new float[3];
 
     public RGB() {
         mainController = new Talon(RobotMap.RGB_LED_MAIN_PORT);
@@ -22,40 +24,79 @@ public class RGB extends Subsystem {
         blueController = new Talon(RobotMap.RGB_LED_BLUE_PORT);
         greenController = new Talon(RobotMap.RGB_LED_GREEN_PORT);
 
-        color = new float[3];
-
         var tab = Shuffleboard.getTab("RGB");
         tab.add("RGBController", new RGBSendable(this));
         tab.add("Main", mainController);
         tab.add("Red", redController);
         tab.add("Blue", blueController);
         tab.add("Green", greenController);
+
+        disable();
     }
+
+    // HSV
+
+    public void setHSV(float h) {
+        setHSV(new float[] {h, 1.0f, 1.0f});
+    }
+
+    public void setHSV(float[] hsv) {
+        this.hsv = hsv;
+
+        Color.getHSBColor(hsv[0], hsv[0], hsv[0]).getRGBColorComponents(rgb);
+        setRawRGB();
+    }
+
+    // RGB
+
+    public void setRGB(float[] rgb) {
+        setOn(true);
+        hsv = new float[3];
+
+        this.rgb = rgb;
+        setRawRGB();
+    }
+
+    private void setRawRGB() {
+        redController.set(1.0 - rgb[0]);
+        blueController.set(1.0 - rgb[1]);
+        greenController.set(1.0 - rgb[2]);
+    }
+
+    // Double
 
     public void setHSV(double h) {
-        setHSV(h, 1.0, 1.0);
+        setHSV((float) h);
     }
 
-    public void setHSV(double h, double s, double v) {
-        new Color(Color.HSBtoRGB((float) h, (float) s, (float) v)).getRGBColorComponents(color);
-        setRGB(color[0], color[1], color[2]);
+    public void setHSV(double[] hsv) {
+        setHSV(new float[] {(float) hsv[0], (float) hsv[1], (float) hsv[2]});
     }
 
-    public void setRGB(double r, double g, double b) {
-        on();
-        System.out.println(r + " " + g + " " + b);
-
-        redController.set(1.0 - r);
-        blueController.set(1.0 - g);
-        greenController.set(1.0 - b);
+    public void setRGB(double[] rgb) {
+        setRGB(new float[] {(float) rgb[0], (float) rgb[1], (float) rgb[2]});
     }
 
-    public void on() {
-        mainController.set(1.0);
+    // On - Off
+
+    public void setOn(boolean on) {
+        this.on = on;
+        if (on) {
+            mainController.set(1.0);
+        } else {
+            mainController.set(0.0);
+        }
     }
 
-    public void off() {
-        mainController.set(0.0);
+    public boolean isOn() {
+        return on;
+    }
+
+    public void disable() {
+        rgb = new float[3];
+
+        setOn(false);
+
         redController.set(0.0);
         blueController.set(0.0);
         greenController.set(0.0);
@@ -68,38 +109,22 @@ public class RGB extends Subsystem {
 
 class RGBSendable extends SendableBase {
     RGB rgb;
-    double hue;
-    boolean on;
 
     public RGBSendable(RGB rgb) {
         this.rgb = rgb;
-        hue = 0;
     }
 
-    public void set(double h) {
-        hue = h;
-        rgb.setHSV(h);
+    public double[] getRGB() {
+        return new double[] {rgb.rgb[0], rgb.rgb[1], rgb.rgb[2]};
     }
 
-    public double get() {
-        return hue;
-    }
-
-    public boolean getOn() {
-        return on;
-    }
-
-    public void setOn(boolean o) {
-        if (o) {
-            rgb.on();
-        } else {
-            rgb.off();
-        }
-        this.on = o;
+    public double[] getHSV() {
+        return new double[] {rgb.hsv[0], rgb.hsv[1], rgb.hsv[2]};
     }
 
     public void initSendable(SendableBuilder builder) {
-        builder.addDoubleProperty("Hue", this::get, this::set);
-        builder.addBooleanProperty("On", this::getOn, this::setOn);
+        builder.addBooleanProperty("On", rgb::isOn, rgb::setOn);
+        builder.addDoubleArrayProperty("HSV", this::getRGB, rgb::setHSV);
+        builder.addDoubleArrayProperty("RGB", this::getHSV, rgb::setRGB);
     }
 }
