@@ -5,8 +5,11 @@ import edu.wpi.first.wpilibj.SendableBase;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import frc.robot.RobotMap;
+import frc.robot.commands.rgb.HueCycle;
+import frc.robot.commands.rgb.TriangleWave;
 
 public class RGB extends Subsystem {
     Talon mainController;
@@ -17,6 +20,9 @@ public class RGB extends Subsystem {
     boolean on;
     float[] hsv = new float[3];
     float[] rgb = new float[3];
+    double brightness = 1.0;
+
+    ShuffleboardTab tab;
 
     public RGB() {
         mainController = new Talon(RobotMap.RGB_LED_MAIN_PORT);
@@ -24,7 +30,7 @@ public class RGB extends Subsystem {
         blueController = new Talon(RobotMap.RGB_LED_BLUE_PORT);
         greenController = new Talon(RobotMap.RGB_LED_GREEN_PORT);
 
-        var tab = Shuffleboard.getTab("RGB");
+        tab = Shuffleboard.getTab("RGB");
         tab.add("RGBController", new RGBSendable(this));
         tab.add("Main", mainController);
         tab.add("Red", redController);
@@ -32,6 +38,11 @@ public class RGB extends Subsystem {
         tab.add("Green", greenController);
 
         disable();
+    }
+
+    public void init() {
+        tab.add(new HueCycle(10.0));
+        tab.add(new TriangleWave(60.0 / 125.0));
     }
 
     // HSV
@@ -43,7 +54,7 @@ public class RGB extends Subsystem {
     public void setHSV(float[] hsv) {
         this.hsv = hsv;
 
-        Color.getHSBColor(hsv[0], hsv[0], hsv[0]).getRGBColorComponents(rgb);
+        Color.getHSBColor(hsv[0], hsv[1], hsv[2]).getRGBColorComponents(rgb);
         setRawRGB();
     }
 
@@ -82,7 +93,7 @@ public class RGB extends Subsystem {
     public void setOn(boolean on) {
         this.on = on;
         if (on) {
-            mainController.set(1.0);
+            mainController.set(brightness);
         } else {
             mainController.set(0.0);
         }
@@ -102,6 +113,11 @@ public class RGB extends Subsystem {
         greenController.set(0.0);
     }
 
+    public void setBrightness(double brightness) {
+        this.brightness = brightness;
+        setOn(on);
+    }
+
     public void initDefaultCommand() {
     }
 }
@@ -114,17 +130,21 @@ class RGBSendable extends SendableBase {
         this.rgb = rgb;
     }
 
-    public double[] getRGB() {
-        return new double[] {rgb.rgb[0], rgb.rgb[1], rgb.rgb[2]};
-    }
-
-    public double[] getHSV() {
-        return new double[] {rgb.hsv[0], rgb.hsv[1], rgb.hsv[2]};
-    }
-
     public void initSendable(SendableBuilder builder) {
         builder.addBooleanProperty("On", rgb::isOn, rgb::setOn);
-        builder.addDoubleArrayProperty("HSV", this::getRGB, rgb::setHSV);
-        builder.addDoubleArrayProperty("RGB", this::getHSV, rgb::setRGB);
+
+        builder.addDoubleProperty("Red", (() -> (double) rgb.rgb[0]),
+                ((r) -> rgb.setRGB(new float[] {(float) r, rgb.rgb[1], rgb.rgb[2]})));
+        builder.addDoubleProperty("Blue", (() -> (double) rgb.rgb[1]),
+                ((b) -> rgb.setRGB(new float[] {rgb.rgb[0], (float) b, rgb.rgb[2]})));
+        builder.addDoubleProperty("Green", (() -> (double) rgb.rgb[2]),
+                ((g) -> rgb.setRGB(new float[] {rgb.rgb[0], rgb.rgb[1], (float) g})));
+
+        builder.addDoubleProperty("Hue", (() -> (double) rgb.hsv[0]),
+                ((h) -> rgb.setHSV(new float[] {(float) h, rgb.hsv[1], rgb.hsv[2]})));
+        builder.addDoubleProperty("Sat", (() -> (double) rgb.hsv[1]),
+                ((s) -> rgb.setHSV(new float[] {rgb.hsv[0], (float) s, rgb.hsv[2]})));
+        builder.addDoubleProperty("Val", (() -> (double) rgb.hsv[2]),
+                ((v) -> rgb.setHSV(new float[] {rgb.hsv[0], rgb.hsv[1], (float) v})));
     }
 }

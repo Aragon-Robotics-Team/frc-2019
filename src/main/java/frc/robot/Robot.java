@@ -38,6 +38,7 @@ public class Robot extends TimedRobot {
 		// m_oi = new F310(RobotMap.F310_JOYSTICK_0);
 
 		m_oi.addShuffleboard();
+		myRGB.init();
 
 		System.out.println("init");
 	}
