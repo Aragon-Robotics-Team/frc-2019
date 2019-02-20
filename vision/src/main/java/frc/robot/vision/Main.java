@@ -25,6 +25,8 @@ import edu.wpi.cscore.VideoSource;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.vision.VisionThread;
+import frc.robot.vision.GripPostProcessing.VisionTarget;
+
 import org.opencv.core.Mat;
 
 public final class Main {
@@ -197,13 +199,12 @@ public final class Main {
 
 		// start image processing on camera 0 if present
 		if (cameras.size() >= 1) {
-			VisionThread visionThread =
-					new VisionThread(cameras.get(0), new GripPostProcessing(), pipeline -> {
-						// do something with pipeline results
-						System.out.println("start callback pipeline");
-						AugmentCam.putFrame(pipeline.AugmentCamOutput);
-						// System.out.println(pipeline.grip.filterContoursOutput());
-					});
+			VisionThread visionThread = new VisionThread(cameras.get(0), new GripPostProcessing(), pipeline -> {
+				// do something with pipeline results
+				System.out.println("start callback pipeline");
+				AugmentCam.putFrame(pipeline.AugmentCamOutput);
+				// System.out.println(pipeline.grip.filterContoursOutput());
+			});
 			/*
 			 * something like this for GRIP: VisionThread visionThread = new
 			 * VisionThread(cameras.get(0), new GripPipeline(), pipeline -> { ... });
@@ -222,9 +223,17 @@ public final class Main {
 		}
 	}
 
-	public static void pipelineProcess(Grip pipeline) {
-		System.out.println(pipeline.filterContoursOutput());
-		ByteArrayOutput.byteArrayOutput(pipeline);
+	public static void pipelineProcess(GripPostProcessing pipeline) {
+		System.out.println(pipeline.grip.filterContoursOutput());
+		// ByteArrayOutput.setNetworkObject(pipeline.visionTargets, "table",
+		// "visionTargets");
+		double[] x_offset_angles = new double[pipeline.visionTargets.size()];
+		for (int i = 0; i < pipeline.visionTargets.size(); i++) {
+			VisionTarget v = pipeline.visionTargets.get(i);
+			x_offset_angles[i] = CoordTransform.transformCoordsToOffsetAngle(
+					new double[] { (double) v.bounding.height, (double) v.bounding.width })[0];
+		}
+		ByteArrayOutput.setNetworkObject(x_offset_angles, "table", "visionTargets");
 		AugmentCam.putFrame(pipeline.AugmentCamOutput);
 
 	}

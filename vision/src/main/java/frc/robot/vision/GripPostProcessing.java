@@ -13,8 +13,8 @@ import java.util.Arrays;
 public class GripPostProcessing implements VisionPipeline {
     public GripInterface grip;
     public Mat AugmentCamOutput = new Mat();
-    private RotatedRect[] rects;
-    private ArrayList<VisionTarget> visionTargets = new ArrayList<VisionTarget>();
+    public RotatedRect[] rects;
+    public ArrayList<VisionTarget> visionTargets = new ArrayList<VisionTarget>();
 
     public GripPostProcessing() {
         super();
@@ -34,16 +34,14 @@ public class GripPostProcessing implements VisionPipeline {
 
         for (int i = 0; i < grip.filterContoursOutput().size(); i++) {
             // step draw contours
-            Imgproc.drawContours(AugmentCamOutput, grip.filterContoursOutput(), i,
-                    new Scalar(255, 120, 120), 1);
+            Imgproc.drawContours(AugmentCamOutput, grip.filterContoursOutput(), i, new Scalar(255, 120, 120), 1);
         }
 
         // step draw rectangles around visiontargets
         for (int i = 0; i < visionTargets.size(); i++) {
-            Imgproc.rectangle(AugmentCamOutput, visionTargets.get(i).bounding.tl(),
-                    visionTargets.get(i).bounding.br(), new Scalar(120, 255, 120), 1);
+            Imgproc.rectangle(AugmentCamOutput, visionTargets.get(i).bounding.tl(), visionTargets.get(i).bounding.br(),
+                    new Scalar(120, 255, 120), 1);
         }
-
 
     }
 
@@ -81,11 +79,8 @@ public class GripPostProcessing implements VisionPipeline {
     public boolean isTarget(RotatedRect rect1, RotatedRect rect2) {
         double angleDiff = Math.abs(correct_angle(rect1) - correct_angle(rect2));
         if (angleDiff < 110 && angleDiff > 70
-                && Math.abs(
-                        rect1.center.x - rect2.center.x) < (rect1.size.height + rect2.size.height)
-                && Math.abs(
-                        rect1.center.y - rect2.center.y) < (rect1.size.height + rect2.size.height)
-                                / 2)
+                && Math.abs(rect1.center.x - rect2.center.x) < (rect1.size.height + rect2.size.height)
+                && Math.abs(rect1.center.y - rect2.center.y) < (rect1.size.height + rect2.size.height) / 2)
             return true;
         else
             return false;
@@ -94,8 +89,7 @@ public class GripPostProcessing implements VisionPipeline {
     public RotatedRect[] getMinAreaRects(GripInterface grip) {
         rects = new RotatedRect[grip.filterContoursOutput().size()];
         for (int i = 0; i < grip.filterContoursOutput().size(); i++) {
-            rects[i] = Imgproc
-                    .minAreaRect(new MatOfPoint2f(grip.filterContoursOutput().get(i).toArray()));
+            rects[i] = Imgproc.minAreaRect(new MatOfPoint2f(grip.filterContoursOutput().get(i).toArray()));
         }
         return rects;
     }
@@ -124,7 +118,8 @@ public class GripPostProcessing implements VisionPipeline {
         if (angle > 90) {
             angle = -1 * (angle - 180);
         }
-        // this is... I'm too lazy to reverse engineer this out of the code, but it's known to
+        // this is... I'm too lazy to reverse engineer this out of the code, but it's
+        // known to
         // work
         angle *= -1;
 

@@ -9,24 +9,22 @@ import frc.robot.vision.Grip;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import java.io.IOException;
 
-
-
 public class ByteArrayOutput {
     private static NetworkTableInstance inst;
     private static NetworkTable table;
     private static NetworkTableEntry xEntry;
 
-    public static void byteArrayOutput(Grip pipeline) {
+    public static void setNetworkObject(Object obj, String tableName, String entryName) {
 
         inst = NetworkTableInstance.getDefault();
-        table = inst.getTable("datatable");
-        xEntry = table.getEntry("X");
+        table = inst.getTable(tableName);
+        xEntry = table.getEntry(entryName);
 
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         ObjectOutput out = null;
         try {
             out = new ObjectOutputStream(bos);
-            out.writeObject(pipeline.filterContoursOutput());
+            out.writeObject(obj);
             out.flush();
             byte[] ByteOutput = bos.toByteArray();
 
