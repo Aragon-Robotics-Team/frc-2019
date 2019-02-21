@@ -1,4 +1,4 @@
-package frc.robot.commands.Teleop;
+package frc.robot.commands.teleop;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
@@ -10,7 +10,6 @@ public class ControlArcadeDrivetrain extends Command {
     }
 
     protected void initialize() {
-        Robot.myDrivetrain.resetDistance();
     }
 
     protected void execute() {
@@ -23,6 +22,6 @@ public class ControlArcadeDrivetrain extends Command {
     }
 
     protected boolean isFinished() {
-        return false; // Run forever
+        return false;
     }
 }

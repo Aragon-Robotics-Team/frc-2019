@@ -1,24 +1,23 @@
-package frc.robot.commands.Autonomous;
+package frc.robot.commands.teleop;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class Autonomous4 extends Command {
+public class StopDrivetrain extends Command {
 
-    public Autonomous4() {
+    public StopDrivetrain() {
         requires(Robot.myDrivetrain);
-        setTimeout(2);
     }
 
     protected void initialize() {
-
+        Robot.myDrivetrain.stop();
     }
 
     protected void execute() {
-        Robot.myDrivetrain.goForward(-1.0);
+        Robot.myDrivetrain.stop();
     }
 
     protected boolean isFinished() {
-        return isTimedOut();
+        return false;
     }
 }

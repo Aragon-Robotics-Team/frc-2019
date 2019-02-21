@@ -1,24 +1,22 @@
-package frc.robot.commands.Autonomous;
+package frc.robot.commands.teleop;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class Autonomous1 extends Command {
+public class ControlDrivetrain extends Command {
 
-    public Autonomous1() {
+    public ControlDrivetrain() {
         requires(Robot.myDrivetrain);
-        setTimeout(5);
     }
 
     protected void initialize() {
-
     }
 
     protected void execute() {
-        Robot.myDrivetrain.controlArcade(1, 0.5);
+        Robot.myDrivetrain.control(Robot.m_oi.getLeftSpeed(), Robot.m_oi.getRightSpeed());
     }
 
     protected boolean isFinished() {
-        return isTimedOut();
+        return false;
     }
 }

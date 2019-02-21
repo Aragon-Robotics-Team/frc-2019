@@ -1,59 +1,60 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-// import edu.wpi.first.wpilibj.Encoder;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.ControlMode;
-// import edu.wpi.first.wpilibj.
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.RobotMap;
+import frc.robot.util.BetterTalonSRX;
+import frc.robot.util.BetterTalonSRXConfig;
 
 public class Drivetrain extends Subsystem {
-    static double speedModifer = -1.0;
+    BetterTalonSRX leftController;
+    BetterTalonSRX rightController;
 
-    TalonSRX LeftWheels;
-    TalonSRX RightWheels;
-    DifferentialDrive differentialDrive;
-    Encoder leftEncoder;
-    Encoder rightEncoder;
-
-    double lDistance;
-    double rDistance;
+    ShuffleboardTab tab;
 
     public Drivetrain() {
-        LeftWheels = new TalonSRX(RobotMap.LeftWheelsCan);
-        RightWheels = new TalonSRX(RobotMap.RightWheelsCan);
-        LeftWheels.setInverted(false);
-        RightWheels.setInverted(true);
+        BetterTalonSRXConfig leftConfig = new BetterTalonSRXConfig();
+        leftConfig.isConnected = RobotMap.DRIVETRAIN_LEFT_MAIN_INSTALLED;
+        leftConfig.invert = false;
+        leftController = new BetterTalonSRX(RobotMap.DRIVETRAIN_LEFT_MAIN_CAN, leftConfig);
 
-        leftEncoder = new Encoder(1, 2, false, Encoder.EncodingType.k4X);
-        leftEncoder.setDistancePerPulse(3.0 / 1024.0);
-        // leftEncoder.setSamplesToAverage(127);
+        BetterTalonSRXConfig rightConfig = new BetterTalonSRXConfig();
+        rightConfig.isConnected = RobotMap.DRIVETRAIN_RIGHT_MAIN_INSTALLED;
+        rightConfig.invert = true;
+        rightController = new BetterTalonSRX(RobotMap.DRIVETRAIN_RIGHT_MAIN_CAN, rightConfig);
 
-        rightEncoder = new Encoder(3, 4, true, Encoder.EncodingType.k4X);
-        rightEncoder.setDistancePerPulse(3.0 / 1024.0);
-        // rightEncoder.setSamplesToAverage(127);
-
-        lDistance = 0.0;
-        rDistance = 0.0;
+        tab = Shuffleboard.getTab("Drive");
+        leftController.addShuffleboard(tab, "Left Wheels");
+        rightController.addShuffleboard(tab, "Right Wheels");
     }
 
     public void initDefaultCommand() {
     }
 
     public void control(double x, double y) {
-        LeftWheels.set(ControlMode.PercentOutput, x);
-        RightWheels.set(ControlMode.PercentOutput, y);
-        // System.out.println("Control: " + x + " " + y);
+        leftController.setPercent(x);
+        rightController.setPercent(y);
     }
 
-    public void controlArcade(double x, double y) {
+    public void controlArcade(double x, double y) { // x is up/down; y is right/left
+        // differentialDrive.arcadeDrive(x, y, false);
+
+        // double rp = 0;
+        // double lp = 0;
+        // rp += x;
+        // lp += x;
+        // rp -= y;
+        // lp += y;
+        // control(lp, rp);
+
         // Implementation stolen from DifferentialDrive.class WPILib
 
-        double maxInput = Math.copySign(Math.max(Math.abs(x), Math.abs(y)), x);
+        final double epsilon = 0.0001;
 
-        if (x * y >= 0.0) { // If both sign are the same
+        double maxInput = Math.copySign(Math.max(Math.abs(x), Math.abs(y)), (x + epsilon));
+
+        if ((x + epsilon) * y >= 0.0) { // If both sign are the same
             control(maxInput, x - y);
         } else {
             control(x + y, maxInput);
@@ -62,43 +63,9 @@ public class Drivetrain extends Subsystem {
 
     public void goForward(double x) {
         control(x, x);
-        // System.out.println("Control: " + x);
     }
 
     public void stop() {
         control(0, 0);
-        // System.out.println("stop");
-    }
-
-    public double getLeftRate() {
-        return leftEncoder.getRate();
-    }
-
-    public double getRightRate() {
-        return rightEncoder.getRate();
-    }
-
-    public double getLeftDistance() {
-        return leftEncoder.getDistance() + lDistance;
-    }
-
-    public double getRightDistance() {
-        return rightEncoder.getDistance() + rDistance;
-    }
-
-    public double getRawLeftDistance() {
-        return leftEncoder.getDistance();
-    }
-
-    public double getRawRightDistance() {
-        return rightEncoder.getDistance();
-    }
-
-    public void resetDistance() {
-        lDistance = getLeftDistance();
-        rDistance = getRightDistance();
-
-        leftEncoder.reset();
-        rightEncoder.reset();
     }
 }

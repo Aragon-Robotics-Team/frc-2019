@@ -1,21 +1,20 @@
-package frc.robot.commands.Autonomous;
+package frc.robot.commands.angle;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class Autonomous2 extends Command {
-
-    public Autonomous2() {
-        requires(Robot.myDrivetrain);
-        setTimeout(3);
+public class ResetAngle extends Command {
+    public ResetAngle() {
     }
 
     protected void initialize() {
-
+        setTimeout(1);
     }
 
     protected void execute() {
-        Robot.myDrivetrain.goForward(.5);
+        Robot.myAngle.reset();
+        Robot.myNavX.zeroYaw();
+        Robot.myAngle.setAngle(0);
     }
 
     protected boolean isFinished() {

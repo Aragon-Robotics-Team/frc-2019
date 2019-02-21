@@ -18,21 +18,15 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import edu.wpi.cscore.CvSource;
-import edu.wpi.cscore.MjpegServer;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.VideoSource;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.vision.VisionThread;
-import frc.robot.vision.GripPostProcessing.VisionTarget;
-
-import org.opencv.core.Mat;
 
 public final class Main {
 	private static String configFile = "/boot/frc.json";
 
-	@SuppressWarnings("MemberName")
 	public static class CameraConfig {
 		public String name;
 		public String path;
@@ -43,8 +37,6 @@ public final class Main {
 	public static int team;
 	public static boolean server;
 	public static List<CameraConfig> cameraConfigs = new ArrayList<>();
-
-	public static CvSource AugmentCam;
 
 	private Main() {
 	}
@@ -90,7 +82,6 @@ public final class Main {
 	/**
 	 * Read configuration file.
 	 */
-	@SuppressWarnings("PMD.CyclomaticComplexity")
 	public static boolean readConfig() {
 		// parse file
 		JsonElement top;
@@ -199,12 +190,13 @@ public final class Main {
 
 		// start image processing on camera 0 if present
 		if (cameras.size() >= 1) {
-			VisionThread visionThread = new VisionThread(cameras.get(0), new GripPostProcessing(), pipeline -> {
-				// do something with pipeline results
-				System.out.println("start callback pipeline");
-				AugmentCam.putFrame(pipeline.AugmentCamOutput);
-				// System.out.println(pipeline.grip.filterContoursOutput());
-			});
+			VisionThread visionThread =
+					new VisionThread(cameras.get(0), new GripPostProcessing(), pipeline -> {
+						// do something with pipeline results
+						System.out.println("start callback pipeline");
+						AugmentCam.putFrame(pipeline.AugmentCamOutput);
+						// System.out.println(pipeline.grip.filterContoursOutput());
+					});
 			/*
 			 * something like this for GRIP: VisionThread visionThread = new
 			 * VisionThread(cameras.get(0), new GripPipeline(), pipeline -> { ... });
@@ -231,7 +223,7 @@ public final class Main {
 		for (int i = 0; i < pipeline.visionTargets.size(); i++) {
 			VisionTarget v = pipeline.visionTargets.get(i);
 			x_offset_angles[i] = CoordTransform.transformCoordsToOffsetAngle(
-					new double[] { (double) v.bounding.height, (double) v.bounding.width })[0];
+					new double[] {(double) v.bounding.height, (double) v.bounding.width})[0];
 		}
 		ByteArrayOutput.setNetworkObject(x_offset_angles, "table", "visionTargets");
 		AugmentCam.putFrame(pipeline.AugmentCamOutput);
