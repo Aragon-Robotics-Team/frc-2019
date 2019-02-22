@@ -20,11 +20,14 @@ public class Drivetrain extends Subsystem {
         BetterTalonSRXConfig leftConfig = new BetterTalonSRXConfig();
         leftConfig.isConnected = RobotMap.DRIVETRAIN_LEFT_MAIN_INSTALLED;
         leftConfig.invert = false;
+        // (tick_speed for 100% output) / (max measured tick_speed)
+        leftConfig.slot0.kF = 1023.0 / 1150;
         leftController = new BetterTalonSRX(RobotMap.DRIVETRAIN_LEFT_MAIN_CAN, leftConfig);
 
         BetterTalonSRXConfig rightConfig = new BetterTalonSRXConfig();
         rightConfig.isConnected = RobotMap.DRIVETRAIN_RIGHT_MAIN_INSTALLED;
         rightConfig.invert = true;
+        leftConfig.slot0.kF = 1023.0 / 1150;
         rightController = new BetterTalonSRX(RobotMap.DRIVETRAIN_RIGHT_MAIN_CAN, rightConfig);
 
         tab = Shuffleboard.getTab("Drive");

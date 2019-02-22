@@ -43,6 +43,10 @@ public class BetterTalonSRX {
         talon.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, timeout);
         talon.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, timeout);
 
+        if (config.voltageCompSaturation != 0.0) {
+            talon.enableVoltageCompensation(true);
+        }
+
         resetEncoder();
 
         sendable = new SendableSRX(this);
