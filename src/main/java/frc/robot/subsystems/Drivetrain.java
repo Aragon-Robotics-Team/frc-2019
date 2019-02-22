@@ -1,8 +1,10 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.SendableBase;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import frc.robot.RobotMap;
 import frc.robot.util.BetterTalonSRX;
 import frc.robot.util.BetterTalonSRXConfig;
@@ -12,6 +14,7 @@ public class Drivetrain extends Subsystem {
     BetterTalonSRX rightController;
 
     ShuffleboardTab tab;
+    DrivetrainSendable drivetrainSendable;
 
     public Drivetrain() {
         BetterTalonSRXConfig leftConfig = new BetterTalonSRXConfig();
@@ -27,6 +30,8 @@ public class Drivetrain extends Subsystem {
         tab = Shuffleboard.getTab("Drive");
         leftController.addShuffleboard(tab, "Left Wheels");
         rightController.addShuffleboard(tab, "Right Wheels");
+        drivetrainSendable = new DrivetrainSendable(leftController, rightController);
+        tab.add("Drivetrain", drivetrainSendable);
     }
 
     public void initDefaultCommand() {
@@ -67,5 +72,22 @@ public class Drivetrain extends Subsystem {
 
     public void stop() {
         control(0, 0);
+    }
+}
+
+
+class DrivetrainSendable extends SendableBase {
+    BetterTalonSRX left;
+    BetterTalonSRX right;
+
+    public DrivetrainSendable(BetterTalonSRX left, BetterTalonSRX right) {
+        this.left = left;
+        this.right = right;
+    }
+
+    public void initSendable(SendableBuilder builder) {
+        builder.setSmartDashboardType("DifferentialDrive");
+        builder.addDoubleProperty("Left Motor Speed", left::get, left::setPercent);
+        builder.addDoubleProperty("Right Motor Speed", right::get, right::setPercent);
     }
 }
