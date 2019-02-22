@@ -12,6 +12,22 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 public class ByteArrayInput {
     public Object GripImage;
 
+    public static Object deserialize(Object placeholder, byte[] b) {
+        ByteArrayInputStream bis = new ByteArrayInputStream(b);
+        try {
+            ObjectInputStream in = new ObjectInputStream(bis);
+            placeholder = in.readObject();
+            return placeholder;
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        } catch (ClassNotFoundException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
     public static Object getNetworkObject(Object placeholder, String tableName, String entryName) {
         NetworkTableInstance inst = NetworkTableInstance.getDefault();
         NetworkTable table = inst.getTable(tableName);

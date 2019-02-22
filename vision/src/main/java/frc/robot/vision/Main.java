@@ -10,6 +10,7 @@ package frc.robot.vision;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.Clock;
 import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.Gson;
@@ -22,6 +23,7 @@ import edu.wpi.cscore.CvSource;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.VideoSource;
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.vision.VisionThread;
 
@@ -40,6 +42,7 @@ public final class Main {
 	public static List<CameraConfig> cameraConfigs = new ArrayList<>();
 
 	public static CvSource AugmentCam;
+	public static Clock clock;
 
 	private Main() {
 	}
@@ -184,6 +187,8 @@ public final class Main {
 			System.out.println("Setting up NetworkTables client for team " + team);
 			ntinst.startClientTeam(team);
 		}
+		// send Timestamp to RIO for synchronization
+		ByteArrayOutput.setNetworkObject(clock.instant(), "table", "target_offsets");
 
 		// start cameras
 		List<VideoSource> cameras = new ArrayList<>();
@@ -229,6 +234,7 @@ public final class Main {
 					new double[] {(double) v.bounding.height, (double) v.bounding.width})[0];
 		}
 		ByteArrayOutput.setNetworkObject(x_offset_angles, "table", "target_offsets");
+		ByteArrayOutput.setNetworkObject(obj, tableName, entryName);
 		AugmentCam.putFrame(pipeline.AugmentCamOutput);
 
 	}
