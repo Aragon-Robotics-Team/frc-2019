@@ -54,6 +54,10 @@ public class TurnToAngle extends Subsystem implements PIDOutput {
         reset();
     }
 
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
     public void reset() {
         turnController.reset();
     }

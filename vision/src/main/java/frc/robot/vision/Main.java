@@ -18,6 +18,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import edu.wpi.cscore.CvSource;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.VideoSource;
 import edu.wpi.first.cameraserver.CameraServer;
@@ -37,6 +38,8 @@ public final class Main {
 	public static int team;
 	public static boolean server;
 	public static List<CameraConfig> cameraConfigs = new ArrayList<>();
+
+	public static CvSource AugmentCam;
 
 	private Main() {
 	}
@@ -221,11 +224,11 @@ public final class Main {
 		// "visionTargets");
 		double[] x_offset_angles = new double[pipeline.visionTargets.size()];
 		for (int i = 0; i < pipeline.visionTargets.size(); i++) {
-			VisionTarget v = pipeline.visionTargets.get(i);
+			GripPostProcessing.VisionTarget v = pipeline.visionTargets.get(i);
 			x_offset_angles[i] = CoordTransform.transformCoordsToOffsetAngle(
 					new double[] {(double) v.bounding.height, (double) v.bounding.width})[0];
 		}
-		ByteArrayOutput.setNetworkObject(x_offset_angles, "table", "visionTargets");
+		ByteArrayOutput.setNetworkObject(x_offset_angles, "table", "target_offsets");
 		AugmentCam.putFrame(pipeline.AugmentCamOutput);
 
 	}

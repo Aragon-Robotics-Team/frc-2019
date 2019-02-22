@@ -12,7 +12,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 public class ByteArrayInput {
     public Object GripImage;
 
-    public static Object getNetworkObject(String tableName, String entryName) {
+    public static Object getNetworkObject(Object placeholder, String tableName, String entryName) {
         NetworkTableInstance inst = NetworkTableInstance.getDefault();
         NetworkTable table = inst.getTable(tableName);
         NetworkTableEntry xEntry = table.getEntry(entryName);
@@ -23,7 +23,8 @@ public class ByteArrayInput {
         ByteArrayInputStream bis = new ByteArrayInputStream(b);
         try {
             ObjectInputStream in = new ObjectInputStream(bis);
-            return in.readObject();
+            placeholder = in.readObject();
+            return placeholder;
 
         } catch (IOException ex) {
             ex.printStackTrace();
