@@ -29,7 +29,7 @@ public class GripPostProcessing implements VisionPipeline {
 
         rects = getMinAreaRects(grip);
 
-        System.out.println(source0.cols() + " " + source0.rows());
+        // System.out.println(source0.cols() + " " + source0.rows()); //prints size of camera input
         source0.copyTo(AugmentCamOutput);
 
         for (int i = 0; i < grip.filterContoursOutput().size(); i++) {
