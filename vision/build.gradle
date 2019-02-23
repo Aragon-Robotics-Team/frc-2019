@@ -37,7 +37,7 @@ deploy {
 		target('rpi') {
 			directory = '/home/pi'
 			failOnMissing = false
-			timeout = 0.1
+			timeout = 5
 			
 			locations {
 				ssh {
