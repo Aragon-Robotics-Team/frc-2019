@@ -5,13 +5,19 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
+import frc.robot.Robot;
 import frc.robot.RobotMap;
+import frc.robot.commands.drivetrain.ResetDrivetrainLocator;
 import frc.robot.util.BetterTalonSRX;
 import frc.robot.util.BetterTalonSRXConfig;
 
 public class Drivetrain extends Subsystem {
     BetterTalonSRX leftController;
     BetterTalonSRX rightController;
+
+    double distance;
+    double x;
+    double y;
 
     ShuffleboardTab tab;
     DrivetrainSendable drivetrainSendable;
@@ -33,11 +39,18 @@ public class Drivetrain extends Subsystem {
         tab = Shuffleboard.getTab("Drive");
         leftController.addShuffleboard(tab, "Left Wheels");
         rightController.addShuffleboard(tab, "Right Wheels");
-        drivetrainSendable = new DrivetrainSendable(leftController, rightController);
+        drivetrainSendable = new DrivetrainSendable(this);
         tab.add("Drivetrain", drivetrainSendable);
+        tab.add(new ResetDrivetrainLocator());
+
+        reset();
     }
 
     public void initDefaultCommand() {
+    }
+
+    public void periodic() {
+        updatePosition();
     }
 
     public void control(double x, double y) {
@@ -76,21 +89,60 @@ public class Drivetrain extends Subsystem {
     public void stop() {
         control(0, 0);
     }
+
+    public void updatePosition() {
+        double leftPos = leftController.getEncoderPos();
+        double rightPos = rightController.getEncoderPos();
+        double newDistance = (leftPos + rightPos) / 2;
+
+        double angle = Robot.myNavX.ahrs.getYaw();
+
+        rawUpdatePosition(newDistance, angle);
+    }
+
+    // angle is in degrees
+    public void rawUpdatePosition(double newDistance, double angle) {
+        double deltaDistance = newDistance - distance;
+        angle = Math.toRadians(angle);
+
+        x += deltaDistance * Math.cos(angle);
+        y += deltaDistance * Math.sin(angle);
+
+        distance = newDistance;
+    }
+
+    public double getX() {
+        return x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public void reset() {
+        distance = 0;
+        x = 0;
+        y = 0;
+    }
 }
 
 
 class DrivetrainSendable extends SendableBase {
+    Drivetrain drivetrain;
     BetterTalonSRX left;
     BetterTalonSRX right;
 
-    public DrivetrainSendable(BetterTalonSRX left, BetterTalonSRX right) {
-        this.left = left;
-        this.right = right;
+    public DrivetrainSendable(Drivetrain drivetrain) {
+        this.drivetrain = drivetrain;
+        this.left = drivetrain.leftController;
+        this.right = drivetrain.rightController;
     }
 
     public void initSendable(SendableBuilder builder) {
         builder.setSmartDashboardType("DifferentialDrive");
         builder.addDoubleProperty("Left Motor Speed", left::get, left::setPercent);
         builder.addDoubleProperty("Right Motor Speed", right::get, right::setPercent);
+        builder.addDoubleProperty("X", drivetrain::getX, null);
+        builder.addDoubleProperty("Y", drivetrain::getY, null);
     }
 }
