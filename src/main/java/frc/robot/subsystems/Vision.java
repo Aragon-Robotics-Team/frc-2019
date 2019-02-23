@@ -18,7 +18,7 @@ import frc.robot.RobotMap;
 public class Vision extends Subsystem {
     public Instant pi_instant;
     public Instant rio_instant;
-    public Clock clock;
+    public Clock clock = Clock.systemUTC();;
 
     Relay ledController;
 

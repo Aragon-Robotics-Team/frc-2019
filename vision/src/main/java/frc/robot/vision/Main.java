@@ -42,7 +42,7 @@ public final class Main {
 	public static List<CameraConfig> cameraConfigs = new ArrayList<>();
 
 	public static CvSource AugmentCam;
-	public static Clock clock;
+	public static Clock clock = Clock.systemUTC();
 
 	private Main() {
 	}
@@ -188,6 +188,8 @@ public final class Main {
 			ntinst.startClientTeam(team);
 		}
 		// send Timestamp to RIO for synchronization
+		System.out.println("main");
+		System.out.println(clock.instant());
 		ByteArrayOutput.setNetworkObject(clock.instant(), "table", "target_offsets");
 
 		// start cameras
@@ -201,9 +203,26 @@ public final class Main {
 			VisionThread visionThread =
 					new VisionThread(cameras.get(0), new GripPostProcessing(), pipeline -> {
 						// do something with pipeline results
-						System.out.println("start callback pipeline");
+						// System.out.println("start callback pipeline");
 						AugmentCam.putFrame(pipeline.AugmentCamOutput);
 						// System.out.println(pipeline.grip.filterContoursOutput());
+						System.out.println(pipeline.grip.filterContoursOutput());
+						// ByteArrayOutput.setNetworkObject(pipeline.visionTargets, "table",
+						// "visionTargets");
+						double[] x_offset_angles = new double[pipeline.visionTargets.size()];
+						for (int i = 0; i < pipeline.visionTargets.size(); i++) {
+							GripPostProcessing.VisionTarget v = pipeline.visionTargets.get(i);
+							x_offset_angles[i] = CoordTransform.transformCoordsToOffsetAngle(
+									new double[] {(double) v.bounding.height,
+											(double) v.bounding.width})[0];
+						}
+
+						for (int i = 0; i < x_offset_angles.length; i++) {
+							System.out.print(x_offset_angles[i] + "");
+							System.out.println();
+						}
+						ByteArrayOutput.setNetworkObject(x_offset_angles, "table",
+								"target_offsets");
 					});
 			/*
 			 * something like this for GRIP: VisionThread visionThread = new
@@ -223,21 +242,21 @@ public final class Main {
 		}
 	}
 
-	public static void pipelineProcess(GripPostProcessing pipeline) {
-		System.out.println(pipeline.grip.filterContoursOutput());
-		// ByteArrayOutput.setNetworkObject(pipeline.visionTargets, "table",
-		// "visionTargets");
-		double[] x_offset_angles = new double[pipeline.visionTargets.size()];
-		for (int i = 0; i < pipeline.visionTargets.size(); i++) {
-			GripPostProcessing.VisionTarget v = pipeline.visionTargets.get(i);
-			x_offset_angles[i] = CoordTransform.transformCoordsToOffsetAngle(
-					new double[] {(double) v.bounding.height, (double) v.bounding.width})[0];
-		}
-		for (int i = 0; i < x_offset_angles.length; i++) {
-			System.out.print(x_offset_angles[i] + "");
-		}
-		ByteArrayOutput.setNetworkObject(x_offset_angles, "table", "target_offsets");
-		AugmentCam.putFrame(pipeline.AugmentCamOutput);
+	// public static void pipelineProcess(GripPostProcessing pipeline) {
+	// System.out.println(pipeline.grip.filterContoursOutput());
+	// // ByteArrayOutput.setNetworkObject(pipeline.visionTargets, "table",
+	// // "visionTargets");
+	// double[] x_offset_angles = new double[pipeline.visionTargets.size()];
+	// for (int i = 0; i < pipeline.visionTargets.size(); i++) {
+	// GripPostProcessing.VisionTarget v = pipeline.visionTargets.get(i);
+	// x_offset_angles[i] = CoordTransform.transformCoordsToOffsetAngle(
+	// new double[] {(double) v.bounding.height, (double) v.bounding.width})[0];
+	// }
+	// for (int i = 0; i < x_offset_angles.length; i++) {
+	// System.out.print(x_offset_angles[i] + "");
+	// }
+	// ByteArrayOutput.setNetworkObject(x_offset_angles, "table", "target_offsets");
+	// AugmentCam.putFrame(pipeline.AugmentCamOutput);
 
-	}
+	// }
 }
