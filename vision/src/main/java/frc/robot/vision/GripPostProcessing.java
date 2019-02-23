@@ -47,8 +47,8 @@ public class GripPostProcessing implements VisionPipeline {
             p.fromArray(rectCorners);
             plist.add(p);
             Imgproc.drawContours(AugmentCamOutput, plist, i, new Scalar(0, 0, 255), 1);
-            // Imgproc.putText(AugmentCamOutput, "" + correct_angle(rects[i]), rectCorners[0], 0, 8,
-            // new Scalar(0, 255, 255));
+            Imgproc.putText(AugmentCamOutput, String.format("%.1f", correct_angle(rects[i])),
+                    rectCorners[1], 0, 0.5, new Scalar(0, 255, 255));
         }
 
         // step draw rectangles around visiontargets
