@@ -52,12 +52,28 @@ public class CoordTransform {
         // double hAngle = h_angle_pixel_ratio * Math.abs(p1[0]-p2[0]);
         // double vAngle = h_angle_pixel_ratio * Math.abs(p1[1]-p2[1]);
         // double tAngle = Math.pow(Math.pow(hAngle,2) + Math.pow(vAngle,2), 0.5);
-        return Math.pow(
-                Math.pow(h_angle_pixel_ratio * Math.abs(dx), 2) + Math.pow(h_angle_pixel_ratio * Math.abs(dy), 2), 0.5);
+        return Math.pow(Math.pow(h_angle_pixel_ratio * Math.abs(dx), 2)
+                + Math.pow(h_angle_pixel_ratio * Math.abs(dy), 2), 0.5);
     }
 
     public static double[] transformCoordsToOffsetAngle(double[] p1) {
-        return new double[] { h_angle_pixel_ratio * (p1[0] - img_height / 2),
-                v_angle_pixel_ratio * (p1[1] - img_height / 2) };
+        return new double[] {h_angle_pixel_ratio * (p1[0] - img_height / 2),
+                v_angle_pixel_ratio * (p1[1] - img_height / 2)};
+    }
+
+    public static double[] toPolar(double[] p) {
+        // [length,angle]
+        double r = Math.pow(Math.pow(p[0], 2) + Math.pow(p[1], 2), 0.5);
+        return new double[] {r, Math.asin(r / p[1])};
+    }
+
+    public static double[] toCartesian(double[] p) {
+        // [x,y]
+        return new double[] {p[0] * Math.cos(p[1]), p[0] * Math.sin(p[1])};
+    }
+
+    public static double[] rotate(double[] p, double radians) {
+        return new double[] {p[0] * Math.cos(radians) - p[1] * Math.sin(radians),
+                p[1] * Math.cos(radians) - p[0] * Math.sin(radians)};
     }
 }

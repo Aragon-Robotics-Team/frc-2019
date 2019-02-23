@@ -206,7 +206,7 @@ public final class Main {
 						// System.out.println("start callback pipeline");
 						AugmentCam.putFrame(pipeline.AugmentCamOutput);
 						// System.out.println(pipeline.grip.filterContoursOutput());
-						System.out.println(pipeline.grip.filterContoursOutput());
+						// System.out.println(pipeline.grip.filterContoursOutput());
 						// ByteArrayOutput.setNetworkObject(pipeline.visionTargets, "table",
 						// "visionTargets");
 						double[] x_offset_angles = new double[pipeline.visionTargets.size()];
@@ -216,7 +216,6 @@ public final class Main {
 									new double[] {(double) v.bounding.height,
 											(double) v.bounding.width})[0];
 						}
-
 						for (int i = 0; i < x_offset_angles.length; i++) {
 							System.out.print(x_offset_angles[i] + "");
 							System.out.println();

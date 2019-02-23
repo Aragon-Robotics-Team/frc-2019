@@ -8,7 +8,9 @@ import org.opencv.core.*;
 import java.util.ArrayList;
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Arrays;
+import frc.robot.vision.CoordTransform;
 
 public class GripPostProcessing implements VisionPipeline {
     public GripInterface grip;
@@ -35,13 +37,24 @@ public class GripPostProcessing implements VisionPipeline {
         for (int i = 0; i < grip.filterContoursOutput().size(); i++) {
             // step draw contours
             Imgproc.drawContours(AugmentCamOutput, grip.filterContoursOutput(), i,
-                    new Scalar(255, 120, 120), 1);
+                    new Scalar(255, 0, 0), 1);
+        }
+        Point[] rectCorners = new Point[4];
+        MatOfPoint p = new MatOfPoint();
+        List<MatOfPoint> plist = new ArrayList<MatOfPoint>();
+        for (int i = 0; i < rects.length; i++) {
+            rects[i].points(rectCorners);
+            p.fromArray(rectCorners);
+            plist.add(p);
+            Imgproc.drawContours(AugmentCamOutput, plist, i, new Scalar(0, 0, 255), 1);
+            // Imgproc.putText(AugmentCamOutput, "" + correct_angle(rects[i]), rectCorners[0], 0, 8,
+            // new Scalar(0, 255, 255));
         }
 
         // step draw rectangles around visiontargets
         for (int i = 0; i < visionTargets.size(); i++) {
             Imgproc.rectangle(AugmentCamOutput, visionTargets.get(i).bounding.tl(),
-                    visionTargets.get(i).bounding.br(), new Scalar(120, 255, 120), 1);
+                    visionTargets.get(i).bounding.br(), new Scalar(255, 128, 0), 1);
         }
 
     }
@@ -79,9 +92,13 @@ public class GripPostProcessing implements VisionPipeline {
 
     public boolean isTarget(RotatedRect rect1, RotatedRect rect2) {
         double angleDiff = Math.abs(correct_angle(rect1) - correct_angle(rect2));
+        double vertical = angleDiff;
+        double horizon = angleDiff;
+        double[] rect1_coords =
+                CoordTransform.rotate(new double[] {rect1.center.x, rect1.center.y}, horizon);
         if (angleDiff < 110 && angleDiff > 70
-                && Math.abs(
-                        rect1.center.x - rect2.center.x) < (rect1.size.height + rect2.size.height)
+                && Math.abs(rect1.center.x - rect2.center.x) < 3
+                        * (rect1.size.height + rect2.size.height)
                 && Math.abs(
                         rect1.center.y - rect2.center.y) < (rect1.size.height + rect2.size.height)
                                 / 2)
@@ -112,6 +129,7 @@ public class GripPostProcessing implements VisionPipeline {
     }
 
     public double correct_angle(RotatedRect rect) {
+        // seems to output angles as -90 to 90, zero being vertical?
         // don't touch... voodoo math inside
         double angle;
         if (rect.size.width < rect.size.height) {
