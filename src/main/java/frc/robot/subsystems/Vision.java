@@ -3,8 +3,10 @@ package frc.robot.subsystems;
 import static org.mockito.Mockito.mock;
 import java.time.Clock;
 import java.time.Instant;
+import edu.wpi.first.networktables.EntryListenerFlags;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.NetworkTableValue;
 import edu.wpi.first.networktables.TableEntryListener;
 import edu.wpi.first.wpilibj.Relay;
@@ -34,13 +36,15 @@ public class Vision extends Subsystem {
 
         setLeds(false);
 
-
+        NetworkTableInstance netInst = NetworkTableInstance.getDefault();
+        NetworkTable table = netInst.getTable("table");
+        table.addEntryListener("timestamp", new init_time_listener(this),
+                EntryListenerFlags.kUpdate);
     }
 
     public void setLeds(boolean on) {
         if (on) {
             ledController.set(Relay.Value.kOn);
-        } else {
             ledController.set(Relay.Value.kOff);
         }
     }
@@ -62,4 +66,5 @@ public class Vision extends Subsystem {
             this.parent.rio_instant = this.parent.clock.instant();
         }
     }
+
 }

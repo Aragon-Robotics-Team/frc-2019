@@ -233,8 +233,10 @@ public final class Main {
 			x_offset_angles[i] = CoordTransform.transformCoordsToOffsetAngle(
 					new double[] {(double) v.bounding.height, (double) v.bounding.width})[0];
 		}
+		for (int i = 0; i < x_offset_angles.length; i++) {
+			System.out.print(x_offset_angles[i] + "");
+		}
 		ByteArrayOutput.setNetworkObject(x_offset_angles, "table", "target_offsets");
-		ByteArrayOutput.setNetworkObject(obj, tableName, entryName);
 		AugmentCam.putFrame(pipeline.AugmentCamOutput);
 
 	}

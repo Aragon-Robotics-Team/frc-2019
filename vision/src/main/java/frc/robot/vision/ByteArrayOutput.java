@@ -39,4 +39,11 @@ public class ByteArrayOutput {
             }
         }
     }
+    public static void setNetworkDoubleArr(double[] doubleArr, String tableName, String entryName){
+        inst = NetworkTableInstance.getDefault();
+        table = inst.getTable(tableName);
+        xEntry = table.getEntry(entryName);
+
+        xEntry.setDoubleArray(doubleArr);
+    }
 }

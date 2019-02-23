@@ -10,8 +10,6 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 
 public class ByteArrayInput {
-    public Object GripImage;
-
     public static Object deserialize(Object placeholder, byte[] b) {
         ByteArrayInputStream bis = new ByteArrayInputStream(b);
         try {
