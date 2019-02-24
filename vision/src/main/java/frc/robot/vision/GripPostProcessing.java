@@ -90,6 +90,10 @@ public class GripPostProcessing implements VisionPipeline {
         return visionTargets;
     }
 
+    public double rectangularity(MatOfPoint contour, RotatedRect rect) {
+        return (Imgproc.contourArea(contour) - rect.size.area()) / rect.size.area();
+    }
+
     public boolean isTarget(RotatedRect rect1, RotatedRect rect2) {
         double angleDiff = Math.abs(correct_angle(rect1) - correct_angle(rect2));
         double vertical = angleDiff;
@@ -115,6 +119,7 @@ public class GripPostProcessing implements VisionPipeline {
         }
         return rects;
     }
+
 
     class RectComparator implements Comparator<RotatedRect> {
         public int compare(RotatedRect a, RotatedRect b) {
