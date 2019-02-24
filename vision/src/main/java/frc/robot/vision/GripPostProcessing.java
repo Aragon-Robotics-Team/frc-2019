@@ -97,11 +97,11 @@ public class GripPostProcessing implements VisionPipeline {
         double[] rect1_coords =
                 CoordTransform.rotate(new double[] {rect1.center.x, rect1.center.y}, horizon);
         if (angleDiff < 80 && angleDiff > 5
-                && Math.abs(rect1.center.x - rect2.center.x) < 3
-                        * (rect1.size.height + rect2.size.height)
-                && Math.abs(
-                        rect1.center.y - rect2.center.y) < (rect1.size.height + rect2.size.height)
-                                / 2)
+        // && Math.abs(rect1.center.x - rect2.center.x) < 3 * (rect1.size.height +
+        // rect2.size.height) // if distance x < 6*height
+        // && Math.abs(rect1.center.y - rect2.center.y) < (rect1.size.height +
+        // rect2.size.height) / 2) // if distance y < height
+        )
             return true;
         else
             return false;
@@ -129,6 +129,16 @@ public class GripPostProcessing implements VisionPipeline {
     }
 
     public double correct_angle(RotatedRect rect) {
+        double angle = rect.angle; // -90 <= x <= 0
+
+        if (angle < -45) {
+            angle += 90;
+        }
+
+        return angle;
+    }
+
+    public double correct_angle_old(RotatedRect rect) {
         // seems to output angles as -90 to 90, zero being vertical?
         // don't touch... voodoo math inside
         double angle;
