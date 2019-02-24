@@ -100,7 +100,7 @@ public class GripPostProcessing implements VisionPipeline {
         double horizon = angleDiff;
         double[] rect1_coords =
                 CoordTransform.rotate(new double[] {rect1.center.x, rect1.center.y}, horizon);
-        if (angleDiff < 80 && angleDiff > 5
+        if (angleDiff < 35 && angleDiff > 23
         // && Math.abs(rect1.center.x - rect2.center.x) < 3 * (rect1.size.height +
         // rect2.size.height) // if distance x < 6*height
         // && Math.abs(rect1.center.y - rect2.center.y) < (rect1.size.height +
