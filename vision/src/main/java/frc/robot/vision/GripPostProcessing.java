@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Stream;
 import java.util.Arrays;
 import frc.robot.vision.CoordTransform;
 
@@ -16,7 +17,9 @@ public class GripPostProcessing implements VisionPipeline {
     public GripInterface grip;
     public Mat AugmentCamOutput = new Mat();
     public RotatedRect[] rects;
-    public ArrayList<VisionTarget> visionTargets = new ArrayList<VisionTarget>();
+
+    public List<MatOfPoint> filtered_contours;
+    public ArrayList<VisionTarget> visionTargets;
 
     public GripPostProcessing() {
         super();
@@ -27,9 +30,12 @@ public class GripPostProcessing implements VisionPipeline {
 
     public void process(Mat source0) {
         grip.process(source0);
-        visionTargets = getVisionTargets(grip);
+        filtered_contours = new ArrayList<MatOfPoint>();
+        rects = filterMinAreaRects(getMinAreaRects(grip), grip.filterContoursOutput(), 0.77,
+                filtered_contours);
+        visionTargets = getVisionTargets(rects);
 
-        rects = getMinAreaRects(grip);
+
 
         // System.out.println(source0.cols() + " " + source0.rows()); //prints size of camera input
         source0.copyTo(AugmentCamOutput);
@@ -48,7 +54,10 @@ public class GripPostProcessing implements VisionPipeline {
             plist.add(p);
             Imgproc.drawContours(AugmentCamOutput, plist, i, new Scalar(0, 0, 255), 1);
             Imgproc.putText(AugmentCamOutput, String.format("%.1f", correct_angle(rects[i])),
-                    rectCorners[1], 0, 0.5, new Scalar(0, 255, 255));
+                    rectCorners[3], 0, 0.4, new Scalar(255, 255, 255));
+            Imgproc.putText(AugmentCamOutput,
+                    String.format("%.2f", rectangularity(rects[i], filtered_contours.get(i))),
+                    rectCorners[1], 0, 0.4, new Scalar(0, 255, 255));
         }
 
         // step draw rectangles around visiontargets
@@ -70,12 +79,20 @@ public class GripPostProcessing implements VisionPipeline {
             // r2 is the right rectangle
             this.x = (r1.center.x + r2.center.x) / 2;
             this.y = (r1.center.y + r2.center.y) / 2;
-            this.bounding = new Rect(r1.boundingRect().tl(), r2.boundingRect().br());
+            Point[] p1 = new Point[4];
+            Point[] p2 = new Point[4];
+            MatOfPoint p = new MatOfPoint();
+            r1.points(p1);
+            r2.points(p2);
+            p1 = Stream.concat(Arrays.stream(p1), Arrays.stream(p2)).toArray(Point[]::new); // thnx
+                                                                                            // stackoverflow
+            p.fromArray(p1);
+            this.bounding = Imgproc.boundingRect(p);
         }
     }
 
-    public ArrayList<VisionTarget> getVisionTargets(GripInterface grips) {
-        RotatedRect[] rects = getMinAreaRects(grip); // fills rects array using contours
+    public ArrayList<VisionTarget> getVisionTargets(RotatedRect[] rects) {
+        // RotatedRect[] rects = getMinAreaRects(grip); // fills rects array using contours
 
         // in-place. This is to identify pairs. not the perfect solution
         rects = sortRectsByX(rects);
@@ -90,21 +107,44 @@ public class GripPostProcessing implements VisionPipeline {
         return visionTargets;
     }
 
-    public double rectangularity(MatOfPoint contour, RotatedRect rect) {
-        return (Imgproc.contourArea(contour) - rect.size.area()) / rect.size.area();
+    public double rectangularity(RotatedRect rect, MatOfPoint contour) {
+        return Math.abs(Imgproc.contourArea(contour) / rect.size.area());
     }
 
     public boolean isTarget(RotatedRect rect1, RotatedRect rect2) {
         double angleDiff = Math.abs(correct_angle(rect1) - correct_angle(rect2));
-        double vertical = angleDiff;
-        double horizon = angleDiff;
-        double[] rect1_coords =
-                CoordTransform.rotate(new double[] {rect1.center.x, rect1.center.y}, horizon);
-        if (angleDiff < 35 && angleDiff > 23
-        // && Math.abs(rect1.center.x - rect2.center.x) < 3 * (rect1.size.height +
-        // rect2.size.height) // if distance x < 6*height
-        // && Math.abs(rect1.center.y - rect2.center.y) < (rect1.size.height +
-        // rect2.size.height) / 2) // if distance y < height
+        double horizon = ((correct_angle(rect1) + correct_angle(rect2)) / 2) + 90;
+        Point rect1_center = new Point(CoordTransform
+                .rotate(new double[] {rect1.center.x, rect1.center.y}, -horizon * Math.PI / 180));
+        Point rect2_center = new Point(CoordTransform
+                .rotate(new double[] {rect2.center.x, rect2.center.y}, -horizon * Math.PI / 180));
+
+
+        double width1 = rect1.size.width;
+        double width2 = rect2.size.width;
+        double height1 = rect1.size.height;
+        double height2 = rect2.size.height;
+        if (width1 > height1) {
+            double temp = height1;
+            height1 = width1;
+            width1 = temp;
+        }
+        if (width2 > height2) {
+            double temp = height2;
+            height2 = width2;
+            width2 = temp;
+        }
+
+        double avgWidth = (width1 + width2) / 2;
+
+        double avgHeight = (height1 + height2) / 2;
+
+        if (18 < angleDiff && angleDiff < 38
+                && Math.abs(rect1.size.area()
+                        - rect2.size.area()) < (rect1.size.area() + rect2.size.area()) * .25
+                && Math.abs(rect1_center.x - rect2_center.x) < 3 * (avgHeight) // if distance x <
+                                                                               // 6*height
+                && Math.abs(rect1_center.y - rect2_center.y) < avgHeight // if distance y < height
         )
             return true;
         else
@@ -120,6 +160,34 @@ public class GripPostProcessing implements VisionPipeline {
         return rects;
     }
 
+    public RotatedRect[] filterMinAreaRects(RotatedRect[] rects, List<MatOfPoint> Contours,
+            double threshold) {
+        // thresholds by rectangularity(rotatedrect, contour) -> value from 0-1
+        ArrayList<RotatedRect> pass_rects = new ArrayList<RotatedRect>();
+        for (int i = 0; i < rects.length; i++) {
+            if (rectangularity(rects[i], Contours.get(i)) > threshold) {
+                pass_rects.add(rects[i]);
+            }
+        }
+        RotatedRect[] pass_rects_arr = new RotatedRect[pass_rects.size()];
+        pass_rects_arr = pass_rects.toArray(pass_rects_arr);
+        return pass_rects_arr;
+    }
+
+    public RotatedRect[] filterMinAreaRects(RotatedRect[] rects, List<MatOfPoint> contours,
+            double threshold, List<MatOfPoint> filtered_contours) {
+        // thresholds by rectangularity(rotatedrect, contour) -> value from 0-1
+        ArrayList<RotatedRect> pass_rects = new ArrayList<RotatedRect>();
+        for (int i = 0; i < rects.length; i++) {
+            if (rectangularity(rects[i], contours.get(i)) > threshold) {
+                pass_rects.add(rects[i]);
+                filtered_contours.add(contours.get(i));
+            }
+        }
+        RotatedRect[] pass_rects_arr = new RotatedRect[pass_rects.size()];
+        pass_rects_arr = pass_rects.toArray(pass_rects_arr);
+        return pass_rects_arr;
+    }
 
     class RectComparator implements Comparator<RotatedRect> {
         public int compare(RotatedRect a, RotatedRect b) {
@@ -134,33 +202,14 @@ public class GripPostProcessing implements VisionPipeline {
     }
 
     public double correct_angle(RotatedRect rect) {
-        double angle = rect.angle; // -90 <= x <= 0
-
-        if (angle < -45) {
-            angle += 90;
-        }
-
-        return angle;
-    }
-
-    public double correct_angle_old(RotatedRect rect) {
-        // seems to output angles as -90 to 90, zero being vertical?
-        // don't touch... voodoo math inside
-        double angle;
+        // returns angle, 0-180 (horizontal, from +x axis counterclockwise to +y axis to -x axis ,
+        // along longest side)
         if (rect.size.width < rect.size.height) {
-            angle = -1 * (rect.angle - 90);
+            return -rect.angle + 90;
         } else {
-            angle = rect.angle;
+            return -rect.angle;
         }
 
-        if (angle > 90) {
-            angle = -1 * (angle - 180);
-        }
-        // this is... I'm too lazy to reverse engineer this out of the code, but it's
-        // known to
-        // work
-        angle *= -1;
-
-        return angle;
     }
+
 }

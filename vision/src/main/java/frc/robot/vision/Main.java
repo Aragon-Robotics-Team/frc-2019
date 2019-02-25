@@ -213,13 +213,13 @@ public final class Main {
 						for (int i = 0; i < pipeline.visionTargets.size(); i++) {
 							GripPostProcessing.VisionTarget v = pipeline.visionTargets.get(i);
 							x_offset_angles[i] = CoordTransform.transformCoordsToOffsetAngle(
-									new double[] {(double) v.bounding.height,
-											(double) v.bounding.width})[0];
+									new double[] {(double) v.bounding.x + 0.5 * v.bounding.width,
+											(double) v.bounding.y + 0.5 * v.bounding.height})[0];
 						}
 						for (int i = 0; i < x_offset_angles.length; i++) {
-							System.out.print(x_offset_angles[i] + "");
-							System.out.println();
+							System.out.print(x_offset_angles[i]*180/Math.PI + " ");
 						}
+						System.out.println();
 						ByteArrayOutput.setNetworkObject(x_offset_angles, "table",
 								"target_offsets");
 					});

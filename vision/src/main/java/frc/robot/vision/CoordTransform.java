@@ -6,9 +6,9 @@ public class CoordTransform {
     public static double h_fov = 1.0418368970654722554442559253234; // ~61 * 68.5/70 degrees
     public static double v_fov = 0.5858197634318967224944368064432; // ~34.3 * 68.5/70 degrees
     public static double img_width = 320;
-    public static double img_height = 180;
-    public static double h_angle_pixel_ratio = h_fov / img_height;
-    public static double v_angle_pixel_ratio = v_fov / img_width;
+    public static double img_height = 240;
+    public static double h_angle_pixel_ratio = h_fov / img_width;
+    public static double v_angle_pixel_ratio = v_fov / img_height;
 
     public static double toRadians(double degrees) {
         return Math.PI * degrees / 180;
@@ -57,8 +57,8 @@ public class CoordTransform {
     }
 
     public static double[] transformCoordsToOffsetAngle(double[] p1) {
-        return new double[] {h_angle_pixel_ratio * (p1[0] - img_height / 2),
-                v_angle_pixel_ratio * (p1[1] - img_height / 2)};
+        return new double[] {h_angle_pixel_ratio * (p1[0] - (img_width / 2)),
+                v_angle_pixel_ratio * (p1[1] - (img_height / 2))};
     }
 
     public static double[] toPolar(double[] p) {
