@@ -5,41 +5,44 @@ import frc.robot.Robot;
 import frc.robot.subsystems.ByteArrayInput;
 
 public class AutoAlign extends Command {
-    public int state; // 0-stopped, 1-turning
-    public double[] last_angles;
+    boolean enabled;
+    double lastAngle;
 
     public AutoAlign() {
-        requires(Robot.myDrivetrain);
+        requires(Robot.myDrivetrain); // This will exit ControlArcadeDrivetrain
         requires(Robot.myAngle);
         setTimeout(5);
     }
 
     protected void initialize() {
+        enabled = false;
+        lastAngle = -360; // Impossible value
+        Robot.myAngle.disableAndReset();
     }
 
     protected void execute() {
         double[] angles = ByteArrayInput.getNetworkObject(new double[0], "table", "target_offsets");
+
         if (angles.length != 0) {
-            if (angles[0] != last_angles[0]) {
-                double targetAngle = angles[0] + Robot.myNavX.ahrs.getAngle();
-                Robot.myAngle.setAngle(targetAngle);
-                last_angles = angles;
-            }
-            if (state == 0) {
-                state = 1;
-                Robot.myAngle.setEnabled(true);
+            enabled = true;
+            double angle = angles[0];
+
+            if (angle != lastAngle) { // Replace with test for new data
+                Robot.myAngle.setDeltaAngle(angle);
+                lastAngle = angle;
             }
         } else {
-            if (state == 1) {
-                state = 0;
-                Robot.myAngle.setEnabled(false);
-            }
+            enabled = false;
         }
+
+        Robot.myAngle.setEnabled(enabled);
     }
 
+    protected void end() {
+        Robot.myAngle.disableAndReset();
+    }
 
     protected boolean isFinished() {
         return isTimedOut();
     }
-
 }

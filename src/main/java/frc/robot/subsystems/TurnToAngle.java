@@ -62,6 +62,10 @@ public class TurnToAngle extends Subsystem implements PIDOutput {
         turnController.reset();
     }
 
+    public void setDeltaAngle(double angle) {
+        setAngle(angle + currentAngle);
+    }
+
     public void initDefaultCommand() {
     }
 
