@@ -1,62 +1,48 @@
 package frc.robot.subsystems;
 
 import java.io.ByteArrayInputStream;
-import java.io.ObjectInput;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.IOException;
-import edu.wpi.first.networktables.NetworkTableInstance;
+import java.io.ObjectInputStream;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class ByteArrayInput {
-    public static Object deserialize(Object placeholder, byte[] b) {
-        ByteArrayInputStream bis = new ByteArrayInputStream(b);
-        try {
-            ObjectInputStream in = new ObjectInputStream(bis);
-            placeholder = in.readObject();
-            return placeholder;
+    public static <T> T deserialize(T placeholder, byte[] bytes) {
+        ByteArrayInputStream byteStream = null;
+        ObjectInputStream objectStream = null;
 
-        } catch (IOException ex) {
+        T result = placeholder;
+
+        try {
+            byteStream = new ByteArrayInputStream(bytes);
+            objectStream = new ObjectInputStream(byteStream);
+
+            result = (T) objectStream.readObject();
+
+        } catch (IOException | ClassNotFoundException | ClassCastException ex) {
             ex.printStackTrace();
-            return null;
-        } catch (ClassNotFoundException ex) {
-            ex.printStackTrace();
-            return null;
+        } finally {
+            try {
+                byteStream.close();
+            } catch (IOException | NullPointerException ex) {
+            }
+            try {
+                objectStream.close();
+            } catch (IOException | NullPointerException ex) {
+            }
         }
+
+        return result;
     }
 
-    public static Object getNetworkObject(Object placeholder, String tableName, String entryName) {
+    public static <T> T getNetworkObject(T placeholder, String tableName, String entryName) {
         NetworkTableInstance inst = NetworkTableInstance.getDefault();
         NetworkTable table = inst.getTable(tableName);
         NetworkTableEntry xEntry = table.getEntry(entryName);
 
-        byte[] b = new byte[0];
-        b = xEntry.getRaw(b);
+        byte[] bytes = xEntry.getRaw(new byte[0]);
 
-        ByteArrayInputStream bis = new ByteArrayInputStream(b);
-        try {
-            ObjectInputStream in = new ObjectInputStream(bis);
-            placeholder = in.readObject();
-            return placeholder;
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
-        } catch (ClassNotFoundException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-
-        // finally {
-        // try {
-        // if (in != null) {
-        // in.close();
-        // }
-        // } catch (IOException ex) {
-        // // ignore close exception
-        // }
-        // }
-
+        return deserialize(placeholder, bytes);
     }
 }

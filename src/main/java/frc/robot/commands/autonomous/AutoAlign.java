@@ -15,13 +15,11 @@ public class AutoAlign extends Command {
     }
 
     protected void initialize() {
-
     }
 
     protected void execute() {
-        double[] angles = null;
-        ByteArrayInput.getNetworkObject(angles, "table", "target_offsets");
-        if (angles != null && angles.length != 0) {
+        double[] angles = ByteArrayInput.getNetworkObject(new double[0], "table", "target_offsets");
+        if (angles.length != 0) {
             if (angles[0] != last_angles[0]) {
                 double targetAngle = angles[0] + Robot.myNavX.ahrs.getAngle();
                 Robot.myAngle.setAngle(targetAngle);
