@@ -1,13 +1,12 @@
 package frc.robot.vision;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTable;
-import frc.robot.vision.Grip;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import java.io.IOException;
 
 public class ByteArrayOutput {
     private static NetworkTableInstance inst;
@@ -15,7 +14,6 @@ public class ByteArrayOutput {
     private static NetworkTableEntry xEntry;
 
     public static void setNetworkObject(Object obj, String tableName, String entryName) {
-
         inst = NetworkTableInstance.getDefault();
         table = inst.getTable(tableName);
         xEntry = table.getEntry(entryName);
@@ -41,12 +39,9 @@ public class ByteArrayOutput {
         }
     }
 
-
     public static void setNetworkDoubleArr(double[] doubleArr, String tableName, String entryName) {
         inst = NetworkTableInstance.getDefault();
         table = inst.getTable(tableName);
         xEntry = table.getEntry(entryName);
-
-
     }
 }

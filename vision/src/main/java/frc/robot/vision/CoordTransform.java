@@ -1,6 +1,6 @@
 package frc.robot.vision;
 
-import java.lang.Math;
+import org.opencv.core.Point;
 
 public class CoordTransform {
     public static double h_fov = 1.0418368970654722554442559253234; // ~61 * 68.5/70 degrees
@@ -9,14 +9,6 @@ public class CoordTransform {
     public static double img_height = 240;
     public static double h_angle_pixel_ratio = h_fov / img_width;
     public static double v_angle_pixel_ratio = v_fov / img_height;
-
-    public static double toRadians(double degrees) {
-        return Math.PI * degrees / 180;
-    }
-
-    public static double toDegrees(double radians) {
-        return radians * 180 / Math.PI;
-    }
 
     public static double getDistance(double refAngle, double refDist, double currentAngle) {
         // radian angles and arbitrary unit distances
@@ -44,6 +36,7 @@ public class CoordTransform {
         // double hAngle = h_angle_pixel_ratio * Math.abs(p1[0]-p2[0]);
         // double vAngle = h_angle_pixel_ratio * Math.abs(p1[1]-p2[1]);
         // double tAngle = Math.pow(Math.pow(hAngle,2) + Math.pow(vAngle,2), 0.5);
+
         return Math.pow(Math.pow(h_angle_pixel_ratio * Math.abs(p1[0] - p2[0]), 2)
                 + Math.pow(h_angle_pixel_ratio * Math.abs(p1[1] - p2[1]), 2), 0.5);
     }
@@ -52,6 +45,7 @@ public class CoordTransform {
         // double hAngle = h_angle_pixel_ratio * Math.abs(p1[0]-p2[0]);
         // double vAngle = h_angle_pixel_ratio * Math.abs(p1[1]-p2[1]);
         // double tAngle = Math.pow(Math.pow(hAngle,2) + Math.pow(vAngle,2), 0.5);
+
         return Math.pow(Math.pow(h_angle_pixel_ratio * Math.abs(dx), 2)
                 + Math.pow(h_angle_pixel_ratio * Math.abs(dy), 2), 0.5);
     }
@@ -72,8 +66,8 @@ public class CoordTransform {
         return new double[] {p[0] * Math.cos(p[1]), p[0] * Math.sin(p[1])};
     }
 
-    public static double[] rotate(double[] p, double radians) {
-        return new double[] {p[0] * Math.cos(radians) - p[1] * Math.sin(radians),
-                p[1] * Math.cos(radians) - p[0] * Math.sin(radians)};
+    public static Point rotate(Point p, double radians) {
+        return new Point(p.x * Math.cos(radians) - p.y * Math.sin(radians),
+                p.y * Math.cos(radians) - p.x * Math.sin(radians));
     }
 }

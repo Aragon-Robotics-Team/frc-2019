@@ -23,7 +23,6 @@ import edu.wpi.cscore.CvSource;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.VideoSource;
 import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.vision.VisionThread;
 
@@ -217,7 +216,7 @@ public final class Main {
 											(double) v.bounding.y + 0.5 * v.bounding.height})[0];
 						}
 						for (int i = 0; i < x_offset_angles.length; i++) {
-							System.out.print(x_offset_angles[i]*180/Math.PI + " ");
+							System.out.print(Math.toDegrees(x_offset_angles[i]) + " ");
 						}
 						System.out.println();
 						ByteArrayOutput.setNetworkObject(x_offset_angles, "table",

@@ -10,7 +10,5 @@ public class FindDistance {
         f = (p * d) / w;
 
         d2 = (w * f) / p;
-
-
     }
 }
