@@ -8,12 +8,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.commands.drivetrain.ResetDrivetrainLocator;
+import frc.robot.util.BetterFollower;
 import frc.robot.util.BetterTalonSRX;
 import frc.robot.util.BetterTalonSRXConfig;
 
 public class Drivetrain extends Subsystem {
     BetterTalonSRX leftController;
     BetterTalonSRX rightController;
+
+    BetterFollower leftSlaveController;
+    BetterFollower rightSlaveController;
 
     double distance;
     double x;
@@ -35,6 +39,11 @@ public class Drivetrain extends Subsystem {
         rightConfig.invert = true;
         leftConfig.slot0.kF = 1023.0 / 1150;
         rightController = new BetterTalonSRX(RobotMap.DRIVETRAIN_RIGHT_MAIN_CAN, rightConfig);
+
+        leftSlaveController = new BetterFollower(RobotMap.DRIVETRAIN_SLAVE_CLASS,
+                RobotMap.DRIVETRAIN_LEFT_SLAVE_CAN, leftController.getTalonSRX(), false);
+        rightSlaveController = new BetterFollower(RobotMap.DRIVETRAIN_SLAVE_CLASS,
+                RobotMap.DRIVETRAIN_RIGHT_SLAVE_CAN, rightController.getTalonSRX(), false);
 
         tab = Shuffleboard.getTab("Drive");
         leftController.addShuffleboard(tab, "Left Wheels");

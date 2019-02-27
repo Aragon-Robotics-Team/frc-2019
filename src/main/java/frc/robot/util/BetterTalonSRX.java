@@ -3,13 +3,13 @@ package frc.robot.util;
 import static org.mockito.Mockito.mock;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.SensorCollection;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.SendableBase;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.SensorCollection;
 
 public class BetterTalonSRX {
     Deadband deadband;
@@ -133,6 +133,14 @@ public class BetterTalonSRX {
     public boolean getReverseLimitSwitch() {
         return sensorCollection.isRevLimitSwitchClosed();
     }
+
+    // Other getters
+
+    public TalonSRX getTalonSRX() {
+        return talon;
+    }
+
+    // Other setters
 
     public void setBrakeMode(boolean brake) {
         if (brake) {
