@@ -39,11 +39,15 @@ public final class Map {
             new Target(new Point(190.87, 365.6), Target.Height.cargo_ship_hatch, 0),
             new Target(new Point(133.13, 343.85), Target.Height.cargo_ship_hatch, 180),
             new Target(new Point(190.87, 343.85), Target.Height.cargo_ship_hatch, 0),
+
+            new Target(new Point(151.12, 220.25), Target.Height.cargo_ship_hatch, -90),
+            new Target(new Point(172.88, 220.25), Target.Height.cargo_ship_hatch, -90),
+
             // loading station hatches
             new Target(new Point(27.44, 0), Target.Height.cargo_ship_hatch, 90),
             new Target(new Point(296.56, 0), Target.Height.cargo_ship_hatch, 90),
             new Target(new Point(27.44, 648), Target.Height.cargo_ship_hatch, -90),
-            new Target(new Point(296.56, 648), Target.Height.cargo_ship_hatch, -90),};
+            new Target(new Point(296.56, 648), Target.Height.cargo_ship_hatch, -90), };
 
     public final static class Arena {
         public static final String unit = "inches";
@@ -51,9 +55,11 @@ public final class Map {
         public static final Point center = new Point(size.width / 2, size.height / 2);
 
     }
+
     public static class Target {
         // angle is perpendicular to target facing outwards (tape lines), relative to
-        // horizontal(across short side of field) = 0 radians (+x = c-clockwise, -x = clockwise )
+        // horizontal(across short side of field) = 0 radians (+x = c-clockwise, -x =
+        // clockwise )
         public Height height;
         public Point center;
         public double angle;
@@ -66,8 +72,7 @@ public final class Map {
         }
 
         public enum Height {
-            rocket_port(39.125), rocket_hatch(31.5), loading_station_hatch(31.5), cargo_ship_hatch(
-                    31.5);
+            rocket_port(39.125), rocket_hatch(31.5), loading_station_hatch(31.5), cargo_ship_hatch(31.5);
             private double h;
 
             Height(double h) {
@@ -80,7 +85,8 @@ public final class Map {
         // double max_y = img.height();
         // double dx = Math.cos(angle);
         // double dy = Math.sin(angle);
-        // Point pt1 = new Point(cutoff(this.center.x + dx*draw_len, 0,max_x), cutoff(this.center.y
+        // Point pt1 = new Point(cutoff(this.center.x + dx*draw_len, 0,max_x),
+        // cutoff(this.center.y
         // + dy*draw_len,0,max_y));
         // Imgproc.line(img, pt1, center, new Scalar(255,0,0));
         // }
