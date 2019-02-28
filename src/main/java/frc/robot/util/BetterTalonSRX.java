@@ -1,15 +1,17 @@
 package frc.robot.util;
 
 import static org.mockito.Mockito.mock;
+import java.util.ArrayList;
+import java.util.List;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.SensorCollection;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.SendableBase;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.SensorCollection;
 
 public class BetterTalonSRX {
     Deadband deadband;
@@ -21,6 +23,7 @@ public class BetterTalonSRX {
     double lastOutput;
     boolean isReal;
     SensorCollection sensorCollection;
+    List<BetterFollower> slaves;
 
     enum ControlType {
         Percent, Magic;
@@ -57,6 +60,7 @@ public class BetterTalonSRX {
         timeout = 0;
         isReal = config.isConnected;
         ticksPerInch = config.ticksPerInch;
+        slaves = new ArrayList<BetterFollower>(1); // 1 max expected follower
     }
 
     public BetterTalonSRX(int deviceNumber) {
@@ -134,12 +138,21 @@ public class BetterTalonSRX {
         return sensorCollection.isRevLimitSwitchClosed();
     }
 
+    // Other setters
+
     public void setBrakeMode(boolean brake) {
-        if (brake) {
-            talon.setNeutralMode(NeutralMode.Brake);
-        } else {
-            talon.setNeutralMode(NeutralMode.Coast);
+        NeutralMode neutralMode = brake ? NeutralMode.Brake : NeutralMode.Coast;
+
+        talon.setNeutralMode(neutralMode);
+
+        for (BetterFollower slave : slaves) {
+            slave.setBrakeMode(neutralMode);
         }
+    }
+
+    public void addFollower(BetterFollower slave) { // Add all followers before setting brake mode
+        slaves.add(slave);
+        slave.follow(talon);
     }
 }
 

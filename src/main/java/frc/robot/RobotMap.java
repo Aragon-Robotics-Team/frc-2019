@@ -1,5 +1,7 @@
 package frc.robot;
 
+import frc.robot.util.BetterFollower.FollowerController;
+
 public class RobotMap {
 	public static final int F310_JOYSTICK_0 = 0;
 	public static final int ATTACK3_JOYSTICK_0 = 1;
@@ -10,6 +12,10 @@ public class RobotMap {
 
 	public static final int DRIVETRAIN_LEFT_MAIN_CAN = 2;
 	public static final int DRIVETRAIN_RIGHT_MAIN_CAN = 6;
+	public static final FollowerController DRIVETRAIN_SLAVE_CONTROLLER =
+			FollowerController.TalonSRX;
+	public static final int DRIVETRAIN_LEFT_SLAVE_CAN = 0;
+	public static final int DRIVETRAIN_RIGHT_SLAVE_CAN = 0;
 
 	public static final int PNEUMATICS_CONTROL_MODULE_CAN = 1;
 
