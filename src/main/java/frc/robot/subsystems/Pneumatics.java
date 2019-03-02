@@ -1,9 +1,9 @@
 package frc.robot.subsystems;
 
+import static frc.robot.util.Mock.mock;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.RobotMap;
-import static org.mockito.Mockito.mock;
 
 public class Pneumatics extends Subsystem {
     Compressor compressor;

@@ -1,6 +1,6 @@
 package frc.robot.subsystems;
 
-import static org.mockito.Mockito.mock;
+import static frc.robot.util.Mock.mock;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;

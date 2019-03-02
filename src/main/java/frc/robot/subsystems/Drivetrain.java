@@ -9,6 +9,7 @@ import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.commands.drivetrain.ResetDrivetrainLocator;
 import frc.robot.util.BetterFollower;
+import frc.robot.util.BetterFollowerConfig;
 import frc.robot.util.BetterTalonSRX;
 import frc.robot.util.BetterTalonSRXConfig;
 
@@ -39,12 +40,20 @@ public class Drivetrain extends Subsystem {
         leftConfig.slot0.kF = 1023.0 / 1150;
         rightController = new BetterTalonSRX(RobotMap.DRIVETRAIN_RIGHT_MAIN_CAN, rightConfig);
 
-        leftSlaveController = new BetterFollower(RobotMap.DRIVETRAIN_SLAVE_CONTROLLER,
-                RobotMap.DRIVETRAIN_LEFT_SLAVE_CAN, false);
+        BetterFollowerConfig leftSlaveConfig = new BetterFollowerConfig();
+        leftSlaveConfig.isConnected = RobotMap.DRIVETRAIN_LEFT_SLAVE_INSTALLED;
+        leftSlaveConfig.controller = RobotMap.DRIVETRAIN_SLAVE_CONTROLLER;
+        leftSlaveConfig.invert = false;
+        leftSlaveController =
+                new BetterFollower(RobotMap.DRIVETRAIN_LEFT_SLAVE_CAN, leftSlaveConfig);
         leftController.addFollower(leftSlaveController);
 
-        rightSlaveController = new BetterFollower(RobotMap.DRIVETRAIN_SLAVE_CONTROLLER,
-                RobotMap.DRIVETRAIN_RIGHT_SLAVE_CAN, false);
+        BetterFollowerConfig rightSlaveConfig = new BetterFollowerConfig();
+        rightSlaveConfig.isConnected = RobotMap.DRIVETRAIN_RIGHT_SLAVE_INSTALLED;
+        rightSlaveConfig.controller = RobotMap.DRIVETRAIN_SLAVE_CONTROLLER;
+        rightSlaveConfig.invert = false;
+        rightSlaveController =
+                new BetterFollower(RobotMap.DRIVETRAIN_RIGHT_SLAVE_CAN, rightSlaveConfig);
         rightController.addFollower(rightSlaveController);
 
         tab = Shuffleboard.getTab("Drive");

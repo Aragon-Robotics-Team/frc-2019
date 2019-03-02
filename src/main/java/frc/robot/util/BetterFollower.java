@@ -1,5 +1,6 @@
 package frc.robot.util;
 
+import static frc.robot.util.Mock.mock;
 import com.ctre.phoenix.motorcontrol.FollowerType;
 import com.ctre.phoenix.motorcontrol.IMotorController;
 import com.ctre.phoenix.motorcontrol.InvertType;
@@ -12,17 +13,20 @@ public class BetterFollower {
     IMotorController master;
     BaseMotorController slave;
     boolean invert;
+    boolean isReal;
 
     public enum FollowerController {
         TalonSRX, VictorSPX;
     }
 
-    public BetterFollower(FollowerController controller, int canID, boolean invert) {
-        slave = createController(controller, canID);
-        slave.setInverted(calcInvertType(invert));
-
+    public BetterFollower(int canID, BetterFollowerConfig config) {
         master = null;
-        this.invert = invert;
+        invert = config.invert;
+        isReal = config.isConnected;
+
+        slave = isReal ? createController(config.controller, canID)
+                : mock(BaseMotorController.class);
+        slave.setInverted(calcInvertType(invert));
     }
 
     void follow(IMotorController master) {
@@ -49,7 +53,6 @@ public class BetterFollower {
         }
 
         return slave;
-
     }
 
     public static InvertType calcInvertType(boolean invert) {

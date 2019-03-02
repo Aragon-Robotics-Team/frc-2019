@@ -1,6 +1,6 @@
 package frc.robot.util;
 
-import static org.mockito.Mockito.mock;
+import static frc.robot.util.Mock.mock;
 import edu.wpi.first.wpilibj.SendableBase;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;

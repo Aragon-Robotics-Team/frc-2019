@@ -1,6 +1,6 @@
 package frc.robot.util;
 
-import static org.mockito.Mockito.mock;
+import static frc.robot.util.Mock.mock;
 import java.util.ArrayList;
 import java.util.List;
 import com.ctre.phoenix.motorcontrol.ControlMode;
