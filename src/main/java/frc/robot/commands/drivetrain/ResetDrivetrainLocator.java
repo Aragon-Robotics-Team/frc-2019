@@ -1,17 +1,14 @@
-package frc.robot.commands.intake;
+package frc.robot.commands.drivetrain;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class SetPiston extends Command {
-    boolean enabled;
-
-    public SetPiston(boolean enabled) {
-        this.enabled = enabled;
+public class ResetDrivetrainLocator extends Command {
+    public ResetDrivetrainLocator() {
     }
 
     protected void initialize() {
-        Robot.myIntake.setPiston(enabled);
+        Robot.myDrivetrain.reset();
     }
 
     protected void execute() {
