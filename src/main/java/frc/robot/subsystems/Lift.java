@@ -14,7 +14,7 @@ public class Lift extends Subsystem {
     ShuffleboardTab tab;
 
     public enum Position {
-        HATCH_1(0.0), PORT_1(8.0), HATCH_2(28.0);
+        HATCH_1(0.0), PORT_1(8.0), HATCH_2(28.0), PORT_2(0.0), HATCH_3(0.0), PORT_3(0.0);
 
         double pos;
 
