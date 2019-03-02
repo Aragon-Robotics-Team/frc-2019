@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.SendableBase;
+import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -8,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.commands.drivetrain.ResetDrivetrainLocator;
+import frc.robot.commands.drivetrain.SetBrakeMode;
 import frc.robot.util.BetterFollower;
 import frc.robot.util.BetterFollowerConfig;
 import frc.robot.util.BetterTalonSRX;
@@ -62,6 +64,10 @@ public class Drivetrain extends Subsystem {
         drivetrainSendable = new DrivetrainSendable(this);
         tab.add("Drivetrain", drivetrainSendable);
         tab.add(new ResetDrivetrainLocator());
+        tab.add("Brake", new SetBrakeMode(true));
+        tab.add("Coast", new SetBrakeMode(false));
+        tab.add("Reset Encoder", new InstantCommand(this::resetEncoders));
+        tab.add("Reset Position", new InstantCommand(this::reset));
 
         reset();
     }
@@ -100,6 +106,11 @@ public class Drivetrain extends Subsystem {
         } else {
             control(x + y, maxInput);
         }
+    }
+
+    public void setBrake(boolean brake) {
+        leftController.setBrakeMode(brake);
+        rightController.setBrakeMode(brake);
     }
 
     public void goForward(double x) {
@@ -143,6 +154,11 @@ public class Drivetrain extends Subsystem {
         distance = 0;
         x = 0;
         y = 0;
+    }
+
+    public void resetEncoders() {
+        leftController.resetEncoder();
+        rightController.resetEncoder();
     }
 }
 

@@ -19,7 +19,7 @@ public class Intake extends Subsystem {
     ShuffleboardTab tab;
 
     public enum Position {
-        Stowed(0.0), Intake(0.6), Horizontal(1.0);
+        Stowed(0.0), Intake(0.6), Horizontal(1.0), Vertical(0.0);
 
         double pos;
 
