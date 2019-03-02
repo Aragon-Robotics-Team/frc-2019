@@ -55,18 +55,20 @@ public class GripPostProcessing implements VisionPipeline {
             rects[i].points(rectCorners);
             p.fromArray(rectCorners);
             plist.add(p);
-            Imgproc.drawContours(AugmentCamOutput, plist, i, new Scalar(0, 0, 255), 1);
+            Imgproc.drawContours(AugmentCamOutput, plist, i, new Scalar(0, 0, 255), 2);
             Imgproc.putText(AugmentCamOutput, String.format("%.1f", correct_angle(rects[i])),
                     rectCorners[3], 0, 0.4, new Scalar(255, 255, 255));
-            Imgproc.putText(AugmentCamOutput,
-                    String.format("%.2f", rectangularity(rects[i], filtered_contours.get(i))),
-                    rectCorners[1], 0, 0.4, new Scalar(0, 255, 255));
+            // Imgproc.putText(AugmentCamOutput,
+            // String.format("%.2f", rectangularity(rects[i], filtered_contours.get(i))),
+            // rectCorners[1], 0, 0.4, new Scalar(0, 255, 255));
         }
 
         // step draw rectangles around visiontargets
-        for (int i = 0; i < visionTargets.size(); i++) {
-            Imgproc.rectangle(AugmentCamOutput, visionTargets.get(i).bounding.tl(),
-                    visionTargets.get(i).bounding.br(), new Scalar(255, 128, 0), 1);
+        for (VisionTarget visionTarget : visionTargets) {
+            Rect bounding = visionTarget.bounding;
+            Point center = new Point(bounding.tl().x + (bounding.width / 2), (bounding.tl().y + (bounding.height / 2)));
+            Imgproc.rectangle(AugmentCamOutput, bounding.tl(), bounding.br(), new Scalar(255, 128, 0), 1, Imgproc.LINE_4);
+            Imgproc.drawMarker(AugmentCamOutput, center, new Scalar(0, 0, 255), Imgproc.MARKER_TILTED_CROSS, 20, 1, Imgproc.LINE_4);
         }
     }
 
