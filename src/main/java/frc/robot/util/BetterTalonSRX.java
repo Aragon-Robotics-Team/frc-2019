@@ -26,7 +26,7 @@ public class BetterTalonSRX {
     List<BetterFollower> slaves;
 
     enum ControlType {
-        Percent, Magic;
+        Percent, Magic, OldPercent;
     }
 
     ControlType lastControlType = ControlType.Percent;
@@ -78,6 +78,8 @@ public class BetterTalonSRX {
             setPercent(output);
         } else if (lastControlType == ControlType.Magic) {
             setMagic(output);
+        } else if (lastControlType == ControlType.OldPercent) {
+            setOldPercent(output);
         } else {
             throw new IndexOutOfBoundsException();
         }
@@ -85,6 +87,14 @@ public class BetterTalonSRX {
 
     public void setPercent(double output) {
         lastControlType = ControlType.Percent;
+        lastOutput = deadband.calc(output);
+
+        // Velocity PIDF: Need kF and kP minimum
+        talon.set(ControlMode.Velocity, lastOutput);
+    }
+
+    public void setOldPercent(double output) {
+        lastControlType = ControlType.OldPercent;
         lastOutput = deadband.calc(output);
 
         talon.set(ControlMode.PercentOutput, lastOutput);
