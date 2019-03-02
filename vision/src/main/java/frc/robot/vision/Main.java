@@ -189,7 +189,7 @@ public final class Main {
 		// send Timestamp to RIO for synchronization
 		System.out.println("main");
 		System.out.println(clock.instant());
-		ByteArrayOutput.setNetworkObject(clock.instant(), "table", "target_offsets");
+		ByteArrayOutput.setNetworkObject(clock.instant(), "table", "timestamp");
 
 		// start cameras
 		List<VideoSource> cameras = new ArrayList<>();
@@ -218,7 +218,8 @@ public final class Main {
 					System.out.print(Math.toDegrees(x_offset_angles[i]) + " ");
 				}
 				System.out.println();
-				ByteArrayOutput.setNetworkObject(x_offset_angles, "table", "target_offsets");
+
+				ByteArrayOutput.setNetworkObject(clock.instant(), "table", "timestamp");
 				ByteArrayOutput.setNetworkObject(x_offset_angles, "table", "target_offsets");
 			});
 			/*

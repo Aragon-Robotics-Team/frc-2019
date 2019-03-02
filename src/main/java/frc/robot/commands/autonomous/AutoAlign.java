@@ -3,7 +3,6 @@ package frc.robot.commands.autonomous;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.time.Duration;
 import java.util.ArrayList;
 
 import edu.wpi.first.wpilibj.command.Command;
@@ -100,11 +99,14 @@ public class AutoAlign extends Command {
                             closest_pose = pose_history.get(mid);
                         }
                     }
-                    closest_pose = new Duration(pose_history.get(lo).t, timeStamp) < new Duration(timeStamp,
-                            pose_history.get(hi).t) ? a[lo] : a[hi];
+                    closest_pose = pose_history.get(lo).t.getNano() - timeStamp.getNano() < timeStamp.getNano()
+                            - pose_history.get(hi).t.getNano() ? pose_history.get(lo) : pose_history.get(hi);
                 }
-                Robot.myAngle.setDeltaAngle(angle);
+
+                double angle_change_est = Robot.myNavX.ahrs.getAngle() - closest_pose.angle;
+                Robot.myAngle.setDeltaAngle(angle + angle_change_est);
                 lastAngle = angle;
+                lastTimeStamp = timeStamp;
             }
         } else {
             enabled = false;

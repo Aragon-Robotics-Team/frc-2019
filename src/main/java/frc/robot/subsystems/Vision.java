@@ -20,8 +20,7 @@ import frc.robot.RobotMap;
 public class Vision extends Subsystem {
     public Instant pi_instant;
     public Instant rio_instant;
-    public Clock clock = Clock.systemUTC();;
-
+    public Clock clock = Clock.systemUTC();
     Relay ledController;
 
     ShuffleboardTab tab;
@@ -37,9 +36,10 @@ public class Vision extends Subsystem {
 
         setLeds(false);
 
-        NetworkTableInstance netInst = NetworkTableInstance.getDefault();
-        NetworkTable table = netInst.getTable("table");
-        table.addEntryListener("timestamp", new time_listener(this), EntryListenerFlags.kUpdate);
+        // NetworkTableInstance netInst = NetworkTableInstance.getDefault();
+        // NetworkTable table = netInst.getTable("table");
+        // table.addEntryListener("timestamp", new time_listener(this),
+        // EntryListenerFlags.kUpdate);
     }
 
     public void setLeds(boolean on) {
@@ -57,20 +57,6 @@ public class Vision extends Subsystem {
         public Vision parent;
 
         public time_listener(Vision parent) {
-            this.parent = parent;
-        }
-
-        public void valueChanged(NetworkTable table, String key, NetworkTableEntry entry, NetworkTableValue value,
-                int flags) {
-            ByteArrayInput.deserialize(this.parent.pi_instant, value.getRaw());
-            this.parent.rio_instant = this.parent.clock.instant();
-        }
-    }
-
-    public class init_time_listener implements TableEntryListener {
-        public Vision parent;
-
-        public init_time_listener(Vision parent) {
             this.parent = parent;
         }
 
