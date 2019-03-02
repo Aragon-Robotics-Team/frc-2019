@@ -20,7 +20,9 @@ public class Vision extends Subsystem {
         ledController.setSafetyEnabled(false);
 
         tab = Shuffleboard.getTab("Vision");
-        tab.add(ledController);
+        if (RobotMap.VISION_LED_RELAY_INSTALLED) {
+            tab.add(ledController);
+        }
 
         setLeds(false);
     }
