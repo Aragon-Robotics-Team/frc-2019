@@ -6,6 +6,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.subsystems.ByteArrayInput;
 
@@ -21,6 +22,7 @@ public class AutoAlign extends Command {
         requires(Robot.myDrivetrain); // This will exit ControlArcadeDrivetrain
         requires(Robot.myAngle);
         setTimeout(5);
+        SmartDashboard.putNumber("Wanted Angle Vision", 0);
     }
 
     protected void initialize() {
@@ -36,7 +38,9 @@ public class AutoAlign extends Command {
 
         if (angles.length != 0) {
             enabled = true;
-            double angle = angles[0];
+            double angle = -1 * Math.toDegrees(angles[0]);
+
+            SmartDashboard.putNumber("Wanted Angle Vision", angle);
 
             if (angle != lastAngle) { // Replace with test for new data
                 Robot.myAngle.setDeltaAngle(angle);

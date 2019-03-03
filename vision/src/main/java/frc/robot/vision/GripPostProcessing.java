@@ -159,7 +159,7 @@ public class GripPostProcessing implements VisionPipeline {
         double avgHeight = (height1 + height2) / 2;
 
         return (18 < angleDiff && angleDiff < 38
-                && Math.abs(rect1.size.area() - rect2.size.area()) < (rect1.size.area() + rect2.size.area()) * .25
+                && Math.abs(rect1.size.area() - rect2.size.area()) < (rect1.size.area() + rect2.size.area()) * 1// .25
                 && Math.abs(rect1_center.x - rect2_center.x) < 3 * (avgHeight) // if distance x <
                                                                                // 6*height
                 && Math.abs(rect1_center.y - rect2_center.y) < avgHeight // if distance y < height
@@ -181,7 +181,7 @@ public class GripPostProcessing implements VisionPipeline {
         List<RotatedRect> pass_rects = new ArrayList<RotatedRect>();
 
         for (int i = 0; i < rects.length; i++) {
-            if (rectangularity(rects[i], contours.get(i)) > threshold) {
+            if (true || rectangularity(rects[i], contours.get(i)) > threshold) {
                 pass_rects.add(rects[i]);
             }
         }
