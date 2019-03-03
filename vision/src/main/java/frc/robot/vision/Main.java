@@ -199,29 +199,31 @@ public final class Main {
 
 		// start image processing on camera 0 if present
 		if (cameras.size() >= 1) {
-			VisionThread visionThread = new VisionThread(cameras.get(0), new GripPostProcessing(), pipeline -> {
-				// do something with pipeline results
-				// System.out.println("start callback pipeline");
-				AugmentCam.putFrame(pipeline.AugmentCamOutput);
-				// System.out.println(pipeline.grip.filterContoursOutput());
-				// System.out.println(pipeline.grip.filterContoursOutput());
-				// ByteArrayOutput.setNetworkObject(pipeline.visionTargets, "table",
-				// "visionTargets");
-				double[] x_offset_angles = new double[pipeline.visionTargets.size()];
-				for (int i = 0; i < pipeline.visionTargets.size(); i++) {
-					GripPostProcessing.VisionTarget v = pipeline.visionTargets.get(i);
-					x_offset_angles[i] = CoordTransform
-							.transformCoordsToOffsetAngle(new double[] { (double) v.bounding.x + 0.5 * v.bounding.width,
-									(double) v.bounding.y + 0.5 * v.bounding.height })[0];
-				}
-				for (int i = 0; i < x_offset_angles.length; i++) {
-					System.out.print(Math.toDegrees(x_offset_angles[i]) + " ");
-				}
-				System.out.println();
+			VisionThread visionThread =
+					new VisionThread(cameras.get(0), new GripPostProcessing(), pipeline -> {
+						// do something with pipeline results
+						// System.out.println("start callback pipeline");
+						AugmentCam.putFrame(pipeline.AugmentCamOutput);
+						// System.out.println(pipeline.grip.filterContoursOutput());
+						// System.out.println(pipeline.grip.filterContoursOutput());
+						// ByteArrayOutput.setNetworkObject(pipeline.visionTargets, "table",
+						// "visionTargets");
+						double[] x_offset_angles = new double[pipeline.visionTargets.size()];
+						for (int i = 0; i < pipeline.visionTargets.size(); i++) {
+							GripPostProcessing.VisionTarget v = pipeline.visionTargets.get(i);
+							x_offset_angles[i] = CoordTransform.transformCoordsToOffsetAngle(
+									new double[] {(double) v.bounding.x + 0.5 * v.bounding.width,
+											(double) v.bounding.y + 0.5 * v.bounding.height})[0];
+						}
+						for (int i = 0; i < x_offset_angles.length; i++) {
+							System.out.print((x_offset_angles[i]) + " ");
+						}
+						System.out.println();
 
-				ByteArrayOutput.setNetworkObject(clock.instant(), "table", "timestamp");
-				ByteArrayOutput.setNetworkObject(x_offset_angles, "table", "target_offsets");
-			});
+						ByteArrayOutput.setNetworkObject(clock.instant(), "table", "timestamp");
+						ByteArrayOutput.setNetworkObject(x_offset_angles, "table",
+								"target_offsets");
+					});
 			/*
 			 * something like this for GRIP: VisionThread visionThread = new
 			 * VisionThread(cameras.get(0), new GripPipeline(), pipeline -> { ... });
