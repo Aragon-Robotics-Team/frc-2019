@@ -34,8 +34,8 @@ public class Drivetrain extends Subsystem {
         leftConfig.invert = false;
         // (tick_speed for 100% output) / (max measured tick_speed)
         leftConfig.maxTickVelocity = 1112.0;
-        leftConfig.slot0.kF = (1023.0 / 1112.0) * 1.01;
-        leftConfig.slot0.kP = 0.5;
+        leftConfig.slot0.kF = (1023.0 / 1112.0) * 1.13;
+        leftConfig.slot0.kP = 0.7;
         leftConfig.ticksPerInch = 76.485294;
         leftController = new BetterTalonSRX(RobotMap.DRIVETRAIN_LEFT_MAIN_CAN, leftConfig);
 
@@ -43,7 +43,7 @@ public class Drivetrain extends Subsystem {
         rightConfig.isConnected = RobotMap.DRIVETRAIN_RIGHT_MAIN_INSTALLED;
         rightConfig.invert = true;
         rightConfig.maxTickVelocity = 1142.0;
-        rightConfig.slot0.kP = 0.5;
+        rightConfig.slot0.kP = 0.7;
         rightConfig.ticksPerInch = 76.485294;
         rightController = new BetterTalonSRX(RobotMap.DRIVETRAIN_RIGHT_MAIN_CAN, rightConfig);
 
@@ -166,7 +166,6 @@ public class Drivetrain extends Subsystem {
         rightController.resetEncoder();
     }
 }
-
 
 class DrivetrainSendable extends SendableBase {
     Drivetrain drivetrain;

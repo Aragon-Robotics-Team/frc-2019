@@ -68,7 +68,7 @@ public class BetterTalonSRX {
         slaves = new ArrayList<BetterFollower>(1); // 1 max expected follower
         maxTickVelocity = config.maxTickVelocity;
 
-        System.out.println("kF: " + config.slot0.kF + " maxV: " + config.maxTickVelocity);
+        System.out.println(deviceNumber + " kF: " + config.slot0.kF + " maxV: " + config.maxTickVelocity);
     }
 
     public BetterTalonSRX(int deviceNumber) {
