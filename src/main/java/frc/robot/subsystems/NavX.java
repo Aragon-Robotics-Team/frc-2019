@@ -4,7 +4,9 @@ import static frc.robot.util.Mock.mock;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import frc.robot.RobotMap;
 
 public class NavX extends Subsystem {
@@ -19,6 +21,9 @@ public class NavX extends Subsystem {
         } catch (RuntimeException ex) {
             DriverStation.reportError("Can't start NavX", true);
         }
+
+        var tab = Shuffleboard.getTab("Gyro");
+        tab.add(new InstantCommand("Reset Yaw", this::zeroYaw));
     }
 
     public void initDefaultCommand() {

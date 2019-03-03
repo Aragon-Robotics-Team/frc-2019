@@ -33,13 +33,18 @@ public class Drivetrain extends Subsystem {
         leftConfig.isConnected = RobotMap.DRIVETRAIN_LEFT_MAIN_INSTALLED;
         leftConfig.invert = false;
         // (tick_speed for 100% output) / (max measured tick_speed)
-        leftConfig.slot0.kF = 1023.0 / 1150;
+        leftConfig.maxTickVelocity = 1112.0;
+        leftConfig.slot0.kF = (1023.0 / 1112.0) * 1.01;
+        leftConfig.slot0.kP = 0.5;
+        leftConfig.ticksPerInch = 76.485294;
         leftController = new BetterTalonSRX(RobotMap.DRIVETRAIN_LEFT_MAIN_CAN, leftConfig);
 
         BetterTalonSRXConfig rightConfig = new BetterTalonSRXConfig();
         rightConfig.isConnected = RobotMap.DRIVETRAIN_RIGHT_MAIN_INSTALLED;
         rightConfig.invert = true;
-        leftConfig.slot0.kF = 1023.0 / 1150;
+        rightConfig.maxTickVelocity = 1142.0;
+        rightConfig.slot0.kP = 0.5;
+        rightConfig.ticksPerInch = 76.485294;
         rightController = new BetterTalonSRX(RobotMap.DRIVETRAIN_RIGHT_MAIN_CAN, rightConfig);
 
         BetterFollowerConfig leftSlaveConfig = new BetterFollowerConfig();
@@ -122,8 +127,8 @@ public class Drivetrain extends Subsystem {
     }
 
     public void updatePosition() {
-        double leftPos = leftController.getEncoderPos();
-        double rightPos = rightController.getEncoderPos();
+        double leftPos = leftController.getInch();
+        double rightPos = rightController.getInch();
         double newDistance = (leftPos + rightPos) / 2;
 
         double angle = Robot.myNavX.ahrs.getYaw();

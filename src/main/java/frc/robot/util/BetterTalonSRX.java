@@ -24,6 +24,7 @@ public class BetterTalonSRX {
     boolean isReal;
     SensorCollection sensorCollection;
     List<BetterFollower> slaves;
+    double maxTickVelocity;
 
     enum ControlType {
         Percent, Magic, OldPercent;
@@ -34,6 +35,10 @@ public class BetterTalonSRX {
     public BetterTalonSRX(int deviceNumber, BetterTalonSRXConfig config) {
         talon = config.isConnected ? (new TalonSRX(deviceNumber)) : mock(TalonSRX.class);
         talon.configFactoryDefault(timeout);
+
+        if (config.slot0.kF == 0 && config.maxTickVelocity != 0) {
+            config.slot0.kF = 1023.0 / config.maxTickVelocity;
+        }
 
         talon.configAllSettings(config, timeout);
         talon.setSensorPhase(config.invertEncoder);
@@ -61,6 +66,9 @@ public class BetterTalonSRX {
         isReal = config.isConnected;
         ticksPerInch = config.ticksPerInch;
         slaves = new ArrayList<BetterFollower>(1); // 1 max expected follower
+        maxTickVelocity = config.maxTickVelocity;
+
+        System.out.println("kF: " + config.slot0.kF + " maxV: " + config.maxTickVelocity);
     }
 
     public BetterTalonSRX(int deviceNumber) {
@@ -87,7 +95,7 @@ public class BetterTalonSRX {
 
     public void setPercent(double output) {
         lastControlType = ControlType.Percent;
-        lastOutput = deadband.calc(output);
+        lastOutput = deadband.calc(output) * maxTickVelocity;
 
         // Velocity PIDF: Need kF and kP minimum
         talon.set(ControlMode.Velocity, lastOutput);
