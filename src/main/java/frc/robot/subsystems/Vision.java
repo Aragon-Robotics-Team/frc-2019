@@ -5,10 +5,8 @@ import static org.mockito.Mockito.mock;
 import java.time.Clock;
 import java.time.Instant;
 
-import edu.wpi.first.networktables.EntryListenerFlags;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.NetworkTableValue;
 import edu.wpi.first.networktables.TableEntryListener;
 import edu.wpi.first.wpilibj.Relay;
@@ -16,6 +14,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.RobotMap;
+import frc.robot.commands.autonomous.RunAutoAlign;
 
 public class Vision extends Subsystem {
     public Instant pi_instant;
@@ -35,6 +34,7 @@ public class Vision extends Subsystem {
         if (RobotMap.VISION_LED_RELAY_INSTALLED) {
             tab.add(ledController);
         }
+        tab.add("AutoAlign", new RunAutoAlign());
 
         setLeds(false);
 
