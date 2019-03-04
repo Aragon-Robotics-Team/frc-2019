@@ -11,7 +11,7 @@ public class ControlAngle extends Command {
     }
 
     protected void execute() {
-        Robot.myAngle.setAngle(Robot.m_oi.getAngle());
+        Robot.myAngle.setAngle(Robot.map.oi.getAngle());
     }
 
     protected boolean isFinished() {

@@ -9,7 +9,7 @@ import frc.robot.commands.lift.ResetLiftEncoder;
 public class TeleopGroup extends CommandGroup {
 
     public TeleopGroup() {
-        addParallel(new SetCompressorEnabled(() -> !Robot.m_oi.getSlowMode()));
+        addParallel(new SetCompressorEnabled(() -> !Robot.map.oi.getSlowMode()));
         addParallel(new CalibrateIntakeEncoder());
         addSequential(new ResetLiftEncoder());
         addSequential(new ControlArcadeDrivetrain());

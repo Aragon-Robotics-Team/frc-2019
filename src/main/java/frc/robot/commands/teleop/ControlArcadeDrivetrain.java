@@ -14,11 +14,11 @@ public class ControlArcadeDrivetrain extends Command {
 
     protected void execute() {
         double speedModifier = 1.0;
-        if (Robot.m_oi.getSlowMode()) {
+        if (Robot.map.oi.getSlowMode()) {
             speedModifier = 0.7;
         }
-        Robot.myDrivetrain.controlArcade(Robot.m_oi.getLeftSpeed() * speedModifier,
-                Robot.m_oi.getLeftRotation() * speedModifier);
+        Robot.myDrivetrain.controlArcade(Robot.map.oi.getLeftSpeed() * speedModifier,
+                Robot.map.oi.getLeftRotation() * speedModifier);
     }
 
     protected boolean isFinished() {

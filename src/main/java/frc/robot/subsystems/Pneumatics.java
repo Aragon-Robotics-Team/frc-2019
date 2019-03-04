@@ -1,18 +1,18 @@
 package frc.robot.subsystems;
 
-import static frc.robot.util.Mock.mock;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import frc.robot.RobotMap;
+import frc.robot.Robot;
+import frc.robot.util.Mock;
 
 public class Pneumatics extends Subsystem {
     Compressor compressor;
     boolean enabled;
 
     public Pneumatics() {
-        compressor = RobotMap.PNEUMATICS_CONTROL_MODULE_INSTALLED
-                ? new Compressor(RobotMap.PNEUMATICS_CONTROL_MODULE_CAN)
-                : mock(Compressor.class);
+        var map = Robot.map.pneumatics;
+
+        compressor = Mock.createMockable(Compressor.class, map.PCMCanID());
     }
 
     public void initDefaultCommand() {

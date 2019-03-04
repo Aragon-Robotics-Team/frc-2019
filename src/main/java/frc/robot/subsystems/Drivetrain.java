@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import frc.robot.Robot;
-import frc.robot.RobotMap;
 import frc.robot.commands.drivetrain.ResetDrivetrainLocator;
 import frc.robot.commands.drivetrain.SetBrakeMode;
 import frc.robot.util.BetterFollower;
@@ -29,38 +28,34 @@ public class Drivetrain extends Subsystem {
     DrivetrainSendable drivetrainSendable;
 
     public Drivetrain() {
+        var map = Robot.map.drivetrain;
+
         BetterTalonSRXConfig leftConfig = new BetterTalonSRXConfig();
-        leftConfig.isConnected = RobotMap.DRIVETRAIN_LEFT_MAIN_INSTALLED;
         leftConfig.invert = false;
         // (tick_speed for 100% output) / (max measured tick_speed)
         leftConfig.maxTickVelocity = 1112.0;
         leftConfig.slot0.kF = (1023.0 / 1112.0) * 1.13;
         leftConfig.slot0.kP = 0.7;
         leftConfig.ticksPerInch = 76.485294;
-        leftController = new BetterTalonSRX(RobotMap.DRIVETRAIN_LEFT_MAIN_CAN, leftConfig);
+        leftController = new BetterTalonSRX(map.leftMainCanID(), leftConfig);
 
         BetterTalonSRXConfig rightConfig = new BetterTalonSRXConfig();
-        rightConfig.isConnected = RobotMap.DRIVETRAIN_RIGHT_MAIN_INSTALLED;
         rightConfig.invert = true;
         rightConfig.maxTickVelocity = 1142.0;
         rightConfig.slot0.kP = 0.7;
         rightConfig.ticksPerInch = 76.485294;
-        rightController = new BetterTalonSRX(RobotMap.DRIVETRAIN_RIGHT_MAIN_CAN, rightConfig);
+        rightController = new BetterTalonSRX(map.rightMainCanID(), rightConfig);
 
         BetterFollowerConfig leftSlaveConfig = new BetterFollowerConfig();
-        leftSlaveConfig.isConnected = RobotMap.DRIVETRAIN_LEFT_SLAVE_INSTALLED;
-        leftSlaveConfig.controller = RobotMap.DRIVETRAIN_SLAVE_CONTROLLER;
+        leftSlaveConfig.controller = map.slaveController();
         leftSlaveConfig.invert = false;
-        leftSlaveController =
-                new BetterFollower(RobotMap.DRIVETRAIN_LEFT_SLAVE_CAN, leftSlaveConfig);
+        leftSlaveController = new BetterFollower(map.leftSlaveCanID(), leftSlaveConfig);
         leftController.addFollower(leftSlaveController);
 
         BetterFollowerConfig rightSlaveConfig = new BetterFollowerConfig();
-        rightSlaveConfig.isConnected = RobotMap.DRIVETRAIN_RIGHT_SLAVE_INSTALLED;
-        rightSlaveConfig.controller = RobotMap.DRIVETRAIN_SLAVE_CONTROLLER;
+        rightSlaveConfig.controller = map.slaveController();
         rightSlaveConfig.invert = false;
-        rightSlaveController =
-                new BetterFollower(RobotMap.DRIVETRAIN_RIGHT_SLAVE_CAN, rightSlaveConfig);
+        rightSlaveController = new BetterFollower(map.rightSlaveCanID(), rightSlaveConfig);
         rightController.addFollower(rightSlaveController);
 
         tab = Shuffleboard.getTab("Drive");
@@ -166,6 +161,7 @@ public class Drivetrain extends Subsystem {
         rightController.resetEncoder();
     }
 }
+
 
 class DrivetrainSendable extends SendableBase {
     Drivetrain drivetrain;

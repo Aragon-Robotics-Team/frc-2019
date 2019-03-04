@@ -13,7 +13,7 @@ public class ControlDrivetrain extends Command {
     }
 
     protected void execute() {
-        Robot.myDrivetrain.control(Robot.m_oi.getLeftSpeed(), Robot.m_oi.getRightSpeed());
+        Robot.myDrivetrain.control(Robot.map.oi.getLeftSpeed(), Robot.map.oi.getRightSpeed());
     }
 
     protected boolean isFinished() {

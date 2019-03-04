@@ -3,7 +3,7 @@ package frc.robot.controllers;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
-import frc.robot.RobotMap;
+import frc.robot.Robot;
 import frc.robot.commands.intake.SetIntakePosition;
 import frc.robot.commands.lift.SetLiftPosition;
 import frc.robot.subsystems.Intake;
@@ -14,7 +14,7 @@ public class ButtonBoard {
     Button[] buttons;
 
     public ButtonBoard() {
-        joystick = new Joystick(RobotMap.BUTTON_BOARD_JOYSTICK);
+        joystick = new Joystick(Robot.map.joystick.buttonBoardPort());
 
         final int AMOUNT_BUTTONS = 10;
 

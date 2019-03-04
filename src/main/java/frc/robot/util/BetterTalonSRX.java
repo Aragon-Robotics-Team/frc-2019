@@ -32,8 +32,9 @@ public class BetterTalonSRX {
 
     ControlType lastControlType = ControlType.Percent;
 
-    public BetterTalonSRX(int deviceNumber, BetterTalonSRXConfig config) {
-        talon = config.isConnected ? (new TalonSRX(deviceNumber)) : mock(TalonSRX.class);
+    public BetterTalonSRX(Integer canID, BetterTalonSRXConfig config) {
+        isReal = canID != null;
+        talon = Mock.createMockable(TalonSRX.class, canID);
         talon.configFactoryDefault(timeout);
 
         if (config.slot0.kF == 0 && config.maxTickVelocity != 0) {
@@ -59,16 +60,14 @@ public class BetterTalonSRX {
 
         sendable = new SendableSRX(this);
         deadband = config.deadband;
-        sensorCollection =
-                config.isConnected ? talon.getSensorCollection() : mock(SensorCollection.class);
+        sensorCollection = isReal ? talon.getSensorCollection() : mock(SensorCollection.class);
 
         timeout = 0;
-        isReal = config.isConnected;
         ticksPerInch = config.ticksPerInch;
         slaves = new ArrayList<BetterFollower>(1); // 1 max expected follower
         maxTickVelocity = config.maxTickVelocity;
 
-        System.out.println(deviceNumber + " kF: " + config.slot0.kF + " maxV: " + config.maxTickVelocity);
+        System.out.println(canID + " kF: " + config.slot0.kF + " maxV: " + config.maxTickVelocity);
     }
 
     public BetterTalonSRX(int deviceNumber) {
