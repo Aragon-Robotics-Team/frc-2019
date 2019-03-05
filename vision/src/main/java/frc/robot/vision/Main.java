@@ -220,7 +220,7 @@ public final class Main {
 						}
 						System.out.println();
 
-						ByteArrayOutput.setNetworkObject(clock.instant(), "table", "timestamp");
+						ByteArrayOutput.setNetworkObject(pipeline.t, "table", "timestamp");
 						ByteArrayOutput.setNetworkObject(x_offset_angles, "table",
 								"target_offsets");
 					});

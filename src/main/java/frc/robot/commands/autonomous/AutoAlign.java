@@ -4,7 +4,6 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
@@ -78,7 +77,8 @@ public class AutoAlign extends Command {
             enabled = true;
             double angle = angles[0];
 
-            if (angle != lastAngle && timeStamp != lastTimeStamp) { // Replace with test for new data
+            if (angle != lastAngle && timeStamp != lastTimeStamp) { // Replace with test for new
+                                                                    // data
 
                 // modified binary search
                 // David Soroko, May 14 '15 at 19:09, accessed 3/2/2019
@@ -103,8 +103,10 @@ public class AutoAlign extends Command {
                             closest_pose = pose_history.get(mid);
                         }
                     }
-                    closest_pose = pose_history.get(lo).t.getNano() - timeStamp.getNano() < timeStamp.getNano()
-                            - pose_history.get(hi).t.getNano() ? pose_history.get(lo) : pose_history.get(hi);
+                    closest_pose = pose_history.get(lo).t.getNano()
+                            - timeStamp.getNano() < timeStamp.getNano()
+                                    - pose_history.get(hi).t.getNano() ? pose_history.get(lo)
+                                            : pose_history.get(hi);
                 }
 
                 double angle_change_est = Robot.myNavX.ahrs.getAngle() - closest_pose.angle;
