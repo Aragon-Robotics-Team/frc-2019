@@ -9,14 +9,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import frc.robot.Robot;
 import frc.robot.commands.drivetrain.ResetDrivetrainLocator;
 import frc.robot.commands.drivetrain.SetBrakeMode;
+import frc.robot.commands.teleop.ControlArcadeDrivetrain;
 import frc.robot.util.BetterFollower;
 import frc.robot.util.BetterFollowerConfig;
 import frc.robot.util.BetterTalonSRX;
 import frc.robot.util.BetterTalonSRXConfig;
 
 public class Drivetrain extends Subsystem {
-    BetterTalonSRX leftController;
-    BetterTalonSRX rightController;
+    public BetterTalonSRX leftController;
+    public BetterTalonSRX rightController;
     BetterFollower leftSlaveController;
     BetterFollower rightSlaveController;
 
@@ -80,8 +81,8 @@ public class Drivetrain extends Subsystem {
     }
 
     public void control(double x, double y) {
-        leftController.setPercent(x);
-        rightController.setPercent(y);
+        leftController.setOldPercent(x);
+        rightController.setOldPercent(y);
     }
 
     public void controlArcade(double x, double y) { // x is up/down; y is right/left
@@ -167,6 +168,8 @@ class DrivetrainSendable extends SendableBase {
     Drivetrain drivetrain;
     BetterTalonSRX left;
     BetterTalonSRX right;
+    double maxL;
+    double maxR;
 
     public DrivetrainSendable(Drivetrain drivetrain) {
         this.drivetrain = drivetrain;

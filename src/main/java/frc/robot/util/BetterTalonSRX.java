@@ -176,6 +176,7 @@ public class BetterTalonSRX {
 
 class SendableSRX extends SendableBase {
     BetterTalonSRX talon;
+    double max;
 
     public SendableSRX(BetterTalonSRX talon) {
         this.talon = talon;
@@ -183,7 +184,16 @@ class SendableSRX extends SendableBase {
 
     public void initSendable(SendableBuilder builder) {
         builder.addDoubleProperty("Output", talon::get, talon::set);
+        builder.addDoubleProperty("Last Output", () -> {
+            return talon.lastOutput;
+        }, null);
         builder.addDoubleProperty("Velocity", talon::getEncoderRate, null);
+        builder.addDoubleProperty("Max Velocty", () -> {
+            max = Math.max(max, talon.getEncoderRate());
+            return max;
+        }, (bad) -> {
+            max = 0;
+        });
         builder.addDoubleProperty("Distance", talon::getEncoderPos, null);
 
         builder.addDoubleProperty("MagicError", talon.talon::getClosedLoopError, null);

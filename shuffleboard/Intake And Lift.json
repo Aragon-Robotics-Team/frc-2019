@@ -749,12 +749,194 @@
           }
         }
       }
+    },
+    {
+      "title": "Tab 11",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "tiles": {
+          "0,0": {
+            "size": [
+              3,
+              3
+            ],
+            "content": {
+              "_type": "Network Table Tree",
+              "_source0": "network_table:///Shuffleboard/Drive/Left Wheels",
+              "_title": "Shuffleboard/Drive/Left Wheels"
+            }
+          },
+          "3,0": {
+            "size": [
+              3,
+              3
+            ],
+            "content": {
+              "_type": "Network Table Tree",
+              "_source0": "network_table:///Shuffleboard/Drive/Right Wheels",
+              "_title": "Shuffleboard/Drive/Right Wheels"
+            }
+          },
+          "9,0": {
+            "size": [
+              3,
+              3
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///Shuffleboard/Drive/Right Wheels/Velocity",
+              "_title": "Shuffleboard/Drive/Right Wheels/Velocity",
+              "Graph/Visible time": 30.0,
+              "Visible data/Shuffleboard/Drive/Right Wheels/Velocity": true
+            }
+          },
+          "6,0": {
+            "size": [
+              3,
+              3
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///Shuffleboard/Drive/Left Wheels/Velocity",
+              "_title": "Shuffleboard/Drive/Left Wheels/Velocity",
+              "Graph/Visible time": 30.0,
+              "Visible data/Shuffleboard/Drive/Left Wheels/Velocity": true
+            }
+          },
+          "6,5": {
+            "size": [
+              3,
+              1
+            ],
+            "content": {
+              "_type": "Command",
+              "_source0": "network_table:///Shuffleboard/Drive/Hold",
+              "_title": "Shuffleboard/Drive/Hold"
+            }
+          },
+          "0,3": {
+            "size": [
+              3,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///Shuffleboard/Drive/Left Wheels/Max Velocty",
+              "_title": "Shuffleboard/Drive/Left Wheels/Max Velocty"
+            }
+          },
+          "0,4": {
+            "size": [
+              3,
+              1
+            ],
+            "content": {
+              "_type": "Number Slider",
+              "_source0": "network_table:///Shuffleboard/Drive/Left Wheels/Max Velocty",
+              "_title": "Shuffleboard/Drive/Left Wheels/Max Velocty",
+              "Slider Settings/Min": -1.0,
+              "Slider Settings/Max": 1.0,
+              "Slider Settings/Block increment": 0.0625
+            }
+          },
+          "3,3": {
+            "size": [
+              3,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///Shuffleboard/Drive/Right Wheels/Max Velocty",
+              "_title": "Shuffleboard/Drive/Right Wheels/Max Velocty"
+            }
+          },
+          "3,4": {
+            "size": [
+              3,
+              1
+            ],
+            "content": {
+              "_type": "Number Slider",
+              "_source0": "network_table:///Shuffleboard/Drive/Right Wheels/Max Velocty",
+              "_title": "Shuffleboard/Drive/Right Wheels/Max Velocty",
+              "Slider Settings/Min": -1.0,
+              "Slider Settings/Max": 1.0,
+              "Slider Settings/Block increment": 0.0625
+            }
+          },
+          "3,5": {
+            "size": [
+              3,
+              1
+            ],
+            "content": {
+              "_type": "Command",
+              "_source0": "network_table:///Shuffleboard/Drive/ControlArcadeDrivetrain",
+              "_title": "Shuffleboard/Drive/ControlArcadeDrivetrain"
+            }
+          },
+          "6,4": {
+            "size": [
+              3,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///Shuffleboard/Drive/Left Wheels/Last Output",
+              "_title": "Shuffleboard/Drive/Left Wheels/Last Output"
+            }
+          },
+          "9,4": {
+            "size": [
+              3,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///Shuffleboard/Drive/Right Wheels/Last Output",
+              "_title": "Shuffleboard/Drive/Right Wheels/Last Output"
+            }
+          },
+          "12,0": {
+            "size": [
+              1,
+              6
+            ],
+            "content": {
+              "_type": "Voltage View",
+              "_source0": "network_table:///Shuffleboard/Drive/Joystick/Y",
+              "_title": "Shuffleboard/Drive/Joystick/Y",
+              "Range/Min": -1.0,
+              "Range/Max": 1.0,
+              "Range/Center": 0.0,
+              "Visuals/Orientation": "VERTICAL",
+              "Visuals/Number of tick marks": 11
+            }
+          },
+          "6,3": {
+            "size": [
+              3,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///Shuffleboard/Drive/Joystick/Y",
+              "_title": "/Shuffleboard/Drive/Joystick/Y"
+            }
+          }
+        }
+      }
     }
   ],
   "windowGeometry": {
-    "x": -8.0,
-    "y": -8.0,
-    "width": 1936.0,
-    "height": 1056.0
+    "x": -7.0,
+    "y": 2.0,
+    "width": 1932.0,
+    "height": 1045.0
   }
 }

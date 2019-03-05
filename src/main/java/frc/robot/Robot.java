@@ -2,8 +2,11 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import frc.robot.commands.TestNavX;
 import frc.robot.commands.autonomous.AutonomousGroup;
+import frc.robot.commands.drivetrain.Hold;
+import frc.robot.commands.teleop.ControlArcadeDrivetrain;
 import frc.robot.commands.teleop.TeleopGroup;
 import frc.robot.map.RobotMap;
 import frc.robot.subsystems.Drivetrain;
@@ -30,6 +33,9 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotInit() {
 		map.oi.addShuffleboard();
+		var tab = Shuffleboard.getTab("Drive");
+		tab.add(new ControlArcadeDrivetrain());
+		tab.add(new Hold());
 
 		System.out.println("init");
 	}
