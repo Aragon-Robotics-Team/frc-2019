@@ -9,7 +9,7 @@ public class BetterTalonSRXConfig extends TalonSRXConfiguration {
     public double ticksPerInch;
     public NeutralMode neutralMode;
     public Deadband deadband;
-    public boolean isConnected;
+    public double maxTickVelocity;
 
     public BetterTalonSRXConfig() {
         ticksPerInch = 0;
@@ -17,7 +17,7 @@ public class BetterTalonSRXConfig extends TalonSRXConfiguration {
         invertEncoder = false;
         neutralMode = NeutralMode.Brake;
         deadband = new Deadband(0.125, 0); // Warning: 0 deadband!;
-        isConnected = true;
+        maxTickVelocity = 0;
 
         // Set defaults below for non-BetterTalonSRXConfig options
 

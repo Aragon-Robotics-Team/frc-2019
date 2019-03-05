@@ -1,20 +1,20 @@
 package frc.robot.subsystems;
 
-import static frc.robot.util.Mock.mock;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import frc.robot.RobotMap;
+import frc.robot.Robot;
 import frc.robot.commands.intake.ResetIntakeEncoder;
-import frc.robot.util.BetterSolenoid;
 import frc.robot.util.BetterTalonSRX;
 import frc.robot.util.BetterTalonSRXConfig;
+import frc.robot.util.Mock;
 
 public class Intake extends Subsystem {
     public BetterTalonSRX controller;
     Talon vacuumController;
-    BetterSolenoid pistonController;
+    Solenoid pistonController;
 
     ShuffleboardTab tab;
 
@@ -29,8 +29,9 @@ public class Intake extends Subsystem {
     }
 
     public Intake() {
+        var map = Robot.map.intake;
+
         BetterTalonSRXConfig config = new BetterTalonSRXConfig();
-        config.isConnected = RobotMap.INTAKE_INSTALLED;
         config.invert = true;
         config.invertEncoder = true;
         config.ticksPerInch = 4552;
@@ -39,20 +40,17 @@ public class Intake extends Subsystem {
         config.motionCruiseVelocity = 255;
         config.motionAcceleration = 500;
 
-        controller = new BetterTalonSRX(RobotMap.INTAKE_CAN, config);
+        controller = new BetterTalonSRX(map.controllerCanID(), config);
 
         tab = Shuffleboard.getTab("Intake");
         controller.addShuffleboard(tab, "Intake");
         tab.add(new ResetIntakeEncoder());
 
-        vacuumController =
-                RobotMap.INTAKE_VACUUM_INSTALLED ? (new Talon(RobotMap.INTAKE_VACUUM_PWM))
-                        : mock(Talon.class);
+        vacuumController = Mock.createMockable(Talon.class, map.vacuumPort());
         vacuumController.setSafetyEnabled(false);
         vacuumController.setInverted(true);
 
-        pistonController =
-                new BetterSolenoid(RobotMap.INTAKE_PISTON_PORT, RobotMap.INTAKE_PISTON_INSTALLED);
+        pistonController = Mock.createMockable(Solenoid.class, map.pistonPCMPort());
 
         setVacuum(false);
         setPosition(Position.Stowed);

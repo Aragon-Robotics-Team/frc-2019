@@ -1,15 +1,14 @@
 package frc.robot.util;
 
-import frc.robot.util.BetterFollower.FollowerController;
+import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 public class BetterFollowerConfig {
     public boolean invert;
-    public BetterFollower.FollowerController controller;
-    public boolean isConnected;
+    public Class<? extends BaseMotorController> controller;
 
     public BetterFollowerConfig() {
         invert = false;
-        controller = FollowerController.VictorSPX;
-        isConnected = true;
+        controller = VictorSPX.class;
     }
 }
