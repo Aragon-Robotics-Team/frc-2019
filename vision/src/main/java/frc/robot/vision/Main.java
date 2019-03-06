@@ -20,6 +20,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import edu.wpi.cscore.CvSource;
+import edu.wpi.cscore.MjpegServer;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.VideoSource;
 import edu.wpi.first.cameraserver.CameraServer;
@@ -147,7 +148,7 @@ public final class Main {
 		System.out.println("Starting camera '" + config.name + "' on " + config.path);
 		CameraServer inst = CameraServer.getInstance();
 		UsbCamera camera = new UsbCamera(config.name, config.path);
-		// MjpegServer server = inst.startAutomaticCapture(camera);
+		MjpegServer server = inst.startAutomaticCapture(camera);
 
 		// setup a cvSource where you can put furames and it should just work
 		AugmentCam = inst.putVideo("Augmented", 320, 240);
