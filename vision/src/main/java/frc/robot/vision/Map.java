@@ -1,10 +1,7 @@
 package frc.robot.vision;
 
-import org.opencv.core.Mat;
 import org.opencv.core.Point;
-import org.opencv.core.Scalar;
 import org.opencv.core.Size;
-import org.opencv.imgproc.Imgproc;
 
 public final class Map {
     public static final Arena arena = new Arena();
@@ -47,7 +44,7 @@ public final class Map {
             new Target(new Point(27.44, 0), Target.Height.cargo_ship_hatch, 90),
             new Target(new Point(296.56, 0), Target.Height.cargo_ship_hatch, 90),
             new Target(new Point(27.44, 648), Target.Height.cargo_ship_hatch, -90),
-            new Target(new Point(296.56, 648), Target.Height.cargo_ship_hatch, -90), };
+            new Target(new Point(296.56, 648), Target.Height.cargo_ship_hatch, -90),};
 
     public final static class Arena {
         public static final String unit = "inches";
@@ -72,7 +69,8 @@ public final class Map {
         }
 
         public enum Height {
-            rocket_port(39.125), rocket_hatch(31.5), loading_station_hatch(31.5), cargo_ship_hatch(31.5);
+            rocket_port(39.125), rocket_hatch(31.5), loading_station_hatch(31.5), cargo_ship_hatch(
+                    31.5);
             private double h;
 
             Height(double h) {

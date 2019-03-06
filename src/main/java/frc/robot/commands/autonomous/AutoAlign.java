@@ -4,6 +4,7 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.List;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
@@ -15,7 +16,7 @@ public class AutoAlign extends Command {
     Instant lastTimeStamp;
     Clock clock = Clock.systemUTC();
 
-    public ArrayList<Pose> pose_history = new ArrayList<Pose>();
+    public List<Pose> pose_history = new ArrayList<Pose>();
 
     public AutoAlign() {
         requires(Robot.myDrivetrain); // This will exit ControlArcadeDrivetrain
