@@ -1,4 +1,4 @@
-package frc.robot.vision;
+package frc.robot.util.fieldmap;
 
 import org.opencv.core.Point;
 import org.opencv.core.Size;
@@ -78,24 +78,5 @@ public final class Map {
             }
         }
 
-        // public void draw(Mat img){
-        // double max_x = img.width();
-        // double max_y = img.height();
-        // double dx = Math.cos(angle);
-        // double dy = Math.sin(angle);
-        // Point pt1 = new Point(cutoff(this.center.x + dx*draw_len, 0,max_x),
-        // cutoff(this.center.y
-        // + dy*draw_len,0,max_y));
-        // Imgproc.line(img, pt1, center, new Scalar(255,0,0));
-        // }
-        // public double cutoff(double val, double min, double max){
-        // return Math.max(Math.min(val,max),min);
-        // }
     }
-
-    // public void draw(Mat img){
-    // for(Target t: targets){
-    // t.draw(img);
-    // }
-    // }
 }
