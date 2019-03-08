@@ -3,20 +3,18 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.Robot;
 import frc.robot.commands.intake.ResetIntakeEncoder;
+import frc.robot.util.BetterSendable;
 import frc.robot.util.BetterTalonSRX;
 import frc.robot.util.BetterTalonSRXConfig;
 import frc.robot.util.Mock;
+import frc.robot.util.SendableMaster;
 
-public class Intake extends Subsystem {
+public class Intake extends Subsystem implements BetterSendable {
     public BetterTalonSRX controller;
     Talon vacuumController;
     Solenoid pistonController;
-
-    ShuffleboardTab tab;
 
     public enum Position {
         Stowed(0.0), Intake(0.6), Horizontal(1.0), Vertical(0.0);
@@ -42,10 +40,6 @@ public class Intake extends Subsystem {
 
         controller = new BetterTalonSRX(map.controllerCanID(), config);
 
-        tab = Shuffleboard.getTab("Intake");
-        controller.addShuffleboard(tab, "Intake");
-        tab.add(new ResetIntakeEncoder());
-
         vacuumController = Mock.createMockable(Talon.class, map.vacuumPort());
         vacuumController.setSafetyEnabled(false);
         vacuumController.setInverted(true);
@@ -54,6 +48,11 @@ public class Intake extends Subsystem {
 
         setVacuum(false);
         setPosition(Position.Stowed);
+    }
+
+    public void createSendable(SendableMaster master) {
+        master.add(controller);
+        master.add(new ResetIntakeEncoder());
     }
 
     public void resetEncoder() {

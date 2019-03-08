@@ -2,11 +2,14 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDOutput;
+import edu.wpi.first.wpilibj.SendableBase;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import frc.robot.Robot;
+import frc.robot.util.BetterSendable;
+import frc.robot.util.SendableMaster;
 
-public class TurnToAngle extends Subsystem implements PIDOutput {
+public class TurnToAngle extends Subsystem implements PIDOutput, BetterSendable {
     public double currentAngle;
     public double pidOut;
     public boolean enabled = false;
@@ -19,6 +22,7 @@ public class TurnToAngle extends Subsystem implements PIDOutput {
     static final double kToleranceDegrees = 5.0f;
 
     PIDController turnController;
+    AngleSendable sendable;
 
     public TurnToAngle() {
         turnController = new PIDController(kP, kI, kD, kF, Robot.myNavX.ahrs, this);
@@ -27,16 +31,20 @@ public class TurnToAngle extends Subsystem implements PIDOutput {
         turnController.setAbsoluteTolerance(kToleranceDegrees);
         turnController.setContinuous(true);
         turnController.disable();
+
+        sendable = new AngleSendable(this);
+    }
+
+    public String getTabName() {
+        return "Angle";
+    }
+
+
+    public void createSendable(SendableMaster master) {
+        master.add(sendable);
     }
 
     public void periodic() {
-        SmartDashboard.putNumber("Set Angle", currentAngle);
-        SmartDashboard.putNumber("NavX Angle", Robot.myNavX.ahrs.getYaw());
-        SmartDashboard.putNumber("Diff Angle",
-                (Robot.myNavX.ahrs.getYaw() - currentAngle + 180) % 360 - 180);
-        SmartDashboard.putNumber("PID Out", pidOut);
-        SmartDashboard.putBoolean("NavX Enable", Robot.myNavX.isRunning());
-
         if (Robot.myNavX.isRunning() && enabled) {// && !turnController.onTarget()) {
             turnController.enable();
         } else {
@@ -64,5 +72,21 @@ public class TurnToAngle extends Subsystem implements PIDOutput {
     public void pidWrite(double output) {
         pidOut = output;
         Robot.myDrivetrain.controlArcade(0, output);
+    }
+}
+
+
+class AngleSendable extends SendableBase {
+    TurnToAngle angle;
+
+    public AngleSendable(TurnToAngle angle) {
+        this.angle = angle;
+    }
+
+    public void initSendable(SendableBuilder builder) {
+        builder.addDoubleProperty("Set Angle", () -> angle.currentAngle, null);
+        builder.addDoubleProperty("Diff Angle",
+                () -> (Robot.myNavX.ahrs.getYaw() - angle.currentAngle + 180) % 360 - 180, null);
+        builder.addDoubleProperty("PID Out", () -> angle.pidOut, null);
     }
 }

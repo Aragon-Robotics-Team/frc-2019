@@ -10,10 +10,9 @@ import com.ctre.phoenix.motorcontrol.SensorCollection;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.SendableBase;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 
-public class BetterTalonSRX {
+public class BetterTalonSRX implements BetterSendable {
     Deadband deadband;
 
     TalonSRX talon;
@@ -74,8 +73,8 @@ public class BetterTalonSRX {
         this(deviceNumber, new BetterTalonSRXConfig());
     }
 
-    public void addShuffleboard(ShuffleboardTab tab, String name) {
-        tab.add(name, sendable);
+    public void createSendable(SendableMaster master) {
+        master.add("BetterTalonSRX", sendable);
     }
 
     // Setting Output

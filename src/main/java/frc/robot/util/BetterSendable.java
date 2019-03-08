@@ -5,6 +5,6 @@ public interface BetterSendable {
     public void createSendable(SendableMaster master);
 
     public default String getTabName() {
-        return "";
+        return getClass().getSimpleName();
     }
 }

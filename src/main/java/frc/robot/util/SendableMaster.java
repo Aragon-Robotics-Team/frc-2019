@@ -10,6 +10,7 @@ public class SendableMaster {
     private int depth;
     private ShuffleboardTab currentTab;
     private String baseName;
+    private String tabName;
 
     private SendableMaster() {
         depth = 0;
@@ -53,31 +54,35 @@ public class SendableMaster {
 
         if (isNull(name)) {
             if (isNull(baseName)) {
-                currentTab.add(sendable); // If error, no alternate name
+                try {
+                    addToTab(tabName, sendable);
+                } catch (IllegalArgumentException ex) {
+                    addToTab(null, sendable);
+                }
             } else {
                 try {
-                    currentTab.add(baseName, sendable); // If error, append sendableName
+                    addToTab(baseName, sendable); // If error, append sendableName
                 } catch (IllegalArgumentException ex) {
                     if (isNull(sendableName)) {
                         throw ex;
                     } else {
-                        currentTab.add(append(baseName, sendableName), sendable);
+                        addToTab(append(baseName, sendableName), sendable);
                     }
                 }
             }
         } else {
             if (isNull(baseName)) {
                 try {
-                    currentTab.add(name, sendable); // If error, append sendableName
+                    addToTab(name, sendable); // If error, append sendableName
                 } catch (IllegalArgumentException ex) {
                     if (isNull(sendableName)) {
                         throw ex;
                     } else {
-                        currentTab.add(append(name, sendableName), sendable);
+                        addToTab(append(name, sendableName), sendable);
                     }
                 }
             } else {
-                currentTab.add(append(baseName, name), sendable);
+                addToTab(append(baseName, name), sendable);
             }
         }
     }
@@ -85,8 +90,8 @@ public class SendableMaster {
     // Only top level BetterSendable; gets own tab
     private void addRoot(BetterSendable betterSendable) {
         baseName = "";
-        String name = betterSendable.getTabName();
-        currentTab = Shuffleboard.getTab(name);
+        tabName = betterSendable.getTabName();
+        currentTab = Shuffleboard.getTab(tabName);
 
         createSendable(betterSendable);
     }
@@ -109,6 +114,16 @@ public class SendableMaster {
         depth += 1;
         betterSendable.createSendable(this);
         depth -= 1;
+    }
+
+    private void addToTab(String name, Sendable sendable) {
+        System.out.println("Adding: " + name + " " + sendable);
+
+        if (name == null) {
+            currentTab.add(sendable);
+        } else {
+            currentTab.add(name, sendable);
+        }
     }
 
     private static boolean isNull(String string) {

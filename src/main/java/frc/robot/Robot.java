@@ -28,8 +28,6 @@ public class Robot extends BetterRobot {
 	// Ran once when Game starts
 	@Override
 	public void robotInit() {
-		map.oi.addShuffleboard();
-
 		System.out.println("init");
 	}
 

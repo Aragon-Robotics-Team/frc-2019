@@ -108,5 +108,4 @@ public class Attack3 extends OI {
 	public boolean getSlowMode() {
 		return slowModeButton.get();
 	}
-
 }

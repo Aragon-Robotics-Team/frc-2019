@@ -2,15 +2,13 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.Robot;
+import frc.robot.util.BetterSendable;
 import frc.robot.util.Mock;
+import frc.robot.util.SendableMaster;
 
-public class Vision extends Subsystem {
+public class Vision extends Subsystem implements BetterSendable {
     Relay ledController;
-
-    ShuffleboardTab tab;
 
     public Vision() {
         var map = Robot.map.vision;
@@ -19,12 +17,15 @@ public class Vision extends Subsystem {
         ledController.setDirection(Relay.Direction.kForward);
         ledController.setSafetyEnabled(false);
 
-        tab = Shuffleboard.getTab("Vision");
-        if (map.ledPort() != null) { // Sigh... I just can't get rid of this
-            tab.add(ledController);
-        }
-
         setLeds(false);
+    }
+
+    public void createSendable(SendableMaster master) {
+        var map = Robot.map.vision;
+
+        if (map.ledPort() != null) { // Sigh... I just can't get rid of this
+            master.add(ledController);
+        }
     }
 
     public void setLeds(boolean on) {

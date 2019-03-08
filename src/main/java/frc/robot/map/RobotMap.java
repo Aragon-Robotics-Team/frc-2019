@@ -3,8 +3,10 @@ package frc.robot.map;
 import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
 import frc.robot.controllers.OI;
 import frc.robot.controllers.SplitArcadeAttack3;
+import frc.robot.util.BetterSendable;
+import frc.robot.util.SendableMaster;
 
-public abstract class RobotMap {
+public abstract class RobotMap implements BetterSendable {
     public static RobotMap getMap() {
         return new PracticeRobotMap();
     }
@@ -97,4 +99,12 @@ public abstract class RobotMap {
     }
 
     public abstract boolean navXInstalled();
+
+    public String getTabName() {
+        return oi.getTabName();
+    }
+
+    public void createSendable(SendableMaster master) {
+        master.add((BetterSendable) oi);
+    }
 }
