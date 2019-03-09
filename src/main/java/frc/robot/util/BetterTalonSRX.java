@@ -80,7 +80,7 @@ public class BetterTalonSRX implements BetterSendable {
     }
 
     public void createSendable(SendableMaster master) {
-        master.add("BetterTalonSRX", sendable);
+        master.add(sendable);
     }
 
     // Setting Output

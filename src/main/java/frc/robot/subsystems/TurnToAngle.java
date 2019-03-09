@@ -41,7 +41,7 @@ public class TurnToAngle extends Subsystem implements PIDOutput, BetterSendable 
 
 
     public void createSendable(SendableMaster master) {
-        master.add(sendable);
+        master.add("TurnToAngle", sendable);
     }
 
     public void periodic() {

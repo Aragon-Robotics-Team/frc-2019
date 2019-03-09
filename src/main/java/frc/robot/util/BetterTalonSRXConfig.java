@@ -26,11 +26,13 @@ public class BetterTalonSRXConfig extends TalonSRXConfiguration {
             switch (this) {
                 case USDigital:
                     config.primaryPID.selectedFeedbackSensor = FeedbackDevice.QuadEncoder;
+                    break;
                 case CTREMag:
                     config.primaryPID.selectedFeedbackSensor =
                             FeedbackDevice.CTRE_MagEncoder_Relative;
                     config.auxiliaryPID.selectedFeedbackSensor =
                             FeedbackDevice.CTRE_MagEncoder_Relative;
+                    break;
                 default:
                     throw new IllegalArgumentException();
             }

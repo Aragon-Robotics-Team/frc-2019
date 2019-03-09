@@ -117,13 +117,13 @@ public class SendableMaster {
     }
 
     private void addToTab(String name, Sendable sendable) {
-        System.out.println("Adding: " + name + " " + sendable);
-
         if (name == null) {
             currentTab.add(sendable);
         } else {
             currentTab.add(name, sendable);
         }
+
+        System.out.printf("Adding: %-15s - %-15s - %s\n", tabName, name, sendable);
     }
 
     private static boolean isNull(String string) {
