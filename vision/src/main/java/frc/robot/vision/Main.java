@@ -41,7 +41,7 @@ public final class Main {
 	public static boolean server;
 	public static List<CameraConfig> cameraConfigs = new ArrayList<>();
 
-	public static CvSource AugmentCam;
+	public static CvSource augmentCam;
 	public static Clock clock = Clock.systemUTC();
 
 	private Main() {
@@ -150,8 +150,8 @@ public final class Main {
 		UsbCamera camera = new UsbCamera(config.name, config.path);
 		MjpegServer server = inst.startAutomaticCapture(camera);
 
-		// setup a cvSource where you can put furames and it should just work
-		AugmentCam = inst.putVideo("Augmented", 320, 240);
+		// setup a cvSource where you can put frames and it should just work
+		augmentCam = inst.putVideo("Augmented", 320, 240);
 
 		Gson gson = new GsonBuilder().create();
 
@@ -196,41 +196,15 @@ public final class Main {
 		List<VideoSource> cameras = new ArrayList<>();
 		for (CameraConfig cameraConfig : cameraConfigs) {
 			cameras.add(startCamera(cameraConfig));
+			if (cameraConfig.config.has("cameras") && cameraConfig.config.get("cameras").getAsJsonObject().has("name")
+					&& cameraConfig.config.get("cameras").getAsJsonObject().get("name").getAsString()
+							.equals("Vision")) {
+				Comms.createVisionThread(cameras.get(cameras.size() - 1), augmentCam, Comms::gripProcessVideo);
+			}
 		}
 
 		// start image processing on camera 0 if present
 		if (cameras.size() >= 1) {
-			VisionThread visionThread =
-					new VisionThread(cameras.get(0), new GripPostProcessing(), pipeline -> {
-						// do something with pipeline results
-						// System.out.println("start callback pipeline");
-						AugmentCam.putFrame(pipeline.AugmentCamOutput);
-						// System.out.println(pipeline.grip.filterContoursOutput());
-						// System.out.println(pipeline.grip.filterContoursOutput());
-						// ByteArrayOutput.setNetworkObject(pipeline.visionTargets, "table",
-						// "visionTargets");
-						double[] x_offset_angles = new double[pipeline.visionTargets.size()];
-						for (int i = 0; i < pipeline.visionTargets.size(); i++) {
-							GripPostProcessing.VisionTarget v = pipeline.visionTargets.get(i);
-							x_offset_angles[i] = CoordTransform.transformCoordsToOffsetAngle(
-									new double[] {(double) v.bounding.x + 0.5 * v.bounding.width,
-											(double) v.bounding.y + 0.5 * v.bounding.height})[0];
-						}
-						for (int i = 0; i < x_offset_angles.length; i++) {
-							System.out.print((x_offset_angles[i]) + " ");
-						}
-						System.out.println();
-
-						ByteArrayOutput.setNetworkObject(pipeline.t, "table", "timestamp");
-						ByteArrayOutput.setNetworkObject(x_offset_angles, "table",
-								"target_offsets");
-					});
-			/*
-			 * something like this for GRIP: VisionThread visionThread = new
-			 * VisionThread(cameras.get(0), new GripPipeline(), pipeline -> { ... });
-			 */
-			System.out.println("start visionthread");
-			visionThread.start();
 		}
 
 		// loop forever

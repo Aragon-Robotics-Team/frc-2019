@@ -104,10 +104,8 @@ public class AutoAlign extends Command {
                             closest_pose = pose_history.get(mid);
                         }
                     }
-                    closest_pose = pose_history.get(lo).t.getNano()
-                            - timeStamp.getNano() < timeStamp.getNano()
-                                    - pose_history.get(hi).t.getNano() ? pose_history.get(lo)
-                                            : pose_history.get(hi);
+                    closest_pose = pose_history.get(lo).t.getNano() - timeStamp.getNano() < timeStamp.getNano()
+                            - pose_history.get(hi).t.getNano() ? pose_history.get(lo) : pose_history.get(hi);
                 }
 
                 double angle_change_est = Robot.myNavX.ahrs.getAngle() - closest_pose.angle;
