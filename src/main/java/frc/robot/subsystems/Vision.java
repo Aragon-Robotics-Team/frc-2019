@@ -1,28 +1,31 @@
 package frc.robot.subsystems;
 
-import static org.mockito.Mockito.mock;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import frc.robot.RobotMap;
+import frc.robot.Robot;
+import frc.robot.util.BetterSendable;
+import frc.robot.util.Mock;
+import frc.robot.util.SendableMaster;
 
-public class Vision extends Subsystem {
+public class Vision extends Subsystem implements BetterSendable {
     Relay ledController;
 
-    ShuffleboardTab tab;
-
     public Vision() {
-        ledController =
-                RobotMap.VISION_LED_RELAY_INSTALLED ? (new Relay(RobotMap.VISION_LED_RELAY_PORT))
-                        : mock(Relay.class);
+        var map = Robot.map.vision;
+
+        ledController = Mock.createMockable(Relay.class, map.ledPort());
         ledController.setDirection(Relay.Direction.kForward);
         ledController.setSafetyEnabled(false);
 
-        tab = Shuffleboard.getTab("Vision");
-        tab.add(ledController);
-
         setLeds(false);
+    }
+
+    public void createSendable(SendableMaster master) {
+        var map = Robot.map.vision;
+
+        if (map.ledPort() != null) { // Sigh... I just can't get rid of this
+            master.add(ledController);
+        }
     }
 
     public void setLeds(boolean on) {

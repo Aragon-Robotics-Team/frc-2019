@@ -4,14 +4,15 @@ import java.awt.Color;
 import edu.wpi.first.wpilibj.SendableBase;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
-import frc.robot.RobotMap;
+import frc.robot.Robot;
 import frc.robot.commands.rgb.HueCycle;
 import frc.robot.commands.rgb.TriangleWave;
+import frc.robot.util.BetterSendable;
+import frc.robot.util.Mock;
+import frc.robot.util.SendableMaster;
 
-public class RGB extends Subsystem {
+public class RGB extends Subsystem implements BetterSendable {
     Talon mainController;
     Talon redController;
     Talon blueController;
@@ -22,27 +23,31 @@ public class RGB extends Subsystem {
     float[] rgb = new float[3];
     double brightness = 1.0;
 
-    ShuffleboardTab tab;
+    RGBSendable sendable;
 
     public RGB() {
-        mainController = new Talon(RobotMap.RGB_LED_MAIN_PORT);
-        redController = new Talon(RobotMap.RGB_LED_RED_PORT);
-        blueController = new Talon(RobotMap.RGB_LED_BLUE_PORT);
-        greenController = new Talon(RobotMap.RGB_LED_GREEN_PORT);
+        var map = Robot.map.rgb;
 
-        tab = Shuffleboard.getTab("RGB");
-        tab.add("RGBController", new RGBSendable(this));
-        tab.add("Main", mainController);
-        tab.add("Red", redController);
-        tab.add("Blue", blueController);
-        tab.add("Green", greenController);
+        mainController = Mock.createMockable(Talon.class, map.mainPort());
+        redController = Mock.createMockable(Talon.class, map.redPort());
+        blueController = Mock.createMockable(Talon.class, map.bluePort());
+        greenController = Mock.createMockable(Talon.class, map.greenPort());
+
+        sendable = new RGBSendable(this);
 
         disable();
     }
 
-    public void init() {
-        tab.add(new HueCycle(10.0));
-        tab.add(new TriangleWave(60.0 / 125.0));
+    public void createSendable(SendableMaster master) {
+        master.add(new RGBSendable(this));
+
+        master.add("Main", mainController);
+        master.add("Red", redController);
+        master.add("Blue", blueController);
+        master.add("Green", greenController);
+
+        master.add(new HueCycle(10.0));
+        master.add(new TriangleWave(60.0 / 125.0));
     }
 
     // HSV

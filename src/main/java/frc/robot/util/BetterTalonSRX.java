@@ -1,17 +1,17 @@
 package frc.robot.util;
 
-import static org.mockito.Mockito.mock;
+import static frc.robot.util.Mock.mock;
+import java.util.ArrayList;
+import java.util.List;
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.SensorCollection;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.SendableBase;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.SensorCollection;
 
-public class BetterTalonSRX {
+public class BetterTalonSRX implements BetterSendable {
     Deadband deadband;
 
     TalonSRX talon;
@@ -21,46 +21,66 @@ public class BetterTalonSRX {
     double lastOutput;
     boolean isReal;
     SensorCollection sensorCollection;
+    List<BetterFollower> slaves;
+    double maxTickVelocity;
 
     enum ControlType {
-        Percent, Magic;
+        Percent, Magic, OldPercent;
     }
 
     ControlType lastControlType = ControlType.Percent;
 
-    public BetterTalonSRX(int deviceNumber, BetterTalonSRXConfig config) {
-        talon = config.isConnected ? (new TalonSRX(deviceNumber)) : mock(TalonSRX.class);
-        talon.configFactoryDefault(timeout);
+    public BetterTalonSRX(Integer canID, BetterTalonSRXConfig config) {
+        isReal = canID != null;
+        if (!isReal) {
+            timeout = 0; // Speed up simulation?
+        }
+        talon = Mock.createMockable(TalonSRX.class, canID);
+
+        config.prepare();
 
         talon.configAllSettings(config, timeout);
         talon.setSensorPhase(config.invertEncoder);
         talon.setInverted(config.invert);
         talon.setNeutralMode(config.neutralMode);
 
-        talon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, timeout);
         talon.selectProfileSlot(0, 0);
 
         talon.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, timeout);
         talon.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, timeout);
 
+        if (config.voltageCompSaturation != 0.0) {
+            talon.enableVoltageCompensation(true);
+        }
+
+        if (config.encoder == BetterTalonSRXConfig.Encoder.CTREMag) {
+            int low = config.lowTickMag;
+            int high = config.highTickMag;
+            boolean zero = config.crossZeroMag;
+
+            sensorCollection.syncQuadratureWithPulseWidth(low, high, zero, 0, timeout);
+        }
+
         resetEncoder();
 
         sendable = new SendableSRX(this);
         deadband = config.deadband;
-        sensorCollection =
-                config.isConnected ? talon.getSensorCollection() : mock(SensorCollection.class);
+        sensorCollection = isReal ? talon.getSensorCollection() : mock(SensorCollection.class);
 
         timeout = 0;
-        isReal = config.isConnected;
         ticksPerInch = config.ticksPerInch;
+        slaves = new ArrayList<BetterFollower>(1); // 1 max expected follower
+        maxTickVelocity = config.maxTickVelocity;
+
+        System.out.println(canID + " kF: " + config.slot0.kF + " maxV: " + config.maxTickVelocity);
     }
 
     public BetterTalonSRX(int deviceNumber) {
         this(deviceNumber, new BetterTalonSRXConfig());
     }
 
-    public void addShuffleboard(ShuffleboardTab tab, String name) {
-        tab.add(name, sendable);
+    public void createSendable(SendableMaster master) {
+        master.add("BetterTalonSRX", sendable);
     }
 
     // Setting Output
@@ -70,6 +90,8 @@ public class BetterTalonSRX {
             setPercent(output);
         } else if (lastControlType == ControlType.Magic) {
             setMagic(output);
+        } else if (lastControlType == ControlType.OldPercent) {
+            setOldPercent(output);
         } else {
             throw new IndexOutOfBoundsException();
         }
@@ -77,6 +99,14 @@ public class BetterTalonSRX {
 
     public void setPercent(double output) {
         lastControlType = ControlType.Percent;
+        lastOutput = deadband.calc(output) * maxTickVelocity;
+
+        // Velocity PIDF: Need kF and kP minimum
+        talon.set(ControlMode.Velocity, lastOutput);
+    }
+
+    public void setOldPercent(double output) {
+        lastControlType = ControlType.OldPercent;
         lastOutput = deadband.calc(output);
 
         talon.set(ControlMode.PercentOutput, lastOutput);
@@ -130,12 +160,21 @@ public class BetterTalonSRX {
         return sensorCollection.isRevLimitSwitchClosed();
     }
 
+    // Other setters
+
     public void setBrakeMode(boolean brake) {
-        if (brake) {
-            talon.setNeutralMode(NeutralMode.Brake);
-        } else {
-            talon.setNeutralMode(NeutralMode.Coast);
+        NeutralMode neutralMode = brake ? NeutralMode.Brake : NeutralMode.Coast;
+
+        talon.setNeutralMode(neutralMode);
+
+        for (BetterFollower slave : slaves) {
+            slave.setBrakeMode(neutralMode);
         }
+    }
+
+    public void addFollower(BetterFollower slave) { // Add all followers before setting brake mode
+        slaves.add(slave);
+        slave.follow(talon);
     }
 }
 

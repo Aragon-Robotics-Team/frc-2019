@@ -1,20 +1,20 @@
-package frc.robot.commands.angle;
+package frc.robot.commands.drivetrain;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class ControlAngle extends Command {
-    public ControlAngle() {
+public class ResetDrivetrainLocator extends Command {
+    public ResetDrivetrainLocator() {
     }
 
     protected void initialize() {
+        Robot.myDrivetrain.reset();
     }
 
     protected void execute() {
-        Robot.myAngle.setAngle(Robot.map.oi.getAngle());
     }
 
     protected boolean isFinished() {
-        return false;
+        return true;
     }
 }
