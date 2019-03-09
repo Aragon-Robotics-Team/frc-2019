@@ -32,6 +32,9 @@ public class BetterTalonSRX implements BetterSendable {
 
     public BetterTalonSRX(Integer canID, BetterTalonSRXConfig config) {
         isReal = canID != null;
+        if (!isReal) {
+            timeout = 0; // Speed up simulation?
+        }
         talon = Mock.createMockable(TalonSRX.class, canID);
 
         config.prepare();
@@ -48,6 +51,14 @@ public class BetterTalonSRX implements BetterSendable {
 
         if (config.voltageCompSaturation != 0.0) {
             talon.enableVoltageCompensation(true);
+        }
+
+        if (config.encoder == BetterTalonSRXConfig.Encoder.CTREMag) {
+            int low = config.lowTickMag;
+            int high = config.highTickMag;
+            boolean zero = config.crossZeroMag;
+
+            sensorCollection.syncQuadratureWithPulseWidth(low, high, zero, 0, timeout);
         }
 
         resetEncoder();
