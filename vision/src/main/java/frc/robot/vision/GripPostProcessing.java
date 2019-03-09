@@ -16,8 +16,6 @@ import org.opencv.core.Rect;
 import org.opencv.core.RotatedRect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
-
-import edu.wpi.cscore.CvSource;
 import edu.wpi.first.vision.VisionPipeline;
 
 public class GripPostProcessing implements VisionPipeline {
@@ -42,7 +40,8 @@ public class GripPostProcessing implements VisionPipeline {
         grip.process(source0);
 
         filtered_contours = new ArrayList<MatOfPoint>();
-        rects = filterMinAreaRects(getMinAreaRects(grip), grip.filterContoursOutput(), 0.77, filtered_contours);
+        rects = filterMinAreaRects(getMinAreaRects(grip), grip.filterContoursOutput(), 0.77,
+                filtered_contours);
         visionTargets = getVisionTargets(rects);
 
         // System.out.println(source0.cols() + " " + source0.rows()); //prints size of
@@ -51,7 +50,8 @@ public class GripPostProcessing implements VisionPipeline {
 
         for (int i = 0; i < grip.filterContoursOutput().size(); i++) {
             // step draw contours
-            Imgproc.drawContours(AugmentCamOutput, grip.filterContoursOutput(), i, new Scalar(255, 0, 0), 1);
+            Imgproc.drawContours(AugmentCamOutput, grip.filterContoursOutput(), i,
+                    new Scalar(255, 0, 0), 1);
         }
 
         Point[] rectCorners = new Point[4];
@@ -63,8 +63,8 @@ public class GripPostProcessing implements VisionPipeline {
             p.fromArray(rectCorners);
             plist.add(p);
             Imgproc.drawContours(AugmentCamOutput, plist, i, new Scalar(0, 0, 255), 2);
-            Imgproc.putText(AugmentCamOutput, String.format("%.1f", correct_angle(rects[i])), rectCorners[3], 0, 0.4,
-                    new Scalar(255, 255, 255));
+            Imgproc.putText(AugmentCamOutput, String.format("%.1f", correct_angle(rects[i])),
+                    rectCorners[3], 0, 0.4, new Scalar(255, 255, 255));
             // Imgproc.putText(AugmentCamOutput,
             // String.format("%.2f", rectangularity(rects[i], filtered_contours.get(i))),
             // rectCorners[1], 0, 0.4, new Scalar(0, 255, 255));
@@ -73,15 +73,17 @@ public class GripPostProcessing implements VisionPipeline {
         // step draw rectangles around visiontargets
         for (VisionTarget visionTarget : visionTargets) {
             Rect bounding = visionTarget.bounding;
-            Point center = new Point(bounding.tl().x + (bounding.width / 2), (bounding.tl().y + (bounding.height / 2)));
-            Imgproc.rectangle(AugmentCamOutput, bounding.tl(), bounding.br(), new Scalar(255, 128, 0), 1,
-                    Imgproc.LINE_4);
-            Imgproc.drawMarker(AugmentCamOutput, center, new Scalar(0, 0, 255), Imgproc.MARKER_TILTED_CROSS, 20, 1,
-                    Imgproc.LINE_4);
+            Point center = new Point(bounding.tl().x + (bounding.width / 2),
+                    (bounding.tl().y + (bounding.height / 2)));
+            Imgproc.rectangle(AugmentCamOutput, bounding.tl(), bounding.br(),
+                    new Scalar(255, 128, 0), 1, Imgproc.LINE_4);
+            Imgproc.drawMarker(AugmentCamOutput, center, new Scalar(0, 0, 255),
+                    Imgproc.MARKER_TILTED_CROSS, 20, 1, Imgproc.LINE_4);
         }
     }
 
     public class VisionTarget implements Serializable {
+        private static final long serialVersionUID = -1969188189353818009L; // Random
         public double x;
         public double y;
         public Rect bounding;
@@ -100,8 +102,8 @@ public class GripPostProcessing implements VisionPipeline {
 
             r1.points(p1);
             r2.points(p2);
-            p1 = Stream.concat(Arrays.stream(p1), Arrays.stream(p2)).toArray(Point[]::new); // thnx
-                                                                                            // stackoverflow
+            // thnx stackoverflow
+            p1 = Stream.concat(Arrays.stream(p1), Arrays.stream(p2)).toArray(Point[]::new);
             p.fromArray(p1);
             this.bounding = Imgproc.boundingRect(p);
         }
@@ -166,10 +168,10 @@ public class GripPostProcessing implements VisionPipeline {
 
         double avgHeight = (height1 + height2) / 2;
 
-        return (18 < angleDiff && angleDiff < 38
-                && Math.abs(rect1.size.area() - rect2.size.area()) < (rect1.size.area() + rect2.size.area()) * 1// .25
-                && Math.abs(rect1_center.x - rect2_center.x) < 3 * (avgHeight) // if distance x <
-                                                                               // 6*height
+        return (18 < angleDiff && angleDiff < 38 && Math.abs(
+                rect1.size.area() - rect2.size.area()) < (rect1.size.area() + rect2.size.area()) * 1 // .25
+        // if distance x < 6*height
+                && Math.abs(rect1_center.x - rect2_center.x) < 3 * (avgHeight)
                 && Math.abs(rect1_center.y - rect2_center.y) < avgHeight // if distance y < height
         );
     }
@@ -178,13 +180,15 @@ public class GripPostProcessing implements VisionPipeline {
         rects = new RotatedRect[grip.filterContoursOutput().size()];
 
         for (int i = 0; i < grip.filterContoursOutput().size(); i++) {
-            rects[i] = Imgproc.minAreaRect(new MatOfPoint2f(grip.filterContoursOutput().get(i).toArray()));
+            rects[i] = Imgproc
+                    .minAreaRect(new MatOfPoint2f(grip.filterContoursOutput().get(i).toArray()));
         }
 
         return rects;
     }
 
-    public RotatedRect[] filterMinAreaRects(RotatedRect[] rects, List<MatOfPoint> contours, double threshold) {
+    public RotatedRect[] filterMinAreaRects(RotatedRect[] rects, List<MatOfPoint> contours,
+            double threshold) {
         // thresholds by rectangularity(rotatedrect, contour) -> value from 0-1
         List<RotatedRect> pass_rects = new ArrayList<RotatedRect>();
 
@@ -199,8 +203,8 @@ public class GripPostProcessing implements VisionPipeline {
         return pass_rects_arr;
     }
 
-    public RotatedRect[] filterMinAreaRects(RotatedRect[] rects, List<MatOfPoint> contours, double threshold,
-            List<MatOfPoint> filtered_contours) {
+    public RotatedRect[] filterMinAreaRects(RotatedRect[] rects, List<MatOfPoint> contours,
+            double threshold, List<MatOfPoint> filtered_contours) {
         // thresholds by rectangularity(rotatedrect, contour) -> value from 0-1
 
         List<RotatedRect> pass_rects = new ArrayList<RotatedRect>();
@@ -229,12 +233,12 @@ public class GripPostProcessing implements VisionPipeline {
 
         public int compare(RotatedRect a, RotatedRect b) {
             switch (mode) {
-            case 0:
-                return (int) (a.center.x - b.center.x);
-            case 1:
-                return (int) (a.size.area() - b.size.area());
-            default:
-                return (int) (a.center.x - b.center.x);
+                case 0:
+                    return (int) (a.center.x - b.center.x);
+                case 1:
+                    return (int) (a.size.area() - b.size.area());
+                default:
+                    return (int) (a.center.x - b.center.x);
             }
 
         }

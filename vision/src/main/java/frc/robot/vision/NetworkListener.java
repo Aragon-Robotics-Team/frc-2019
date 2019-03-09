@@ -13,8 +13,7 @@ public class NetworkListener implements TableEntryListener {
     }
 
     @Override
-    public void valueChanged(NetworkTable table, String key, NetworkTableEntry entry, NetworkTableValue val,
-            int flags) {
-
+    public void valueChanged(NetworkTable table, String key, NetworkTableEntry entry,
+            NetworkTableValue val, int flags) {
     }
 }

@@ -25,7 +25,6 @@ import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.VideoSource;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.vision.VisionThread;
 
 public final class Main {
 	private static String configFile = "/boot/frc.json";
@@ -196,10 +195,12 @@ public final class Main {
 		List<VideoSource> cameras = new ArrayList<>();
 		for (CameraConfig cameraConfig : cameraConfigs) {
 			cameras.add(startCamera(cameraConfig));
-			if (cameraConfig.config.has("cameras") && cameraConfig.config.get("cameras").getAsJsonObject().has("name")
-					&& cameraConfig.config.get("cameras").getAsJsonObject().get("name").getAsString()
-							.equals("Vision")) {
-				Comms.createVisionThread(cameras.get(cameras.size() - 1), augmentCam, Comms::gripProcessVideo);
+			if (cameraConfig.config.has("cameras")
+					&& cameraConfig.config.get("cameras").getAsJsonObject().has("name")
+					&& cameraConfig.config.get("cameras").getAsJsonObject().get("name")
+							.getAsString().equals("Vision")) {
+				Comms.createVisionThread(cameras.get(cameras.size() - 1), augmentCam,
+						Comms::gripProcessVideo);
 			}
 		}
 
@@ -216,22 +217,4 @@ public final class Main {
 			}
 		}
 	}
-
-	// public static void pipelineProcess(GripPostProcessing pipeline) {
-	// System.out.println(pipeline.grip.filterContoursOutput());
-	// // ByteArrayOutput.setNetworkObject(pipeline.visionTargets, "table",
-	// // "visionTargets");
-	// double[] x_offset_angles = new double[pipeline.visionTargets.size()];
-	// for (int i = 0; i < pipeline.visionTargets.size(); i++) {
-	// GripPostProcessing.VisionTarget v = pipeline.visionTargets.get(i);
-	// x_offset_angles[i] = CoordTransform.transformCoordsToOffsetAngle(
-	// new double[] {(double) v.bounding.height, (double) v.bounding.width})[0];
-	// }
-	// for (int i = 0; i < x_offset_angles.length; i++) {
-	// System.out.print(x_offset_angles[i] + "");
-	// }
-	// ByteArrayOutput.setNetworkObject(x_offset_angles, "table", "target_offsets");
-	// AugmentCam.putFrame(pipeline.AugmentCamOutput);
-
-	// }
 }
