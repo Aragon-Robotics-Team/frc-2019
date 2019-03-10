@@ -2,12 +2,12 @@ package frc.robot.commands.lift;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
-import frc.robot.subsystems.Lift;
+import frc.robot.subsystems.Lift.Position;
 
 public class SetLiftPosition extends Command {
-    Lift.Position pos;
+    Position pos;
 
-    public SetLiftPosition(Lift.Position pos) {
+    public SetLiftPosition(Position pos) {
         this.pos = pos;
     }
 

@@ -43,9 +43,6 @@ public class NavX extends Subsystem implements BetterSendable {
         master.add(new InstantCommand("Reset Yaw", this::zeroYaw));
     }
 
-    public void initDefaultCommand() {
-    }
-
     public boolean isRunning() {
         if (ahrs == null) {
             return false;
@@ -60,6 +57,9 @@ public class NavX extends Subsystem implements BetterSendable {
         }
 
         ahrs.reset(); // Might be either reset() or zeroYaw()
+    }
+
+    public void initDefaultCommand() {
     }
 }
 

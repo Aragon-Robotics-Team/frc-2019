@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.Robot;
+import frc.robot.commands.intake.ResetIntake;
 import frc.robot.commands.intake.ResetIntakeEncoder;
 import frc.robot.util.BetterSendable;
 import frc.robot.util.BetterTalonSRX;
@@ -46,8 +47,7 @@ public class Intake extends Subsystem implements BetterSendable {
 
         pistonController = Mock.createMockable(Solenoid.class, map.pistonPCMPort());
 
-        setVacuum(false);
-        setPosition(Position.Stowed);
+        (new ResetIntake()).start();
     }
 
     public void createSendable(SendableMaster master) {

@@ -3,8 +3,8 @@ package frc.robot.controllers;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
-import frc.robot.commands.teleop.ControlArcadeDrivetrain;
-import frc.robot.commands.teleop.ControlDrivetrain;
+import frc.robot.commands.drivetrain.ControlArcadeDrivetrain;
+import frc.robot.commands.drivetrain.ControlDrivetrain;
 
 public class F310 extends OI {
 	Joystick mainJoystick;

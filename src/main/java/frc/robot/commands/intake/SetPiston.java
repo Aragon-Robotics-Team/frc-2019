@@ -14,9 +14,6 @@ public class SetPiston extends Command {
         Robot.myIntake.setPiston(enabled);
     }
 
-    protected void execute() {
-    }
-
     protected boolean isFinished() {
         return true;
     }

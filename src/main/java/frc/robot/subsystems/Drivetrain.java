@@ -5,6 +5,8 @@ import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import frc.robot.Robot;
+import frc.robot.commands.drivetrain.IdleDrivetrain;
+import frc.robot.commands.drivetrain.ResetDrivetrain;
 import frc.robot.commands.drivetrain.ResetDrivetrainLocator;
 import frc.robot.commands.drivetrain.SetBrakeMode;
 import frc.robot.util.BetterFollower;
@@ -58,10 +60,8 @@ public class Drivetrain extends Subsystem implements BetterSendable {
         rightController.addFollower(rightSlaveController);
 
         drivetrainSendable = new DrivetrainSendable(this);
-        reset();
-    }
 
-    public void initDefaultCommand() {
+        (new ResetDrivetrain()).start();
     }
 
     public void createSendable(SendableMaster master) {
@@ -161,6 +161,10 @@ public class Drivetrain extends Subsystem implements BetterSendable {
     public void resetEncoders() {
         leftController.resetEncoder();
         rightController.resetEncoder();
+    }
+
+    public void initDefaultCommand() {
+        setDefaultCommand(new IdleDrivetrain());
     }
 }
 

@@ -62,9 +62,9 @@ public class Attack3 extends OI {
 		// trigger.whileHeld(new HoldVacuumOn());
 
 		b6.whenPressed(new QuickPiston());
-		b7.whenPressed(new SetLiftPosition(Lift.Position.HATCH_1));
-		b10.whenPressed(new SetLiftPosition(Lift.Position.HATCH_2));
-		b11.whenPressed(new SetLiftPosition(Lift.Position.PORT_1));
+		b7.whenPressed(new SetLiftPosition(Lift.Position.Hatch1));
+		b10.whenPressed(new SetLiftPosition(Lift.Position.Hatch2));
+		b11.whenPressed(new SetLiftPosition(Lift.Position.Port1));
 
 		HoldVacuumOn vacuum = new HoldVacuumOn();
 

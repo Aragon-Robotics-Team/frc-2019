@@ -1,20 +1,19 @@
-package frc.robot.commands.teleop;
+package frc.robot.commands.drivetrain;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class StopDrivetrain extends Command {
+public class ControlDrivetrain extends Command {
 
-    public StopDrivetrain() {
+    public ControlDrivetrain() {
         requires(Robot.myDrivetrain);
     }
 
     protected void initialize() {
-        Robot.myDrivetrain.stop();
     }
 
     protected void execute() {
-        Robot.myDrivetrain.stop();
+        Robot.myDrivetrain.control(Robot.map.oi.getLeftSpeed(), Robot.map.oi.getRightSpeed());
     }
 
     protected boolean isFinished() {

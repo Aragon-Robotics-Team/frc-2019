@@ -37,6 +37,5 @@ public class Vision extends Subsystem implements BetterSendable {
     }
 
     public void initDefaultCommand() {
-
     }
 }
