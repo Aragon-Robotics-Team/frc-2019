@@ -14,7 +14,7 @@ public class BetterTalonSRXConfig extends TalonSRXConfiguration {
     public Encoder encoder;
     public int lowTickMag;
     public int highTickMag;
-    public boolean crossZeroMag;
+    public Boolean crossZeroMag;
 
     public enum Encoder {
         USDigital, CTREMag;
@@ -31,7 +31,7 @@ public class BetterTalonSRXConfig extends TalonSRXConfiguration {
                     config.primaryPID.selectedFeedbackSensor =
                             FeedbackDevice.CTRE_MagEncoder_Relative;
                     config.auxiliaryPID.selectedFeedbackSensor =
-                            FeedbackDevice.CTRE_MagEncoder_Relative;
+                            FeedbackDevice.CTRE_MagEncoder_Absolute;
                     break;
                 default:
                     throw new IllegalArgumentException();
@@ -49,7 +49,7 @@ public class BetterTalonSRXConfig extends TalonSRXConfiguration {
         encoder = Encoder.USDigital;
         lowTickMag = 0;
         highTickMag = 0;
-        crossZeroMag = false;
+        crossZeroMag = null;
 
         // Set defaults below for non-BetterTalonSRXConfig options
 

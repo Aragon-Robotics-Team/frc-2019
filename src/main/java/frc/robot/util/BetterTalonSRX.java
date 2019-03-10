@@ -53,19 +53,23 @@ public class BetterTalonSRX implements BetterSendable {
             talon.enableVoltageCompensation(true);
         }
 
-        if (config.encoder == BetterTalonSRXConfig.Encoder.CTREMag) {
+        resetEncoder();
+
+        sensorCollection = isReal ? talon.getSensorCollection() : mock(SensorCollection.class);
+
+        if (config.encoder == BetterTalonSRXConfig.Encoder.CTREMag && config.crossZeroMag != null) {
             int low = config.lowTickMag;
             int high = config.highTickMag;
             boolean zero = config.crossZeroMag;
+            System.out.println(canID + " syncing mag encoder: " + low + " " + high + " " + zero);
 
             sensorCollection.syncQuadratureWithPulseWidth(low, high, zero, 0, timeout);
+        } else {
+            System.out.println(canID + " not syncing mag encoder");
         }
-
-        resetEncoder();
 
         sendable = new SendableSRX(this);
         deadband = config.deadband;
-        sensorCollection = isReal ? talon.getSensorCollection() : mock(SensorCollection.class);
 
         timeout = 0;
         ticksPerInch = config.ticksPerInch;
@@ -190,6 +194,8 @@ class SendableSRX extends SendableBase {
         builder.addDoubleProperty("Output", talon::get, talon::set);
         builder.addDoubleProperty("Velocity", talon::getEncoderRate, null);
         builder.addDoubleProperty("Distance", talon::getEncoderPos, null);
+        builder.addDoubleProperty("Distance 2", () -> talon.talon.getSelectedSensorPosition(1),
+                null);
 
         builder.addDoubleProperty("MagicError", talon.talon::getClosedLoopError, null);
         builder.addDoubleProperty("MagicTarget", talon.talon::getClosedLoopTarget, null);

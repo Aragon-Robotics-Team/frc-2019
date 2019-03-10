@@ -1,46 +1,57 @@
 package frc.robot.map;
 
 import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
+import frc.robot.controllers.ButtonBoard1;
+import frc.robot.controllers.ButtonBoard2;
+import frc.robot.controllers.HotasX;
 import frc.robot.controllers.OI;
-import frc.robot.controllers.SplitArcadeAttack3;
 import frc.robot.util.BetterSendable;
 import frc.robot.util.SendableMaster;
+import frc.robot.controllers.MultiOI;
 
 public abstract class RobotMap implements BetterSendable {
     public static RobotMap getMap() {
         return new PracticeRobotMap();
     }
 
-    public Joystick joystick = getJoystick();
+    public OI oi;
 
-    public OI oi = new SplitArcadeAttack3(joystick.attack3_0Port(), joystick.attack3_1Port());
-
-    Joystick getJoystick() {
-        return new Joystick();
+    public void init() {
+        if (oi == null) {
+            oi = new MultiOI(new HotasX(), new ButtonBoard1(), new ButtonBoard2());
+        }
     }
 
     public static class Joystick {
-        int f310Port() {
+        public static int hotasPort() {
             return 0;
         }
 
-        int attack3_0Port() {
+        public static int bb1Port() {
+            return 2;
+        }
+
+        public static int bb2Port() {
+            return 3;
+        }
+
+        public static int attack3_0Port() {
             return 1;
         }
 
-        int attack3_1Port() {
+        public static int attack3_1Port() {
             return 4;
         }
 
-        public int buttonBoardPort() {
-            return 5;
+        public static int f310Port() {
+            return 0;
         }
 
-        public boolean squareThrottle() {
+        public static boolean squareThrottle() {
             return true;
         }
 
-        public boolean squareTurn() {
+        public static boolean squareTurn() {
             return true;
         }
     }
@@ -101,10 +112,12 @@ public abstract class RobotMap implements BetterSendable {
     public abstract boolean navXInstalled();
 
     public String getTabName() {
-        return oi.getTabName();
+        // return oi.getTabName();
+        return "Drivetrain";
     }
 
     public void createSendable(SendableMaster master) {
+        init();
         master.add("OI", (BetterSendable) oi);
     }
 }

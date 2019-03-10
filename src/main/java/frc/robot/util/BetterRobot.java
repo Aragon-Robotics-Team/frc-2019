@@ -3,6 +3,7 @@ package frc.robot.util;
 import java.lang.reflect.Field;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import frc.robot.map.RobotMap;
 
 public abstract class BetterRobot extends TimedRobot {
 
@@ -21,6 +22,10 @@ public abstract class BetterRobot extends TimedRobot {
                 if (BetterSendable.class.isAssignableFrom(field.getType())) {
                     // Add to SendableMaster
                     SendableMaster.getInstance().add((BetterSendable) field.get(this));
+                }
+
+                if (RobotMap.class.isAssignableFrom(field.getType())) {
+                    ((RobotMap) field.get(this)).init();
                 }
             } catch (IllegalAccessException ex) {
                 ex.printStackTrace();

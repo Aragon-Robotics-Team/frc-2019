@@ -28,29 +28,29 @@ class DrivetrainImpl extends RobotMap.Drivetrain {
 
 class IntakeImpl extends RobotMap.Intake {
     public Integer controllerCanID() {
-        return null;
+        return 6;
     }
 
     public Integer vacuumPort() {
-        return null;
+        return 7;
     }
 
     public Integer pistonPCMPort() {
-        return null;
+        return 0;
     }
 }
 
 
 class LiftImpl extends RobotMap.Lift {
     public Integer controllerCanID() {
-        return null;
+        return 2;
     }
 }
 
 
 class PneumaticsImpl extends RobotMap.Pneumatics {
     public Integer PCMCanID() {
-        return null;
+        return 1;
     }
 }
 

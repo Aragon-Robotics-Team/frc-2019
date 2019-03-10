@@ -18,7 +18,7 @@ public class Intake extends Subsystem implements BetterSendable {
     Solenoid pistonController;
 
     public enum Position {
-        Stowed(0.0), Intake(0.6), Horizontal(1.0), Vertical(0.0);
+        Stowed(-2265), Intake(21), Horizontal(1018), Vertical(-1610);
 
         double pos;
 
@@ -32,12 +32,17 @@ public class Intake extends Subsystem implements BetterSendable {
 
         BetterTalonSRXConfig config = new BetterTalonSRXConfig();
         config.invert = true;
-        config.invertEncoder = true;
-        config.ticksPerInch = 4552;
+        config.invertEncoder = false;
+        config.ticksPerInch = 1;
         config.slot0.kP = 8;
         config.slot0.allowableClosedloopError = 0;
-        config.motionCruiseVelocity = 255;
-        config.motionAcceleration = 500;
+        config.motionCruiseVelocity = 300;
+        config.motionAcceleration = 300 * 4;
+        config.encoder = BetterTalonSRXConfig.Encoder.CTREMag;
+        config.lowTickMag = 2178;
+        config.highTickMag = 2999;
+        config.crossZeroMag = true;
+        config.clearPositionOnLimitR = false;
 
         controller = new BetterTalonSRX(map.controllerCanID(), config);
 
@@ -56,7 +61,7 @@ public class Intake extends Subsystem implements BetterSendable {
     }
 
     public void resetEncoder() {
-        controller.resetEncoder();
+        // controller.resetEncoder();
     }
 
     public void setPosition(Position position) {
