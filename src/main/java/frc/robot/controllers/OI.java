@@ -1,10 +1,12 @@
 package frc.robot.controllers;
 
+import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.SendableBase;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
+import frc.robot.util.BetterSendable;
+import frc.robot.util.SendableMaster;
 
-public abstract class OI extends SendableBase {
+public abstract class OI extends SendableBase implements BetterSendable {
 	public double getLeftSpeed() {
 		return 0;
 	}
@@ -25,8 +27,12 @@ public abstract class OI extends SendableBase {
 		return Math.toDegrees(Math.atan2(getLeftRotation(), getLeftSpeed()));
 	}
 
-	public void addShuffleboard() {
-		Shuffleboard.getTab("Drive").add("Joystick", this);
+	public void createSendable(SendableMaster master) {
+		master.add((Sendable) this);
+	}
+
+	public String getTabName() {
+		return "Drivetrain";
 	}
 
 	public void initSendable(SendableBuilder builder) {

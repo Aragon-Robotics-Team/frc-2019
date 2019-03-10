@@ -4,16 +4,14 @@ import static frc.robot.util.Mock.mock;
 import java.util.ArrayList;
 import java.util.List;
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SensorCollection;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.SendableBase;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 
-public class BetterTalonSRX {
+public class BetterTalonSRX implements BetterSendable {
     Deadband deadband;
 
     TalonSRX talon;
@@ -34,19 +32,18 @@ public class BetterTalonSRX {
 
     public BetterTalonSRX(Integer canID, BetterTalonSRXConfig config) {
         isReal = canID != null;
-        talon = Mock.createMockable(TalonSRX.class, canID);
-        talon.configFactoryDefault(timeout);
-
-        if (config.slot0.kF == 0 && config.maxTickVelocity != 0) {
-            config.slot0.kF = 1023.0 / config.maxTickVelocity;
+        if (!isReal) {
+            timeout = 0; // Speed up simulation?
         }
+        talon = Mock.createMockable(TalonSRX.class, canID);
+
+        config.prepare();
 
         talon.configAllSettings(config, timeout);
         talon.setSensorPhase(config.invertEncoder);
         talon.setInverted(config.invert);
         talon.setNeutralMode(config.neutralMode);
 
-        talon.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, timeout);
         talon.selectProfileSlot(0, 0);
 
         talon.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, timeout);
@@ -54,6 +51,14 @@ public class BetterTalonSRX {
 
         if (config.voltageCompSaturation != 0.0) {
             talon.enableVoltageCompensation(true);
+        }
+
+        if (config.encoder == BetterTalonSRXConfig.Encoder.CTREMag) {
+            int low = config.lowTickMag;
+            int high = config.highTickMag;
+            boolean zero = config.crossZeroMag;
+
+            sensorCollection.syncQuadratureWithPulseWidth(low, high, zero, 0, timeout);
         }
 
         resetEncoder();
@@ -74,8 +79,8 @@ public class BetterTalonSRX {
         this(deviceNumber, new BetterTalonSRXConfig());
     }
 
-    public void addShuffleboard(ShuffleboardTab tab, String name) {
-        tab.add(name, sendable);
+    public void createSendable(SendableMaster master) {
+        master.add(sendable);
     }
 
     // Setting Output

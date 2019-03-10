@@ -3,18 +3,20 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.SendableBase;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import frc.robot.Robot;
+import frc.robot.commands.drivetrain.IdleDrivetrain;
+import frc.robot.commands.drivetrain.ResetDrivetrain;
 import frc.robot.commands.drivetrain.ResetDrivetrainLocator;
 import frc.robot.commands.drivetrain.SetBrakeMode;
 import frc.robot.util.BetterFollower;
 import frc.robot.util.BetterFollowerConfig;
+import frc.robot.util.BetterSendable;
 import frc.robot.util.BetterTalonSRX;
 import frc.robot.util.BetterTalonSRXConfig;
+import frc.robot.util.SendableMaster;
 
-public class Drivetrain extends Subsystem {
+public class Drivetrain extends Subsystem implements BetterSendable {
     BetterTalonSRX leftController;
     BetterTalonSRX rightController;
     BetterFollower leftSlaveController;
@@ -24,7 +26,6 @@ public class Drivetrain extends Subsystem {
     double x;
     double y;
 
-    ShuffleboardTab tab;
     DrivetrainSendable drivetrainSendable;
 
     public Drivetrain() {
@@ -58,21 +59,22 @@ public class Drivetrain extends Subsystem {
         rightSlaveController = new BetterFollower(map.rightSlaveCanID(), rightSlaveConfig);
         rightController.addFollower(rightSlaveController);
 
-        tab = Shuffleboard.getTab("Drive");
-        leftController.addShuffleboard(tab, "Left Wheels");
-        rightController.addShuffleboard(tab, "Right Wheels");
         drivetrainSendable = new DrivetrainSendable(this);
-        tab.add("Drivetrain", drivetrainSendable);
-        tab.add(new ResetDrivetrainLocator());
-        tab.add("Brake", new SetBrakeMode(true));
-        tab.add("Coast", new SetBrakeMode(false));
-        tab.add("Reset Encoder", new InstantCommand(this::resetEncoders));
-        tab.add("Reset Position", new InstantCommand(this::reset));
 
-        reset();
+        (new ResetDrivetrain()).start();
     }
 
-    public void initDefaultCommand() {
+    public void createSendable(SendableMaster master) {
+        master.add("Drivetrain", drivetrainSendable);
+
+        master.add("Left Wheels", leftController);
+        master.add("Right Wheels", rightController);
+
+        master.add(new ResetDrivetrainLocator());
+        master.add("Brake", new SetBrakeMode(true));
+        master.add("Coast", new SetBrakeMode(false));
+        master.add("Reset Encoder", new InstantCommand(this::resetEncoders));
+        master.add("Reset Position", new InstantCommand(this::reset));
     }
 
     public void periodic() {
@@ -159,6 +161,10 @@ public class Drivetrain extends Subsystem {
     public void resetEncoders() {
         leftController.resetEncoder();
         rightController.resetEncoder();
+    }
+
+    public void initDefaultCommand() {
+        setDefaultCommand(new IdleDrivetrain());
     }
 }
 

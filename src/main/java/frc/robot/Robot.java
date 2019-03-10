@@ -1,7 +1,5 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.command.Scheduler;
 import frc.robot.commands.TestNavX;
 import frc.robot.commands.autonomous.AutonomousGroup;
 import frc.robot.commands.teleop.TeleopGroup;
@@ -13,8 +11,9 @@ import frc.robot.subsystems.NavX;
 import frc.robot.subsystems.Pneumatics;
 import frc.robot.subsystems.TurnToAngle;
 import frc.robot.subsystems.Vision;
+import frc.robot.util.BetterRobot;
 
-public class Robot extends TimedRobot {
+public class Robot extends BetterRobot {
 	public static RobotMap map = RobotMap.getMap();
 
 	// Create subsystem instances here with public static Type var = new Type();
@@ -29,8 +28,6 @@ public class Robot extends TimedRobot {
 	// Ran once when Game starts
 	@Override
 	public void robotInit() {
-		map.oi.addShuffleboard();
-
 		System.out.println("init");
 	}
 
@@ -45,11 +42,6 @@ public class Robot extends TimedRobot {
 		myIntake.disable();
 	}
 
-	@Override
-	public void disabledPeriodic() {
-		Scheduler.getInstance().run();
-	}
-
 	// Ran once when Autonomus stage starts
 	@Override
 	public void autonomousInit() {
@@ -58,11 +50,6 @@ public class Robot extends TimedRobot {
 		AutonomousGroup auto = new AutonomousGroup();
 		auto.start();
 		Robot.myNavX.zeroYaw();
-	}
-
-	@Override
-	public void autonomousPeriodic() {
-		Scheduler.getInstance().run();
 	}
 
 	// Ran once when Teleop stage starts
@@ -76,18 +63,8 @@ public class Robot extends TimedRobot {
 	}
 
 	@Override
-	public void teleopPeriodic() {
-		Scheduler.getInstance().run();
-	}
-
-	@Override
 	public void testInit() {
 		TestNavX command = new TestNavX();
 		command.start();
-	}
-
-	@Override
-	public void testPeriodic() {
-		Scheduler.getInstance().run();
 	}
 }

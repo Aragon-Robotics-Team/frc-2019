@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.WaitCommand;
 import frc.robot.Robot;
 import frc.robot.commands.MoveUntilResult;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Intake.Position;
 
 public class CalibrateIntakeEncoder extends CommandGroup {
     static final DoubleConsumer setSpeed = Robot.myIntake.controller::setPercent;
@@ -19,6 +19,6 @@ public class CalibrateIntakeEncoder extends CommandGroup {
         addSequential(new WaitCommand(0.1));
         addSequential(new MoveUntilResult<Boolean>(0.2, setSpeed, getReverseLimit, false));
         // Talon SRX should reset encoder automatically when limit switch depressed
-        addSequential(new SetIntakePosition(Intake.Position.Stowed));
+        addSequential(new SetIntakePosition(Position.Stowed));
     }
 }

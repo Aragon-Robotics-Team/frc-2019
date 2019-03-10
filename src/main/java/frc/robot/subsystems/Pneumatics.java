@@ -15,9 +15,6 @@ public class Pneumatics extends Subsystem {
         compressor = Mock.createMockable(Compressor.class, map.PCMCanID());
     }
 
-    public void initDefaultCommand() {
-    }
-
     public void setCompressor(boolean enabled) {
         System.out.println("Compressor: " + enabled);
         compressor.setClosedLoopControl(enabled);
@@ -34,5 +31,8 @@ public class Pneumatics extends Subsystem {
 
     public boolean pressureSwitchStatus() {
         return compressor.getPressureSwitchValue();
+    }
+
+    public void initDefaultCommand() {
     }
 }

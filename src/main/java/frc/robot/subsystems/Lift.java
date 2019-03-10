@@ -1,20 +1,18 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.Robot;
+import frc.robot.commands.lift.ResetLift;
 import frc.robot.commands.lift.ResetLiftEncoder;
 import frc.robot.util.BetterTalonSRX;
 import frc.robot.util.BetterTalonSRXConfig;
+import frc.robot.util.SendableMaster;
 
 public class Lift extends Subsystem {
     public BetterTalonSRX controller;
 
-    ShuffleboardTab tab;
-
     public enum Position {
-        HATCH_1(0.0), PORT_1(8.0), HATCH_2(28.0), PORT_2(0.0), HATCH_3(0.0), PORT_3(0.0);
+        Stowed(0), Hatch1(0), Port1(8), Hatch2(28), Port2(0), Hatch3(0), Port3(0);
 
         double pos;
 
@@ -37,14 +35,12 @@ public class Lift extends Subsystem {
 
         controller = new BetterTalonSRX(map.controllerCanID(), config);
 
-        tab = Shuffleboard.getTab("Lift");
-        controller.addShuffleboard(tab, "Lift");
-        tab.add(new ResetLiftEncoder());
-
-        controller.setMagic(0);
+        (new ResetLift()).start();
     }
 
-    public void initDefaultCommand() {
+    public void createSendable(SendableMaster master) {
+        master.add(controller);
+        master.add(new ResetLiftEncoder());
     }
 
     public void resetEncoder() {
@@ -53,5 +49,8 @@ public class Lift extends Subsystem {
 
     public void setPosition(Position position) {
         controller.setMagic(position.pos);
+    }
+
+    public void initDefaultCommand() {
     }
 }

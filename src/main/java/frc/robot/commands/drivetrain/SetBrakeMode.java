@@ -7,6 +7,8 @@ public class SetBrakeMode extends Command {
     boolean brake;
 
     public SetBrakeMode(boolean brake) {
+        setRunWhenDisabled(true);
+
         this.brake = brake;
     }
 
