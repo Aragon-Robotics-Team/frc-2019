@@ -39,15 +39,14 @@ public class GripPostProcessing implements VisionPipeline {
         t = clock.instant();
         grip.process(source0);
 
-        filtered_contours = new ArrayList<MatOfPoint>();
-        rects = filterMinAreaRects(getMinAreaRects(grip), grip.filterContoursOutput(), 0.77,
+        filtered_contours = grip.filterContoursOutput();
+        rects = filterMinAreaRects(getMinAreaRects(grip), filtered_contours, 0.77,
                 filtered_contours);
         visionTargets = getVisionTargets(rects);
 
         // System.out.println(source0.cols() + " " + source0.rows()); //prints size of
         // camera input
         source0.copyTo(AugmentCamOutput);
-
         for (int i = 0; i < grip.filterContoursOutput().size(); i++) {
             // step draw contours
             Imgproc.drawContours(AugmentCamOutput, grip.filterContoursOutput(), i,
@@ -63,11 +62,14 @@ public class GripPostProcessing implements VisionPipeline {
             p.fromArray(rectCorners);
             plist.add(p);
             Imgproc.drawContours(AugmentCamOutput, plist, i, new Scalar(0, 0, 255), 2);
-            Imgproc.putText(AugmentCamOutput, String.format("%.1f", correct_angle(rects[i])),
-                    rectCorners[3], 0, 0.4, new Scalar(255, 255, 255));
+            // Imgproc.putText(AugmentCamOutput, String.format("%.1f", correct_angle(rects[i])),
+            // rectCorners[3], 0, 0.4, new Scalar(255, 255, 255));
             // Imgproc.putText(AugmentCamOutput,
             // String.format("%.2f", rectangularity(rects[i], filtered_contours.get(i))),
             // rectCorners[1], 0, 0.4, new Scalar(0, 255, 255));
+            Imgproc.putText(AugmentCamOutput,
+                    String.format("%.2f", Imgproc.contourArea(filtered_contours.get(i))),
+                    rectCorners[1], 0, 0.4, new Scalar(0, 255, 255));
         }
 
         // step draw rectangles around visiontargets
@@ -169,7 +171,8 @@ public class GripPostProcessing implements VisionPipeline {
         double avgHeight = (height1 + height2) / 2;
 
         return (18 < angleDiff && angleDiff < 38 && Math.abs(
-                rect1.size.area() - rect2.size.area()) < (rect1.size.area() + rect2.size.area()) * 1 // .25
+                rect1.size.area() - rect2.size.area()) < (rect1.size.area() + rect2.size.area())
+                        * .5 // .25
         // if distance x < 6*height
                 && Math.abs(rect1_center.x - rect2_center.x) < 3 * (avgHeight)
                 && Math.abs(rect1_center.y - rect2_center.y) < avgHeight // if distance y < height

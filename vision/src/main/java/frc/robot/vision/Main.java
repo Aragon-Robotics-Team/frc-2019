@@ -24,6 +24,9 @@ import edu.wpi.cscore.MjpegServer;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.VideoSource;
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.networktables.EntryListenerFlags;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
 public final class Main {
@@ -143,14 +146,13 @@ public final class Main {
 	/**
 	 * Start running the camera.
 	 */
-	public static VideoSource startCamera(CameraConfig config) {
+	public static VideoSource startCamera(CameraConfig config, boolean startMjpegServer) {
 		System.out.println("Starting camera '" + config.name + "' on " + config.path);
 		CameraServer inst = CameraServer.getInstance();
 		UsbCamera camera = new UsbCamera(config.name, config.path);
-		MjpegServer server = inst.startAutomaticCapture(camera);
-
-		// setup a cvSource where you can put frames and it should just work
-		augmentCam = inst.putVideo("Augmented", 320, 240);
+		if (startMjpegServer) {
+			MjpegServer server = inst.startAutomaticCapture(camera);
+		}
 
 		Gson gson = new GsonBuilder().create();
 
@@ -192,21 +194,30 @@ public final class Main {
 		ByteArrayOutput.setNetworkObject(clock.instant(), "table", "timestamp");
 
 		// start cameras
+		System.out.println("starting augmentcam.");
+		CameraServer inst = CameraServer.getInstance();
+		augmentCam = inst.putVideo("Augmented", 320, 240);
 		List<VideoSource> cameras = new ArrayList<>();
 		for (CameraConfig cameraConfig : cameraConfigs) {
-			cameras.add(startCamera(cameraConfig));
-			if (cameraConfig.config.has("cameras")
-					&& cameraConfig.config.get("cameras").getAsJsonObject().has("name")
-					&& cameraConfig.config.get("cameras").getAsJsonObject().get("name")
-							.getAsString().equals("Vision")) {
+			if (cameraConfig.config.has("name")
+					&& cameraConfig.config.get("name").getAsString().equals("Vision")) {
+				cameras.add(startCamera(cameraConfig, false));
 				Comms.createVisionThread(cameras.get(cameras.size() - 1), augmentCam,
-						Comms::gripProcessVideo);
+						Comms::gripProcessVideoDiagnostic);
+			} else {
+				cameras.add(startCamera(cameraConfig, true));
 			}
+			if (cameraConfig.config.has("name")
+					&& cameraConfig.config.get("name").getAsString().equals("Sandstorm")) {
+				NetworkTable table = ntinst.getTable("CameraPublisher");
+				NetworkTable darude = table.getSubTable("Sandstorm");
+				NetworkTable darude_properties = darude.getSubTable("Property");
+				NetworkTableEntry entry = darude_properties.getEntry("Artist");
+				entry.setString("Darude");
+			}
+
 		}
 
-		// start image processing on camera 0 if present
-		if (cameras.size() >= 1) {
-		}
 
 		// loop forever
 		for (;;) {
