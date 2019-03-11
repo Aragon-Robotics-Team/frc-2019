@@ -104,7 +104,8 @@ public class BetterTalonSRX implements BetterSendable {
         }
     }
 
-    public void setPercent(double percent, double max) {
+    public void setPercent(double percent) {
+        double max = 1;
         lastControlType = ControlType.Percent;
         lastOutput = deadband.calc(percent) * max; // * maxTickVelocity;
 

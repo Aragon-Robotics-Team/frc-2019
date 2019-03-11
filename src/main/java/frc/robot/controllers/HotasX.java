@@ -47,7 +47,7 @@ public class HotasX extends OIBase {
     }
 
     public boolean getSlowMode() {
-        return getButton(1).get();
+        return getButton(1).get() || disableCompressor();
     }
 
     public boolean disableCompressor() {

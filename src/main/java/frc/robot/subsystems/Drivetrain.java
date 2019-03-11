@@ -86,8 +86,8 @@ public class Drivetrain extends Subsystem implements BetterSendable {
     }
 
     public void control(double x, double y) {
-        leftController.setPercent(x, DRIVE_SPEED);
-        rightController.setPercent(y, DRIVE_SPEED);
+        leftController.setOldPercent(x * 0.7 * 1.1);
+        rightController.setOldPercent(y * 0.7);
     }
 
     public void controlArcade(double x, double y) { // x is up/down; y is right/left

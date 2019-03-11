@@ -17,7 +17,7 @@ class DrivetrainImpl extends RobotMap.Drivetrain {
     }
 
     public Integer rightSlaveCanID() {
-        return 3;
+        return 5;
     }
 
     public Class<? extends BaseMotorController> slaveController() {
