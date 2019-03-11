@@ -11,7 +11,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.SendableBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 
-public class BetterTalonSRX implements BetterSendable {
+public class BetterTalonSRX implements BetterSendable, BetterSpeedController {
     Deadband deadband;
 
     TalonSRX talon;

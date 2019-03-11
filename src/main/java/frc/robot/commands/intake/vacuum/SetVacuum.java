@@ -1,19 +1,19 @@
-package frc.robot.commands.intake;
+package frc.robot.commands.intake.vacuum;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class SetPiston extends Command {
+public class SetVacuum extends Command {
     boolean enabled;
 
-    public SetPiston(boolean enabled) {
+    public SetVacuum(boolean enabled) {
         setRunWhenDisabled(true);
 
         this.enabled = enabled;
     }
 
     protected void initialize() {
-        Robot.myIntake.setPiston(enabled);
+        Robot.myIntake.setVacuum(enabled);
     }
 
     protected boolean isFinished() {

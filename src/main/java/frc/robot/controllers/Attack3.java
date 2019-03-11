@@ -1,8 +1,8 @@
 package frc.robot.controllers;
 
-import frc.robot.commands.intake.QuickPiston;
-import frc.robot.commands.intake.SetIntakePosition;
-import frc.robot.commands.intake.SetVacuum;
+import frc.robot.commands.intake.intake.SetIntakePosition;
+import frc.robot.commands.intake.piston.QuickPiston;
+import frc.robot.commands.intake.vacuum.SetVacuum;
 import frc.robot.commands.lift.SetLiftPosition;
 import frc.robot.map.RobotMap;
 import frc.robot.subsystems.Intake;

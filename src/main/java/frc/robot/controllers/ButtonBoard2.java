@@ -1,6 +1,6 @@
 package frc.robot.controllers;
 
-import frc.robot.commands.intake.SetVacuum;
+import frc.robot.commands.intake.vacuum.SetVacuum;
 import frc.robot.commands.lift.SetLiftPosition;
 import frc.robot.map.RobotMap;
 import frc.robot.subsystems.Lift;

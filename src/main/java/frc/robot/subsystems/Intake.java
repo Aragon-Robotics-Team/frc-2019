@@ -4,9 +4,10 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.Robot;
-import frc.robot.commands.intake.ControlIntakeJoystick;
 import frc.robot.commands.intake.ResetIntake;
-import frc.robot.commands.intake.ResetIntakeEncoder;
+import frc.robot.commands.intake.intake.ControlIntakeJoystick;
+import frc.robot.commands.intake.intake.ResetIntakeEncoder;
+import frc.robot.commands.intake.vacuum.ControlVacuumJoystick;
 import frc.robot.util.BetterSendable;
 import frc.robot.util.BetterTalonSRX;
 import frc.robot.util.BetterTalonSRXConfig;
@@ -15,7 +16,7 @@ import frc.robot.util.SendableMaster;
 
 public class Intake extends Subsystem implements BetterSendable {
     public BetterTalonSRX controller;
-    Talon vacuumController;
+    public Talon vacuumController;
     Solenoid pistonController;
 
     public enum Position {
@@ -61,6 +62,7 @@ public class Intake extends Subsystem implements BetterSendable {
         master.add(controller);
         master.add(new ResetIntakeEncoder());
         master.add(new ControlIntakeJoystick());
+        master.add(new ControlVacuumJoystick());
     }
 
     public void resetEncoder() {

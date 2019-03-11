@@ -1,19 +1,15 @@
-package frc.robot.commands.intake;
+package frc.robot.commands.intake.intake;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
-public class SetVacuum extends Command {
-    boolean enabled;
-
-    public SetVacuum(boolean enabled) {
+public class ResetIntakeEncoder extends Command {
+    public ResetIntakeEncoder() {
         setRunWhenDisabled(true);
-
-        this.enabled = enabled;
     }
 
     protected void initialize() {
-        Robot.myIntake.setVacuum(enabled);
+        Robot.myIntake.resetEncoder();
     }
 
     protected boolean isFinished() {
