@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.Robot;
+import frc.robot.commands.intake.ControlIntakeJoystick;
 import frc.robot.commands.intake.ResetIntake;
 import frc.robot.commands.intake.ResetIntakeEncoder;
 import frc.robot.util.BetterSendable;
@@ -18,7 +19,7 @@ public class Intake extends Subsystem implements BetterSendable {
     Solenoid pistonController;
 
     public enum Position {
-        Stowed(-2265), Intake(21), Horizontal(1018), Vertical(-1610);
+        Stowed(-2618), Intake(-618), Horizontal(460), Vertical(-2048);
 
         double pos;
 
@@ -34,15 +35,16 @@ public class Intake extends Subsystem implements BetterSendable {
         config.invert = true;
         config.invertEncoder = false;
         config.ticksPerInch = 1;
-        config.slot0.kP = 8;
-        config.slot0.allowableClosedloopError = 0;
+        config.slot0.kP = 4;
+        config.slot0.allowableClosedloopError = 5;
         config.motionCruiseVelocity = 300;
-        config.motionAcceleration = 300 * 4;
+        config.motionAcceleration = 300 * 2;
         config.encoder = BetterTalonSRXConfig.Encoder.CTREMag;
-        config.lowTickMag = 2178;
-        config.highTickMag = 2999;
+        config.lowTickMag = 3648;
+        config.highTickMag = 2661;
         config.crossZeroMag = true;
         config.clearPositionOnLimitR = false;
+        config.zeroPosition = Position.Stowed.pos;
 
         controller = new BetterTalonSRX(map.controllerCanID(), config);
 
@@ -58,6 +60,7 @@ public class Intake extends Subsystem implements BetterSendable {
     public void createSendable(SendableMaster master) {
         master.add(controller);
         master.add(new ResetIntakeEncoder());
+        master.add(new ControlIntakeJoystick());
     }
 
     public void resetEncoder() {

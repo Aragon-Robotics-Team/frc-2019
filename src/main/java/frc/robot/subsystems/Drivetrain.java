@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import frc.robot.Robot;
+import frc.robot.commands.drivetrain.ControlArcadeDrivetrain;
 import frc.robot.commands.drivetrain.IdleDrivetrain;
 import frc.robot.commands.drivetrain.ResetDrivetrain;
 import frc.robot.commands.drivetrain.ResetDrivetrainLocator;
@@ -26,6 +27,8 @@ public class Drivetrain extends Subsystem implements BetterSendable {
     double x;
     double y;
 
+    static final double DRIVE_SPEED = 1000;
+
     DrivetrainSendable drivetrainSendable;
 
     public Drivetrain() {
@@ -35,7 +38,7 @@ public class Drivetrain extends Subsystem implements BetterSendable {
         leftConfig.invert = false;
         // (tick_speed for 100% output) / (max measured tick_speed)
         leftConfig.maxTickVelocity = 1112.0;
-        leftConfig.slot0.kF = (1023.0 / 1112.0) * 1.13;
+        // leftConfig.slot0.kF = (1023.0 / 1112.0) * 1.13;
         leftConfig.slot0.kP = 0.7;
         leftConfig.ticksPerInch = 76.485294;
         leftController = new BetterTalonSRX(map.leftMainCanID(), leftConfig);
@@ -75,6 +78,7 @@ public class Drivetrain extends Subsystem implements BetterSendable {
         master.add("Coast", new SetBrakeMode(false));
         master.add("Reset Encoder", new InstantCommand(this::resetEncoders));
         master.add("Reset Position", new InstantCommand(this::reset));
+        master.add(new ControlArcadeDrivetrain());
     }
 
     public void periodic() {
@@ -82,8 +86,8 @@ public class Drivetrain extends Subsystem implements BetterSendable {
     }
 
     public void control(double x, double y) {
-        leftController.setPercent(x);
-        rightController.setPercent(y);
+        leftController.setPercent(x, DRIVE_SPEED);
+        rightController.setPercent(y, DRIVE_SPEED);
     }
 
     public void controlArcade(double x, double y) { // x is up/down; y is right/left

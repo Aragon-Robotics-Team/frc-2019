@@ -7,6 +7,8 @@ public class SetPiston extends Command {
     boolean enabled;
 
     public SetPiston(boolean enabled) {
+        setRunWhenDisabled(true);
+
         this.enabled = enabled;
     }
 

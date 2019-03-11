@@ -7,6 +7,8 @@ public class SetVacuum extends Command {
     boolean enabled;
 
     public SetVacuum(boolean enabled) {
+        setRunWhenDisabled(true);
+
         this.enabled = enabled;
     }
 

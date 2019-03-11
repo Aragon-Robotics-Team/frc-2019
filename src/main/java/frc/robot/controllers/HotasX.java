@@ -43,7 +43,7 @@ public class HotasX extends OIBase {
     }
 
     public double getRightSpeed() {
-        return 0;
+        return -deadband.calc(getJoystick().getRawAxis(1), true);
     }
 
     public boolean getSlowMode() {

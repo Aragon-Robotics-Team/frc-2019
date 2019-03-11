@@ -8,6 +8,8 @@ public class SetIntakePosition extends Command {
     Position pos;
 
     public SetIntakePosition(Position pos) {
+        setRunWhenDisabled(true);
+
         this.pos = pos;
     }
 

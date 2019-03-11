@@ -23,6 +23,7 @@ public class BetterTalonSRX implements BetterSendable {
     SensorCollection sensorCollection;
     List<BetterFollower> slaves;
     double maxTickVelocity;
+    double zeroPosition;
 
     enum ControlType {
         Percent, Magic, OldPercent;
@@ -53,6 +54,15 @@ public class BetterTalonSRX implements BetterSendable {
             talon.enableVoltageCompensation(true);
         }
 
+        sendable = new SendableSRX(this);
+        deadband = config.deadband;
+
+        timeout = 0;
+        ticksPerInch = config.ticksPerInch;
+        slaves = new ArrayList<BetterFollower>(1); // 1 max expected follower
+        maxTickVelocity = config.maxTickVelocity;
+        zeroPosition = config.zeroPosition;
+
         resetEncoder();
 
         sensorCollection = isReal ? talon.getSensorCollection() : mock(SensorCollection.class);
@@ -64,17 +74,10 @@ public class BetterTalonSRX implements BetterSendable {
             System.out.println(canID + " syncing mag encoder: " + low + " " + high + " " + zero);
 
             sensorCollection.syncQuadratureWithPulseWidth(low, high, zero, 0, timeout);
+            setMagic(zeroPosition);
         } else {
             System.out.println(canID + " not syncing mag encoder");
         }
-
-        sendable = new SendableSRX(this);
-        deadband = config.deadband;
-
-        timeout = 0;
-        ticksPerInch = config.ticksPerInch;
-        slaves = new ArrayList<BetterFollower>(1); // 1 max expected follower
-        maxTickVelocity = config.maxTickVelocity;
 
         System.out.println(canID + " kF: " + config.slot0.kF + " maxV: " + config.maxTickVelocity);
     }
@@ -101,9 +104,9 @@ public class BetterTalonSRX implements BetterSendable {
         }
     }
 
-    public void setPercent(double output) {
+    public void setPercent(double percent, double max) {
         lastControlType = ControlType.Percent;
-        lastOutput = deadband.calc(output) * maxTickVelocity;
+        lastOutput = deadband.calc(percent) * max; // * maxTickVelocity;
 
         // Velocity PIDF: Need kF and kP minimum
         talon.set(ControlMode.Velocity, lastOutput);
@@ -140,8 +143,8 @@ public class BetterTalonSRX implements BetterSendable {
     }
 
     public void resetEncoder() {
-        talon.setSelectedSensorPosition(0, 0, timeout);
-        setMagic(0.0);
+        talon.setSelectedSensorPosition((int) zeroPosition, 0, timeout);
+        setMagic(zeroPosition);
     }
 
     public double getInch() {
