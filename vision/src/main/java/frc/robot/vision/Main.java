@@ -188,15 +188,14 @@ public final class Main {
 			System.out.println("Setting up NetworkTables client for team " + team);
 			ntinst.startClientTeam(team);
 		}
-		// send Timestamp to RIO for synchronization
-		System.out.println("main");
-		System.out.println(clock.instant());
-		ByteArrayOutput.setNetworkObject(clock.instant(), "table", "timestamp");
+		// start timeservices
+		Comms.initTimeServices();
 
 		// start cameras
 		System.out.println("starting augmentcam.");
 		CameraServer inst = CameraServer.getInstance();
 		augmentCam = inst.putVideo("Augmented", 320, 240);
+
 		List<VideoSource> cameras = new ArrayList<>();
 		for (CameraConfig cameraConfig : cameraConfigs) {
 			if (cameraConfig.config.has("name")

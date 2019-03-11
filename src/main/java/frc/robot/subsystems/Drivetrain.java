@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import org.opencv.core.Point;
 import edu.wpi.first.wpilibj.SendableBase;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -9,6 +10,7 @@ import frc.robot.commands.drivetrain.IdleDrivetrain;
 import frc.robot.commands.drivetrain.ResetDrivetrain;
 import frc.robot.commands.drivetrain.ResetDrivetrainLocator;
 import frc.robot.commands.drivetrain.SetBrakeMode;
+import frc.robot.subsystems.Vision.VisionPositioningServices.PoseHistory.Pose;
 import frc.robot.util.BetterFollower;
 import frc.robot.util.BetterFollowerConfig;
 import frc.robot.util.BetterSendable;
@@ -25,6 +27,7 @@ public class Drivetrain extends Subsystem implements BetterSendable {
     double distance;
     double x;
     double y;
+    Object syncLock;
 
     DrivetrainSendable drivetrainSendable;
 
@@ -138,10 +141,14 @@ public class Drivetrain extends Subsystem implements BetterSendable {
         double deltaDistance = newDistance - distance;
         angle = Math.toRadians(angle);
 
-        x += deltaDistance * Math.cos(angle);
-        y += deltaDistance * Math.sin(angle);
+        synchronized (syncLock) {
+            x += deltaDistance * Math.cos(angle);
+            y += deltaDistance * Math.sin(angle);
+        }
 
         distance = newDistance;
+        Robot.myVision.visionPositioningServices.poseHistory
+                .addPoseToHistory(Pose(new Point(x, y)));
     }
 
     public double getX() {
