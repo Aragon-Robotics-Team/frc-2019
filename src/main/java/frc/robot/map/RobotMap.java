@@ -80,6 +80,14 @@ public abstract class RobotMap implements BetterSendable {
 
         public abstract Integer rightSlaveCanID();
 
+        public abstract boolean invertLeft();
+
+        public abstract boolean invertLeftEncoder();
+
+        public abstract boolean invertRight();
+
+        public abstract boolean invertRightEncoder();
+
         public abstract Class<? extends BaseMotorController> slaveController();
     }
 
@@ -93,6 +101,12 @@ public abstract class RobotMap implements BetterSendable {
         public abstract Integer vacuumPort();
 
         public abstract Integer pistonPCMPort();
+
+        public abstract boolean invertIntake();
+
+        public abstract boolean invertIntakeEncoder();
+
+        public abstract boolean invertVacuum();
     }
 
     public Lift lift = getLift();
@@ -101,6 +115,10 @@ public abstract class RobotMap implements BetterSendable {
 
     public static abstract class Lift {
         public abstract Integer controllerCanID();
+
+        public abstract boolean invertLift();
+
+        public abstract boolean invertLiftEncoder();
     }
 
     public Pneumatics pneumatics = getPneumatics();

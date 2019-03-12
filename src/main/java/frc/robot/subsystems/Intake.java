@@ -37,8 +37,8 @@ public class Intake extends BetterSubsystem implements BetterSendable, Disableab
         var map = Robot.map.intake;
 
         BetterTalonSRXConfig config = new BetterTalonSRXConfig();
-        config.invert = true;
-        config.invertEncoder = false;
+        config.invert = map.invertIntake();
+        config.invertEncoder = map.invertIntakeEncoder();
         config.ticksPerInch = 1;
         config.slot0.kP = 4;
         config.slot0.allowableClosedloopError = 5;
@@ -49,7 +49,7 @@ public class Intake extends BetterSubsystem implements BetterSendable, Disableab
 
         vacuumController = Mock.createMockable(Talon.class, map.vacuumPort());
         vacuumController.setSafetyEnabled(false);
-        vacuumController.setInverted(true);
+        vacuumController.setInverted(map.invertVacuum());
 
         // pistonController = Mock.createMockable(Solenoid.class, map.pistonPCMPort());
         pistonController = new BetterSolenoid(map.pistonPCMPort());

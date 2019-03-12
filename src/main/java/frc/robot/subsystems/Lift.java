@@ -27,8 +27,8 @@ public class Lift extends BetterSubsystem implements BetterSendable {
         var map = Robot.map.lift;
 
         BetterTalonSRXConfig config = new BetterTalonSRXConfig();
-        config.invert = true;
-        config.invertEncoder = false;
+        config.invert = map.invertLift();
+        config.invertEncoder = map.invertLiftEncoder();
         config.ticksPerInch = 254.625;
         config.slot0.kP = 8.0;
         config.slot0.allowableClosedloopError = 5;

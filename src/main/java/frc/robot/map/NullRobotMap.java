@@ -5,19 +5,19 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 class DrivetrainImpl extends RobotMap.Drivetrain {
     public Integer leftMainCanID() {
-        return 5;
+        return null;
     }
 
     public Integer rightMainCanID() {
-        return 3;
+        return null;
     }
 
     public Integer leftSlaveCanID() {
-        return 6;
+        return null;
     }
 
     public Integer rightSlaveCanID() {
-        return 5;
+        return null;
     }
 
     public boolean invertLeft() {
@@ -30,7 +30,7 @@ class DrivetrainImpl extends RobotMap.Drivetrain {
     }
 
     public boolean invertRight() {
-        return true;
+        return false;
 
     }
 
@@ -47,19 +47,20 @@ class DrivetrainImpl extends RobotMap.Drivetrain {
 
 class IntakeImpl extends RobotMap.Intake {
     public Integer controllerCanID() {
-        return 6;
+        return null;
     }
 
     public Integer vacuumPort() {
-        return 7;
+        return null;
     }
 
+
     public Integer pistonPCMPort() {
-        return 0;
+        return null;
     }
 
     public boolean invertIntake() {
-        return true;
+        return false;
     }
 
     public boolean invertIntakeEncoder() {
@@ -67,7 +68,7 @@ class IntakeImpl extends RobotMap.Intake {
     }
 
     public boolean invertVacuum() {
-        return true;
+        return false;
     }
 
 }
@@ -75,11 +76,11 @@ class IntakeImpl extends RobotMap.Intake {
 
 class LiftImpl extends RobotMap.Lift {
     public Integer controllerCanID() {
-        return 2;
+        return null;
     }
 
     public boolean invertLift() {
-        return true;
+        return false;
     }
 
     public boolean invertLiftEncoder() {
@@ -90,7 +91,7 @@ class LiftImpl extends RobotMap.Lift {
 
 class PneumaticsImpl extends RobotMap.Pneumatics {
     public Integer PCMCanID() {
-        return 1;
+        return null;
     }
 }
 
@@ -102,7 +103,7 @@ class VisionImpl extends RobotMap.Vision {
 }
 
 
-public class PracticeRobotMap extends RobotMap {
+public class NullRobotMap extends RobotMap {
     public Drivetrain getDrivetrain() {
         return new DrivetrainImpl();
     }
@@ -124,6 +125,6 @@ public class PracticeRobotMap extends RobotMap {
     }
 
     public boolean navXInstalled() {
-        return true;
+        return false;
     }
 }

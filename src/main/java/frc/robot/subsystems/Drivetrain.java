@@ -36,7 +36,8 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
         var map = Robot.map.drivetrain;
 
         BetterTalonSRXConfig leftConfig = new BetterTalonSRXConfig();
-        leftConfig.invert = false;
+        leftConfig.invert = map.invertLeft();
+        leftConfig.invertEncoder = map.invertLeftEncoder();
         // (tick_speed for 100% output) / (max measured tick_speed)
         leftConfig.maxTickVelocity = 1112.0;
         // leftConfig.slot0.kF = (1023.0 / 1112.0) * 1.13;
@@ -45,7 +46,8 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
         leftController = new BetterTalonSRX(map.leftMainCanID(), leftConfig);
 
         BetterTalonSRXConfig rightConfig = new BetterTalonSRXConfig();
-        rightConfig.invert = true;
+        rightConfig.invert = map.invertRight();
+        rightConfig.invertEncoder = map.invertRightEncoder();
         rightConfig.maxTickVelocity = 1142.0;
         rightConfig.slot0.kP = 0.7;
         rightConfig.ticksPerInch = 76.485294;
