@@ -19,13 +19,30 @@ public class Intake extends Subsystem implements BetterSendable {
     public Talon vacuumController;
     Solenoid pistonController;
 
+    static final int OFFSET_ABSOLUTE = 0;
+    static final int DIFFERENCE = 0;
+
     public enum Position {
-        Stowed(-2618), Intake(-618), Horizontal(460), Vertical(-2048);
+        Stowed(0), Intake(2106), Horizontal(3248), Vertical(590);
 
-        double pos;
+        int pos;
 
-        private Position(double pos) {
-            this.pos = pos;
+        private Position(int posa) {
+            pos = APPLY_OFFSET((int) posa);
+        }
+
+        static int APPLY_OFFSET(int input) {
+            input += OFFSET_ABSOLUTE;
+
+            while (input < 0) {
+                input += 4096;
+            }
+
+            while (input > 4095) {
+                input -= 4096;
+            }
+
+            return input;
         }
     }
 
@@ -41,8 +58,8 @@ public class Intake extends Subsystem implements BetterSendable {
         config.motionCruiseVelocity = 300;
         config.motionAcceleration = 300 * 2;
         config.encoder = BetterTalonSRXConfig.Encoder.CTREMag;
-        config.lowTickMag = 3648;
-        config.highTickMag = 2661;
+        config.lowTickMag = 679;
+        config.highTickMag = Position.APPLY_OFFSET(config.lowTickMag);
         config.crossZeroMag = true;
         config.clearPositionOnLimitR = false;
         config.zeroPosition = Position.Stowed.pos;
@@ -53,7 +70,10 @@ public class Intake extends Subsystem implements BetterSendable {
         vacuumController.setSafetyEnabled(false);
         vacuumController.setInverted(true);
 
-        pistonController = Mock.createMockable(Solenoid.class, map.pistonPCMPort());
+        // pistonController = Mock.createMockable(Solenoid.class, map.pistonPCMPort());
+        pistonController = (map.pistonPCMPort() != null)
+                ? new Solenoid(Robot.map.pneumatics.PCMCanID(), map.pistonPCMPort())
+                : Mock.mock(Solenoid.class);
 
         (new ResetIntake()).start();
     }
@@ -71,7 +91,7 @@ public class Intake extends Subsystem implements BetterSendable {
 
     public void setPosition(Position position) {
         controller.setBrakeMode(true);
-        controller.setMagic(position.pos);
+        // controller.setMagic(position.pos);
     }
 
     public void setVacuum(boolean on) {

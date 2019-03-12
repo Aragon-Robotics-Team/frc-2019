@@ -5,6 +5,7 @@ import frc.robot.commands.lift.SetLiftPosition;
 import frc.robot.map.RobotMap;
 import frc.robot.subsystems.Lift;
 
+// Left
 public class ButtonBoard2 extends OIBase {
     public ButtonBoard2() {
         super();

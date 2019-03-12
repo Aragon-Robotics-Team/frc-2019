@@ -93,6 +93,10 @@ public class BetterTalonSRX implements BetterSendable, BetterSpeedController {
     // Setting Output
 
     public void set(double output) {
+        setOldPercent(output);
+    }
+
+    public void setOld(double output) {
         if (lastControlType == ControlType.Percent) {
             setPercent(output);
         } else if (lastControlType == ControlType.Magic) {

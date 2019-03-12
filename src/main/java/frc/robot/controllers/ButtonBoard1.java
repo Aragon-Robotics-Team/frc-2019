@@ -5,7 +5,16 @@ import frc.robot.commands.intake.piston.QuickPiston;
 import frc.robot.map.RobotMap;
 import frc.robot.subsystems.Intake;
 
+// Right
 public class ButtonBoard1 extends OIBase {
+    public ButtonBoard1() {
+        super();
+    }
+
+    public ButtonBoard1(Integer port) {
+        super(port);
+    }
+
     int getDefaultPort() {
         return RobotMap.Joystick.bb1Port();
     }

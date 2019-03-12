@@ -2,9 +2,9 @@ package frc.robot.map;
 
 import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import frc.robot.controllers.Attack3;
 import frc.robot.controllers.ButtonBoard1;
-import frc.robot.controllers.ButtonBoard2;
-import frc.robot.controllers.HotasX;
+import frc.robot.controllers.ButtonBoardOld;
 import frc.robot.controllers.MultiOI;
 import frc.robot.controllers.OI;
 import frc.robot.util.BetterSendable;
@@ -23,7 +23,7 @@ public abstract class RobotMap implements BetterSendable {
 
     public void init() {
         if (oi == null) {
-            oi = new MultiOI(new HotasX(), new ButtonBoard1(), new ButtonBoard2());
+            oi = new MultiOI(new Attack3(), new ButtonBoard1(), new ButtonBoardOld());
         }
     }
 
@@ -32,10 +32,12 @@ public abstract class RobotMap implements BetterSendable {
             return 0;
         }
 
+        // Right
         public static int bb1Port() {
             return 2;
         }
 
+        // Left
         public static int bb2Port() {
             return 3;
         }
@@ -50,6 +52,10 @@ public abstract class RobotMap implements BetterSendable {
 
         public static int f310Port() {
             return 0;
+        }
+
+        public static int bbOldPort() {
+            return 5;
         }
 
         public static boolean squareThrottle() {
