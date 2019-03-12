@@ -3,13 +3,14 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.SendableBase;
-import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import frc.robot.Robot;
 import frc.robot.util.BetterSendable;
+import frc.robot.util.BetterSubsystem;
+import frc.robot.util.Disableable;
 import frc.robot.util.SendableMaster;
 
-public class TurnToAngle extends Subsystem implements PIDOutput, BetterSendable {
+public class TurnToAngle extends BetterSubsystem implements PIDOutput, BetterSendable, Disableable {
     public double currentAngle;
     public double pidOut;
     public boolean enabled = false;
@@ -65,7 +66,8 @@ public class TurnToAngle extends Subsystem implements PIDOutput, BetterSendable 
         turnController.reset();
     }
 
-    public void initDefaultCommand() {
+    public void disable() {
+        disableAndReset();
     }
 
     public void pidWrite(double output) {

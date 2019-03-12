@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.test;
 
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.command.Command;

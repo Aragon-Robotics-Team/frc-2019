@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.SendableBase;
 import edu.wpi.first.wpilibj.command.InstantCommand;
-import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import frc.robot.Robot;
 import frc.robot.commands.drivetrain.ControlArcadeDrivetrain;
@@ -13,11 +12,13 @@ import frc.robot.commands.drivetrain.SetBrakeMode;
 import frc.robot.util.BetterFollower;
 import frc.robot.util.BetterFollowerConfig;
 import frc.robot.util.BetterSendable;
+import frc.robot.util.BetterSubsystem;
 import frc.robot.util.BetterTalonSRX;
 import frc.robot.util.BetterTalonSRXConfig;
+import frc.robot.util.Disableable;
 import frc.robot.util.SendableMaster;
 
-public class Drivetrain extends Subsystem implements BetterSendable {
+public class Drivetrain extends BetterSubsystem implements BetterSendable, Disableable {
     BetterTalonSRX leftController;
     BetterTalonSRX rightController;
     BetterFollower leftSlaveController;
@@ -165,6 +166,10 @@ public class Drivetrain extends Subsystem implements BetterSendable {
     public void resetEncoders() {
         leftController.resetEncoder();
         rightController.resetEncoder();
+    }
+
+    public void disable() {
+        setBrake(true);
     }
 
     public void initDefaultCommand() {

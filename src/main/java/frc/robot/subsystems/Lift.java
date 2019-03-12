@@ -1,16 +1,16 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.Robot;
 import frc.robot.commands.lift.ControlLiftJoystick;
 import frc.robot.commands.lift.ResetLift;
 import frc.robot.commands.lift.ResetLiftEncoder;
 import frc.robot.util.BetterSendable;
+import frc.robot.util.BetterSubsystem;
 import frc.robot.util.BetterTalonSRX;
 import frc.robot.util.BetterTalonSRXConfig;
 import frc.robot.util.SendableMaster;
 
-public class Lift extends Subsystem implements BetterSendable {
+public class Lift extends BetterSubsystem implements BetterSendable {
     public BetterTalonSRX controller;
 
     public enum Position {
@@ -56,8 +56,5 @@ public class Lift extends Subsystem implements BetterSendable {
 
     public void setPosition(Position position) {
         controller.setMagic(position.pos);
-    }
-
-    public void initDefaultCommand() {
     }
 }

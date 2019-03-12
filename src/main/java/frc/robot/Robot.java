@@ -1,8 +1,9 @@
 package frc.robot;
 
-import frc.robot.commands.TestNavX;
+import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.commands.autonomous.AutonomousGroup;
 import frc.robot.commands.teleop.TeleopGroup;
+import frc.robot.commands.test.TestGroup;
 import frc.robot.map.RobotMap;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
@@ -16,6 +17,7 @@ import frc.robot.util.BetterRobot;
 public class Robot extends BetterRobot {
 	public static RobotMap map = RobotMap.getMap();
 
+	// Subsytems must come after RobotMaps
 	// Create subsystem instances here with public static Type var = new Type();
 	public static Drivetrain myDrivetrain = new Drivetrain();
 	public static NavX myNavX = new NavX();
@@ -25,46 +27,21 @@ public class Robot extends BetterRobot {
 	public static Intake myIntake = new Intake();
 	public static Vision myVision = new Vision();
 
-	// Ran once when Game starts
-	@Override
-	public void robotInit() {
-		System.out.println("init");
-	}
+	// Commands must come after subsytems
+	Command autonomousGroup = new AutonomousGroup(); // Commands will be canceled on disable
+	Command teleopGroup = new TeleopGroup();
+	Command testGroup = new TestGroup();
 
-	@Override
-	public void robotPeriodic() {
-	}
-
-	@Override
-	public void disabledInit() {
-		myAngle.disableAndReset();
-		myPneumatics.setCompressor(false);
-		myIntake.disable();
-	}
-
-	// Ran once when Autonomus stage starts
-	@Override
-	public void autonomousInit() {
-		myPneumatics.setCompressor(true);
-		System.out.println("auto");
-		AutonomousGroup auto = new AutonomousGroup();
-		auto.start();
+	public void _autonomousInit() {
+		autonomousGroup.start();
 		Robot.myNavX.zeroYaw();
 	}
 
-	// Ran once when Teleop stage starts
-	@Override
-	public void teleopInit() {
-		System.out.println("teleop");
-		myPneumatics.setCompressor(true);
-		TeleopGroup teleop = new TeleopGroup();
-		teleop.start();
-		myIntake.resetEncoder();
+	public void _teleopInit() {
+		teleopGroup.start();
 	}
 
-	@Override
-	public void testInit() {
-		TestNavX command = new TestNavX();
-		command.start();
+	public void _testInit() {
+		testGroup.start();
 	}
 }

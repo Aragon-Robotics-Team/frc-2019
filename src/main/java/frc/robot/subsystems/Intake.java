@@ -1,48 +1,35 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Talon;
-import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.Robot;
 import frc.robot.commands.intake.ResetIntake;
 import frc.robot.commands.intake.intake.ControlIntakeJoystick;
 import frc.robot.commands.intake.intake.ResetIntakeEncoder;
 import frc.robot.commands.intake.vacuum.ControlVacuumJoystick;
 import frc.robot.util.BetterSendable;
+import frc.robot.util.BetterSolenoid;
+import frc.robot.util.BetterSubsystem;
 import frc.robot.util.BetterTalonSRX;
 import frc.robot.util.BetterTalonSRXConfig;
+import frc.robot.util.Disableable;
 import frc.robot.util.Mock;
 import frc.robot.util.SendableMaster;
 
-public class Intake extends Subsystem implements BetterSendable {
+public class Intake extends BetterSubsystem implements BetterSendable, Disableable {
     public BetterTalonSRX controller;
     public Talon vacuumController;
-    Solenoid pistonController;
-
-    static final int OFFSET_ABSOLUTE = 0;
-    static final int DIFFERENCE = 0;
+    BetterSolenoid pistonController;
+    public BetterSubsystem intakeSubsystem;
+    public BetterSubsystem vacuumSubsystem;
+    public BetterSubsystem pistonSubsystem;
 
     public enum Position {
         Stowed(0), Intake(2106), Horizontal(3248), Vertical(590);
 
-        int pos;
+        double pos;
 
-        private Position(int posa) {
-            pos = APPLY_OFFSET((int) posa);
-        }
-
-        static int APPLY_OFFSET(int input) {
-            input += OFFSET_ABSOLUTE;
-
-            while (input < 0) {
-                input += 4096;
-            }
-
-            while (input > 4095) {
-                input -= 4096;
-            }
-
-            return input;
+        private Position(double pos) {
+            this.pos = pos;
         }
     }
 
@@ -57,12 +44,6 @@ public class Intake extends Subsystem implements BetterSendable {
         config.slot0.allowableClosedloopError = 5;
         config.motionCruiseVelocity = 300;
         config.motionAcceleration = 300 * 2;
-        config.encoder = BetterTalonSRXConfig.Encoder.CTREMag;
-        config.lowTickMag = 679;
-        config.highTickMag = Position.APPLY_OFFSET(config.lowTickMag);
-        config.crossZeroMag = true;
-        config.clearPositionOnLimitR = false;
-        config.zeroPosition = Position.Stowed.pos;
 
         controller = new BetterTalonSRX(map.controllerCanID(), config);
 
@@ -71,9 +52,11 @@ public class Intake extends Subsystem implements BetterSendable {
         vacuumController.setInverted(true);
 
         // pistonController = Mock.createMockable(Solenoid.class, map.pistonPCMPort());
-        pistonController = (map.pistonPCMPort() != null)
-                ? new Solenoid(Robot.map.pneumatics.PCMCanID(), map.pistonPCMPort())
-                : Mock.mock(Solenoid.class);
+        pistonController = new BetterSolenoid(map.pistonPCMPort());
+
+        intakeSubsystem = new BetterSubsystem();
+        vacuumSubsystem = new BetterSubsystem();
+        pistonSubsystem = new BetterSubsystem();
 
         (new ResetIntake()).start();
     }
@@ -108,8 +91,5 @@ public class Intake extends Subsystem implements BetterSendable {
 
     public void disable() {
         controller.setBrakeMode(false);
-    }
-
-    public void initDefaultCommand() {
     }
 }

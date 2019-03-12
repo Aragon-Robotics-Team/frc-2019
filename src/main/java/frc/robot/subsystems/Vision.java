@@ -1,13 +1,13 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.Relay;
-import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.Robot;
 import frc.robot.util.BetterSendable;
+import frc.robot.util.BetterSubsystem;
 import frc.robot.util.Mock;
 import frc.robot.util.SendableMaster;
 
-public class Vision extends Subsystem implements BetterSendable {
+public class Vision extends BetterSubsystem implements BetterSendable {
     Relay ledController;
 
     public Vision() {
@@ -34,8 +34,5 @@ public class Vision extends Subsystem implements BetterSendable {
         } else {
             ledController.set(Relay.Value.kOff);
         }
-    }
-
-    public void initDefaultCommand() {
     }
 }

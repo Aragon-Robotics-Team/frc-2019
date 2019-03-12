@@ -26,7 +26,6 @@ public class F310 extends OIBase {
 	}
 
 	public double getLeftSpeed() {
-		// System.out.println("left" + mainJoystick.getRawAxis(1));
 		return -1.0 * getJoystick().getRawAxis(1);
 	}
 
@@ -35,7 +34,6 @@ public class F310 extends OIBase {
 	}
 
 	public double getRightSpeed() {
-		// System.out.println("right" + mainJoystick.getRawAxis(5));
 		return -1.0 * deadband.calc(getJoystick().getRawAxis(5), true);
 	}
 

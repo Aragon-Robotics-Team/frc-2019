@@ -71,12 +71,9 @@ public class BetterTalonSRX implements BetterSendable, BetterSpeedController {
             int low = config.lowTickMag;
             int high = config.highTickMag;
             boolean zero = config.crossZeroMag;
-            System.out.println(canID + " syncing mag encoder: " + low + " " + high + " " + zero);
 
             sensorCollection.syncQuadratureWithPulseWidth(low, high, zero, 0, timeout);
             setMagic(zeroPosition);
-        } else {
-            System.out.println(canID + " not syncing mag encoder");
         }
 
         System.out.println(canID + " kF: " + config.slot0.kF + " maxV: " + config.maxTickVelocity);
