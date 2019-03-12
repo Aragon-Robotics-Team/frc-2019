@@ -1,7 +1,8 @@
-package frc.robot.map;
+package frc.robot.map.practice;
 
 import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import frc.robot.map.RobotMap;
 
 class DrivetrainImpl extends RobotMap.Drivetrain {
     public Integer leftMainCanID() {
@@ -67,7 +68,7 @@ class IntakeImpl extends RobotMap.Intake {
     }
 
     public boolean invertVacuum() {
-        return true;
+        return false;
     }
 
 }

@@ -7,5 +7,6 @@ import frc.robot.util.BetterSpeedController;
 public class ControlVacuumJoystick extends ControlMotorJoystick {
     public ControlVacuumJoystick() {
         super(BetterSpeedController.wrap(Robot.myIntake.vacuumController));
+        requires(Robot.myIntake.vacuumSubsystem);
     }
 }

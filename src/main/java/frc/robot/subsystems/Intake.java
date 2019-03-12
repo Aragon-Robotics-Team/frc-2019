@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.Talon;
 import frc.robot.Robot;
-import frc.robot.commands.intake.ResetIntake;
 import frc.robot.commands.intake.intake.ControlIntakeJoystick;
 import frc.robot.commands.intake.intake.ResetIntakeEncoder;
 import frc.robot.commands.intake.vacuum.ControlVacuumJoystick;
@@ -58,7 +57,9 @@ public class Intake extends BetterSubsystem implements BetterSendable, Disableab
         vacuumSubsystem = new BetterSubsystem();
         pistonSubsystem = new BetterSubsystem();
 
-        (new ResetIntake()).start();
+        setPosition(Position.Stowed);
+        setVacuum(false);
+        setPiston(false);
     }
 
     public void createSendable(SendableMaster master) {
@@ -69,12 +70,12 @@ public class Intake extends BetterSubsystem implements BetterSendable, Disableab
     }
 
     public void resetEncoder() {
-        // controller.resetEncoder();
+        controller.resetEncoder();
     }
 
     public void setPosition(Position position) {
         controller.setBrakeMode(true);
-        // controller.setMagic(position.pos);
+        controller.setMagic(position.pos);
     }
 
     public void setVacuum(boolean on) {

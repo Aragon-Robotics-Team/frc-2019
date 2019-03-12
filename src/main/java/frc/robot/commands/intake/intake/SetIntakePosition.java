@@ -8,6 +8,7 @@ public class SetIntakePosition extends Command {
     Position pos;
 
     public SetIntakePosition(Position pos) {
+        requires(Robot.myIntake.intakeSubsystem);
         setRunWhenDisabled(true);
 
         this.pos = pos;

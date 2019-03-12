@@ -36,7 +36,7 @@ public class Attack3 extends OIBase {
 	}
 
 	public double getRightSpeed() {
-		return deadband.calc(getJoystick().getRawAxis(2)); // Mini slider at bottom
+		return -deadband.calc(getJoystick().getRawAxis(2)); // Mini slider at bottom
 	}
 
 	public boolean getSlowMode() {

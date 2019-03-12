@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 import frc.robot.Robot;
 import frc.robot.commands.lift.ControlLiftJoystick;
-import frc.robot.commands.lift.ResetLift;
 import frc.robot.commands.lift.ResetLiftEncoder;
 import frc.robot.util.BetterSendable;
 import frc.robot.util.BetterSubsystem;
@@ -37,7 +36,8 @@ public class Lift extends BetterSubsystem implements BetterSendable {
 
         controller = new BetterTalonSRX(map.controllerCanID(), config);
 
-        (new ResetLift()).start();
+        resetEncoder();
+        setPosition(Position.Stowed);
     }
 
     public String getTabName() {

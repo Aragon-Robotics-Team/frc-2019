@@ -8,4 +8,8 @@ public class ControlLiftJoystick extends ControlMotorJoystick {
         super(Robot.myLift.controller);
         requires(Robot.myLift);
     }
+
+    protected double getMax() {
+        return 0.5;
+    }
 }

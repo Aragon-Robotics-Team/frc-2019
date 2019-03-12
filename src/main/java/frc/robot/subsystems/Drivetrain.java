@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import frc.robot.Robot;
 import frc.robot.commands.drivetrain.ControlArcadeDrivetrain;
 import frc.robot.commands.drivetrain.IdleDrivetrain;
-import frc.robot.commands.drivetrain.ResetDrivetrain;
 import frc.robot.commands.drivetrain.ResetDrivetrainLocator;
 import frc.robot.commands.drivetrain.SetBrakeMode;
 import frc.robot.util.BetterFollower;
@@ -67,7 +66,9 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
 
         drivetrainSendable = new DrivetrainSendable(this);
 
-        (new ResetDrivetrain()).start();
+        stop();
+        setBrake(true);
+        reset();
     }
 
     public void createSendable(SendableMaster master) {

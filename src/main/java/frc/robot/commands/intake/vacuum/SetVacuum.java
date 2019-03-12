@@ -7,6 +7,7 @@ public class SetVacuum extends Command {
     boolean enabled;
 
     public SetVacuum(boolean enabled) {
+        requires(Robot.myIntake.vacuumSubsystem);
         setRunWhenDisabled(true);
 
         this.enabled = enabled;

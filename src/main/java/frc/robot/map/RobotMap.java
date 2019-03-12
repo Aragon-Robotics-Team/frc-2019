@@ -7,6 +7,7 @@ import frc.robot.controllers.ButtonBoard1;
 import frc.robot.controllers.ButtonBoardOld;
 import frc.robot.controllers.MultiOI;
 import frc.robot.controllers.OI;
+import frc.robot.map.practice.PracticeRobotMap;
 import frc.robot.util.BetterSendable;
 import frc.robot.util.SendableMaster;
 
@@ -69,7 +70,7 @@ public abstract class RobotMap implements BetterSendable {
 
     public Drivetrain drivetrain = getDrivetrain();
 
-    abstract Drivetrain getDrivetrain();
+    public abstract Drivetrain getDrivetrain();
 
     public static abstract class Drivetrain {
         public abstract Integer leftMainCanID();
@@ -93,7 +94,7 @@ public abstract class RobotMap implements BetterSendable {
 
     public Intake intake = getIntake();
 
-    abstract Intake getIntake();
+    public abstract Intake getIntake();
 
     public static abstract class Intake {
         public abstract Integer controllerCanID();
@@ -111,7 +112,7 @@ public abstract class RobotMap implements BetterSendable {
 
     public Lift lift = getLift();
 
-    abstract Lift getLift();
+    public abstract Lift getLift();
 
     public static abstract class Lift {
         public abstract Integer controllerCanID();
@@ -123,7 +124,7 @@ public abstract class RobotMap implements BetterSendable {
 
     public Pneumatics pneumatics = getPneumatics();
 
-    abstract Pneumatics getPneumatics();
+    public abstract Pneumatics getPneumatics();
 
     public static abstract class Pneumatics {
 
@@ -132,7 +133,7 @@ public abstract class RobotMap implements BetterSendable {
 
     public Vision vision = getVision();
 
-    abstract Vision getVision();
+    public abstract Vision getVision();
 
     public static abstract class Vision {
         public abstract Integer ledPort();

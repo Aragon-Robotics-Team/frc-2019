@@ -7,6 +7,7 @@ public class SetPiston extends Command {
     boolean enabled;
 
     public SetPiston(boolean enabled) {
+        requires(Robot.myIntake.pistonSubsystem);
         setRunWhenDisabled(true);
 
         this.enabled = enabled;
