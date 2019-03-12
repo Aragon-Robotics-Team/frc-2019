@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.commands.autonomous.AutonomousGroup;
+import frc.robot.commands.intake.intake.CalibrateIntakeEncoder;
 import frc.robot.commands.teleop.TeleopGroup;
 import frc.robot.commands.test.TestGroup;
 import frc.robot.map.RobotMap;
@@ -13,6 +14,8 @@ import frc.robot.subsystems.Pneumatics;
 import frc.robot.subsystems.TurnToAngle;
 import frc.robot.subsystems.Vision;
 import frc.robot.util.BetterRobot;
+import frc.robot.util.Disableable;
+import frc.robot.util.EnableableCommand;
 
 public class Robot extends BetterRobot {
 	public static RobotMap map = RobotMap.getMap();
@@ -31,6 +34,7 @@ public class Robot extends BetterRobot {
 	Command autonomousGroup = new AutonomousGroup(); // Commands will be canceled on disable
 	Command teleopGroup = new TeleopGroup();
 	Command testGroup = new TestGroup();
+	Disableable calibrateIntake = EnableableCommand.of(new CalibrateIntakeEncoder());
 
 	public void _autonomousInit() {
 		autonomousGroup.start();
