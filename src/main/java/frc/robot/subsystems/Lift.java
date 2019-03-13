@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import frc.robot.Robot;
+import frc.robot.commands.lift.CalibrateLiftEncoder;
 import frc.robot.commands.lift.ControlLiftJoystick;
 import frc.robot.commands.lift.ResetLiftEncoder;
 import frc.robot.util.BetterSendable;
@@ -11,6 +12,7 @@ import frc.robot.util.SendableMaster;
 
 public class Lift extends BetterSubsystem implements BetterSendable {
     public BetterTalonSRX controller;
+    Position lastPosition;
 
     public enum Position {
         Stowed(0), Hatch1(0), Port1(15), Hatch2(65), Port2(65), Hatch3(65), Port3(65);
@@ -48,6 +50,8 @@ public class Lift extends BetterSubsystem implements BetterSendable {
         master.add(controller);
         master.add(new ResetLiftEncoder());
         master.add(new ControlLiftJoystick());
+
+        Robot.instance.addCommand(new CalibrateLiftEncoder(), true);
     }
 
     public void resetEncoder() {
@@ -55,6 +59,11 @@ public class Lift extends BetterSubsystem implements BetterSendable {
     }
 
     public void setPosition(Position position) {
+        this.lastPosition = position;
         controller.setMagic(position.pos);
+    }
+
+    public boolean isStowed() {
+        return lastPosition == Position.Stowed;
     }
 }
