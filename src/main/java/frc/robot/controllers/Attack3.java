@@ -1,48 +1,45 @@
 package frc.robot.controllers;
 
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.buttons.*;
-import frc.robot.commands.Teleop.*;
+import frc.robot.commands.intake.piston.QuickPiston;
+import frc.robot.commands.intake.vacuum.SetVacuum;
+import frc.robot.map.RobotMap;
+import frc.robot.util.Deadband;
 
-public class Attack3 implements OI {
-	Joystick mainJoystick;
+public class Attack3 extends OIBase {
+	static Deadband deadband = new Deadband(0, 0.15);
 
-	Button slowModeButton;
-	Button b4;
-	Button b5;
+	public Attack3() {
+		super();
+	}
 
-	// button.whenPressed(new ExampleCommand());
+	public Attack3(Integer port) {
+		super(port);
+	}
 
-	// button.whileHeld(new ExampleCommand());
+	int getDefaultPort() {
+		return RobotMap.Joystick.attack3_0Port();
+	}
 
-	// button.whenReleased(new ExampleCommand());
+	void setUpButtons() {
+		getButton(1).whenPressed(new QuickPiston());
 
-	public Attack3(int joystickPort) {
-		mainJoystick = new Joystick(joystickPort);
-
-		slowModeButton = new JoystickButton(mainJoystick, 2);
-		b4 = new JoystickButton(mainJoystick, 4);
-		b5 = new JoystickButton(mainJoystick, 5);
-
-		// b4.whenPressed(new ControlArcadeDrivetrain());
-		// b5.whenPressed(new ControlOneAxisDrivetrain(0.9));
+		getButton(3).whenPressed(new SetVacuum(true));
+		getButton(2).whenPressed(new SetVacuum(false));
 	}
 
 	public double getLeftSpeed() {
-		// System.out.println("left" + mainJoystick.getRawAxis(1));
-		return -1.0 * mainJoystick.getRawAxis(1);
+		return -deadband.calc(getJoystick().getRawAxis(1), RobotMap.Joystick.squareThrottle());
 	}
 
 	public double getLeftRotation() {
-		// System.out.println("rotate" + mainJoystick.getRawAxis(0));
-		return mainJoystick.getRawAxis(0);
+		return deadband.calc(getJoystick().getRawAxis(0), RobotMap.Joystick.squareTurn());
 	}
 
 	public double getRightSpeed() {
-		return getLeftSpeed();
+		return -deadband.calc(getJoystick().getRawAxis(2)); // Mini slider at bottom
 	}
 
 	public boolean getSlowMode() {
-		return slowModeButton.get();
+		return getButton(2).get();
 	}
 }
