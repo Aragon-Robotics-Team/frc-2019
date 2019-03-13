@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import frc.robot.map.RobotMap;
 
 public abstract class BetterRobot extends TimedRobot {
+    public static final boolean debug = false;
+
     private List<Disableable> disableables;
     private List<Command> commands;
 
@@ -35,29 +37,31 @@ public abstract class BetterRobot extends TimedRobot {
             field.setAccessible(true);
 
             // Add w/ SendableMaster if is BetterSendable
-            castField(field, BetterSendable.class, obj -> SendableMaster.getInstance().add(obj));
+            castField(field, BetterSendable.class, SendableMaster.getInstance()::add);
             // Init OI if is RobotMap
             castField(field, RobotMap.class, map -> map.init());
             // Add to list if is Disableable
-            castField(field, Disableable.class, disableable -> disableables.add(disableable));
+            castField(field, Disableable.class, disableables::add);
             // Add to list if is Command
-            castField(field, Command.class, command -> commands.add(command));
+            castField(field, Command.class, commands::add);
         }
 
-        if (disableables.size() > 0) {
-            System.out.println("Found " + disableables.size() + " disableables:");
-            for (int index = 0; index < disableables.size(); index++) {
-                System.out.println("    " + index + ". " + disableables.get(index));
+        if (debug) {
+            if (disableables.size() > 0) {
+                System.out.println("Found " + disableables.size() + " disableables:");
+                for (int index = 0; index < disableables.size(); index++) {
+                    System.out.println("    " + index + ". " + disableables.get(index));
+                }
+                System.out.println();
             }
-            System.out.println();
-        }
 
-        if (commands.size() > 0) {
-            System.out.println("Found " + commands.size() + " commands:");
-            for (int index = 0; index < commands.size(); index++) {
-                System.out.println("    " + index + ". " + commands.get(index));
+            if (commands.size() > 0) {
+                System.out.println("Found " + commands.size() + " commands:");
+                for (int index = 0; index < commands.size(); index++) {
+                    System.out.println("    " + index + ". " + commands.get(index));
+                }
+                System.out.println();
             }
-            System.out.println();
         }
 
         System.out.println("Start robot");
@@ -155,7 +159,7 @@ public abstract class BetterRobot extends TimedRobot {
     public void robotInit() {
     }
 
-    public void disablePeriodic() {
+    public void disabledPeriodic() {
     }
 
     public void autonomousPeriodic() {

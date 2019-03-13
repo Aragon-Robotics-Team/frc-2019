@@ -16,6 +16,7 @@ public class BetterTalonSRXConfig extends TalonSRXConfiguration {
     public int highTickMag;
     public Boolean crossZeroMag;
     public double zeroPosition;
+    public boolean debug;
 
     public enum Encoder {
         USDigital, CTREMag;
@@ -53,6 +54,7 @@ public class BetterTalonSRXConfig extends TalonSRXConfiguration {
         highTickMag = 0;
         crossZeroMag = null;
         zeroPosition = 0;
+        debug = false;
 
         // Set defaults below for non-BetterTalonSRXConfig options
 

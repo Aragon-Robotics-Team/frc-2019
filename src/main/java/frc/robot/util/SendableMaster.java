@@ -3,6 +3,7 @@ package frc.robot.util;
 import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import frc.robot.Robot;
 
 public class SendableMaster {
     private static SendableMaster instance;
@@ -123,7 +124,9 @@ public class SendableMaster {
             currentTab.add(name, sendable);
         }
 
-        System.out.printf("Adding: %-15s - %-15s - %s\n", tabName, name, sendable);
+        if (Robot.debug) {
+            System.out.printf("Adding: %-15s - %-15s - %s\n", tabName, name, sendable);
+        }
     }
 
     private static boolean isNull(String string) {
