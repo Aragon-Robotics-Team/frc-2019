@@ -9,8 +9,7 @@ import frc.robot.subsystems.Intake.Position;
 
 public class CalibrateIntakeEncoder extends CommandGroup {
     static final DoubleConsumer setSpeed = Robot.myIntake.controller::setOldPercent;
-    static final Supplier<Boolean> getReverseLimit =
-            Robot.myIntake.controller::getReverseLimitSwitch;
+    static final Supplier<Boolean> getReverseLimit = Robot.myIntake.controller::getReverseLimitSwitch;
 
     public CalibrateIntakeEncoder() {
         requires(Robot.myIntake.intakeSubsystem);
@@ -18,7 +17,7 @@ public class CalibrateIntakeEncoder extends CommandGroup {
         // Go reverse until hits limit switch, then go forward until release
         addSequential(new MoveUntilResult<Boolean>(-0.5, setSpeed, getReverseLimit, true));
         // addSequential(new WaitCommand(0.25));
-        addSequential(new MoveUntilResult<Boolean>(0.1, setSpeed, getReverseLimit, false));
+        addSequential(new ClearReverseLimit());
         // Talon SRX should reset encoder automatically when limit switch depressed
         addSequential(new SetIntakePosition(Position.Stowed));
     }

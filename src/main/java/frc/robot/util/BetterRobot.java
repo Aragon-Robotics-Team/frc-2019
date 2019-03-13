@@ -13,6 +13,13 @@ public abstract class BetterRobot extends TimedRobot {
     private List<Disableable> disableables;
     private List<Command> commands;
 
+    public static BetterRobot instance;
+
+    public BetterRobot() {
+        super();
+        instance = this;
+    }
+
     // Init SendableMaster before calling robotInit
     // Will only work if all sendables created before robotInit
     public void startCompetition() {
@@ -53,7 +60,6 @@ public abstract class BetterRobot extends TimedRobot {
             System.out.println();
         }
 
-
         System.out.println("Start robot");
         super.startCompetition();
     }
@@ -66,6 +72,22 @@ public abstract class BetterRobot extends TimedRobot {
             }
         } catch (IllegalAccessException ex) {
             ex.printStackTrace();
+        }
+    }
+
+    public void addDisableable(Disableable disableable) {
+        disableables.add(disableable);
+    }
+
+    public void addCommand(Command command) {
+        commands.add(command);
+    }
+
+    public void addCommand(Command command, boolean enable) {
+        if (enable) {
+            addDisableable(EnableableCommand.of(command));
+        } else {
+            addCommand(command);
         }
     }
 

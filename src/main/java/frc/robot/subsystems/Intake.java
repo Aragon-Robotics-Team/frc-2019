@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.Talon;
 import frc.robot.Robot;
+import frc.robot.commands.intake.intake.CalibrateIntakeEncoder;
 import frc.robot.commands.intake.intake.ControlIntakeJoystick;
 import frc.robot.commands.intake.intake.ResetIntakeEncoder;
 import frc.robot.commands.intake.vacuum.ControlVacuumJoystick;
@@ -22,8 +23,10 @@ public class Intake extends BetterSubsystem implements BetterSendable, Disableab
     public BetterSubsystem vacuumSubsystem;
     public BetterSubsystem pistonSubsystem;
 
+    Position lastPosition;
+
     public enum Position {
-        Stowed(0), Intake(2106), Horizontal(3248), Vertical(590);
+        Stowed(0), Intake(1967), Horizontal(2733), Vertical(389);
 
         double pos;
 
@@ -57,6 +60,8 @@ public class Intake extends BetterSubsystem implements BetterSendable, Disableab
         vacuumSubsystem = new BetterSubsystem();
         pistonSubsystem = new BetterSubsystem();
 
+        lastPosition = Position.Stowed;
+
         setPosition(Position.Stowed);
         setVacuum(false);
         setPiston(false);
@@ -67,6 +72,8 @@ public class Intake extends BetterSubsystem implements BetterSendable, Disableab
         master.add(new ResetIntakeEncoder());
         master.add(new ControlIntakeJoystick());
         master.add(new ControlVacuumJoystick());
+
+        Robot.instance.addCommand(new CalibrateIntakeEncoder(), true);
     }
 
     public void resetEncoder() {
@@ -74,8 +81,13 @@ public class Intake extends BetterSubsystem implements BetterSendable, Disableab
     }
 
     public void setPosition(Position position) {
+        this.lastPosition = position;
         controller.setBrakeMode(true);
         controller.setMagic(position.pos);
+    }
+
+    public boolean isStowed() {
+        return lastPosition == Position.Stowed;
     }
 
     public void setVacuum(boolean on) {
