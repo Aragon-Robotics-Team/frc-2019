@@ -27,6 +27,7 @@ public class BetterTalonSRXConfig extends TalonSRXConfiguration {
             switch (this) {
                 case USDigital:
                     config.primaryPID.selectedFeedbackSensor = FeedbackDevice.QuadEncoder;
+                    config.auxiliaryPID.selectedFeedbackSensor = FeedbackDevice.QuadEncoder;
                     break;
                 case CTREMag:
                     config.primaryPID.selectedFeedbackSensor =

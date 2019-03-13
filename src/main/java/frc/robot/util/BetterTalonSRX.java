@@ -3,6 +3,7 @@ package frc.robot.util;
 import static frc.robot.util.Mock.mock;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.DoubleSupplier;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SensorCollection;
@@ -55,6 +56,9 @@ public class BetterTalonSRX implements BetterSendable, BetterSpeedController {
         }
 
         sendable = new SendableSRX(this);
+        // If two different sensors are configured, we have a second sensor
+        sendable.hasSecondSensor =
+                config.primaryPID.selectedFeedbackSensor != config.auxiliaryPID.selectedFeedbackSensor;
         deadband = config.deadband;
 
         timeout = 0;
@@ -84,6 +88,9 @@ public class BetterTalonSRX implements BetterSendable, BetterSpeedController {
     }
 
     public void createSendable(SendableMaster master) {
+        // Usually this method is called after init zero position/speed is set in subsystem
+        // So if they set a magic type, then we are probably going to use magic
+        sendable.isMagic = lastControlType == ControlType.Magic;
         master.add(sendable);
     }
 
@@ -190,25 +197,46 @@ public class BetterTalonSRX implements BetterSendable, BetterSpeedController {
 
 class SendableSRX extends SendableBase {
     BetterTalonSRX talon;
+    boolean isMagic;
+    boolean hasSecondSensor;
 
     public SendableSRX(BetterTalonSRX talon) {
         this.talon = talon;
+    }
+
+    // Magic Wrapper; only call supplier if in magic
+    private DoubleSupplier magic(DoubleSupplier supplier) {
+        return new DoubleSupplier() {
+            public double getAsDouble() {
+                if (talon.lastControlType == BetterTalonSRX.ControlType.Magic) {
+                    return supplier.getAsDouble();
+                } else {
+                    return -1;
+                }
+            }
+        };
     }
 
     public void initSendable(SendableBuilder builder) {
         builder.addDoubleProperty("Output", talon::get, talon::set);
         builder.addDoubleProperty("Velocity", talon::getEncoderRate, null);
         builder.addDoubleProperty("Distance", talon::getEncoderPos, null);
-        builder.addDoubleProperty("Distance 2", () -> talon.talon.getSelectedSensorPosition(1),
-                null);
+        if (hasSecondSensor) {
+            builder.addDoubleProperty("Distance 2", () -> talon.talon.getSelectedSensorPosition(1),
+                    null);
+        }
 
-        builder.addDoubleProperty("MagicError", talon.talon::getClosedLoopError, null);
-        builder.addDoubleProperty("MagicTarget", talon.talon::getClosedLoopTarget, null);
-        builder.addDoubleProperty("MagicVelocity", talon.talon::getActiveTrajectoryVelocity, null);
-        builder.addDoubleProperty("MagicPosition", talon.talon::getActiveTrajectoryPosition, null);
+        if (isMagic) {
+            builder.addDoubleProperty("MagicError", magic(talon.talon::getClosedLoopError), null);
+            builder.addDoubleProperty("MagicTarget", magic(talon.talon::getClosedLoopTarget), null);
+            builder.addDoubleProperty("MagicVelocity",
+                    magic(talon.talon::getActiveTrajectoryVelocity), null);
+            builder.addDoubleProperty("MagicPosition",
+                    magic(talon.talon::getActiveTrajectoryPosition), null);
 
-        builder.addDoubleProperty("Wanted Inches", talon::getSet, talon::set);
-        builder.addDoubleProperty("Current Inches", talon::getInch, null);
+            builder.addDoubleProperty("Wanted Inches", magic(talon::getSet), talon::set);
+            builder.addDoubleProperty("Current Inches", magic(talon::getInch), null);
+        }
 
         builder.addBooleanProperty("Reverse Limit", talon::getReverseLimitSwitch, null);
     }
