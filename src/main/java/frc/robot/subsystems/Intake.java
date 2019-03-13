@@ -26,12 +26,17 @@ public class Intake extends BetterSubsystem implements BetterSendable, Disableab
     Position lastPosition;
 
     public enum Position {
-        Stowed(0), Intake(1967), Horizontal(2733), Vertical(389);
+        Stowed(0), Intake(1967), Vertical(389), Horizontal(2733), Max(Horizontal.pos);
 
-        double pos;
+        final double pos;
+        public static final double ticksPerInch = 1;
 
         private Position(double pos) {
             this.pos = pos;
+        }
+
+        public final int toTicks() {
+            return (int) (pos * ticksPerInch);
         }
     }
 
@@ -41,11 +46,13 @@ public class Intake extends BetterSubsystem implements BetterSendable, Disableab
         BetterTalonSRXConfig config = new BetterTalonSRXConfig();
         config.invert = map.invertIntake();
         config.invertEncoder = map.invertIntakeEncoder();
-        config.ticksPerInch = 1;
+        config.ticksPerInch = Position.ticksPerInch;
         config.slot0.kP = 4;
         config.slot0.allowableClosedloopError = 5;
         config.motionCruiseVelocity = 300;
         config.motionAcceleration = 300 * 2;
+        config.forwardSoftLimitEnable = true;
+        config.forwardSoftLimitThreshold = Position.Max.toTicks();
 
         controller = new BetterTalonSRX(map.controllerCanID(), config);
 

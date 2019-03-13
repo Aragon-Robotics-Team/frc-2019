@@ -15,12 +15,18 @@ public class Lift extends BetterSubsystem implements BetterSendable {
     Position lastPosition;
 
     public enum Position {
-        Stowed(0), Hatch1(0), Port1(15), Hatch2(65), Port2(65), Hatch3(65), Port3(65);
+        Stowed(0), Hatch1(0), Port1(15), Hatch2(65), Port2(65), Hatch3(65), Port3(65), Max(
+                Port3.pos);
 
-        double pos;
+        final double pos;
+        public static final double ticksPerInch = 254.625;
 
         private Position(double pos) {
             this.pos = pos;
+        }
+
+        public final int toTicks() {
+            return (int) (pos * ticksPerInch);
         }
     }
 
@@ -30,11 +36,13 @@ public class Lift extends BetterSubsystem implements BetterSendable {
         BetterTalonSRXConfig config = new BetterTalonSRXConfig();
         config.invert = map.invertLift();
         config.invertEncoder = map.invertLiftEncoder();
-        config.ticksPerInch = 254.625;
+        config.ticksPerInch = Position.ticksPerInch;
         config.slot0.kP = 8.0;
         config.slot0.allowableClosedloopError = 5;
         config.motionCruiseVelocity = 1000;
         config.motionAcceleration = 1000 * 4;
+        config.forwardSoftLimitEnable = true;
+        config.forwardSoftLimitThreshold = Position.Max.toTicks();
 
         controller = new BetterTalonSRX(map.controllerCanID(), config);
 
