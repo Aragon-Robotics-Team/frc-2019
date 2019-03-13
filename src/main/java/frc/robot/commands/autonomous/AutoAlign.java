@@ -5,10 +5,13 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import org.opencv.core.Point;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.subsystems.ByteArrayInput;
+import frc.robot.util.fieldmap.MapInference;
+import frc.robot.util.fieldmap.Map.Target;
 
 public class AutoAlign extends Command {
     boolean enabled;
@@ -53,69 +56,71 @@ public class AutoAlign extends Command {
         Robot.myAngle.setEnabled(enabled);
     }
 
-    public class Pose {
-        public Instant t;
-        public double angle;
-
-        public Pose(Instant t, double angle) {
-            this.t = t;
-            this.angle = angle;
-        }
-    }
-
     protected void execute_experimental() {
-        pose_history.add(new Pose(clock.instant(), Robot.myNavX.ahrs.getAngle()));
-        if (pose_history.size() > 256) {
-            pose_history.remove(pose_history.size() - 1);
+        Point p;
+        synchronized (Robot.myDrivetrain.syncLock) {
+            p = new Point(Robot.myDrivetrain.x, Robot.myDrivetrain.y);
         }
+        Target t = MapInference.get_closest_targets_by_position(p)[0];
+        Double angle = CoordTransform.toPolar(
+                new double[] {t.center.x - robot_location.x, t.center.y - robot_location.y})[1];
+        Robot.myAngle.setAngle();
 
-        double[] angles = ByteArrayInput.getNetworkObject(new double[0], "table", "target_offsets");
-        Instant timeStamp = clock.instant();
-        timeStamp = ByteArrayInput.getNetworkObject(timeStamp, "table", "timestamp");
-        Pose closest_pose;
+        // pose_history.add(new Pose(clock.instant(), Robot.myNavX.ahrs.getAngle()));
+        // if (pose_history.size() > 256) {
+        // pose_history.remove(pose_history.size() - 1);
+        // }
 
-        if (angles.length != 0) {
-            enabled = true;
-            double angle = angles[0];
+        // double[] angles = ByteArrayInput.getNetworkObject(new double[0], "table",
+        // "target_offsets");
+        // Instant timeStamp = clock.instant();
+        // timeStamp = ByteArrayInput.getNetworkObject(timeStamp, "table", "timestamp");
+        // Pose closest_pose;
 
-            if (angle != lastAngle && timeStamp != lastTimeStamp) { // Replace with test for new
-                                                                    // data
+        // if (angles.length != 0) {
+        // enabled = true;
+        // double angle = angles[0];
 
-                // modified binary search
-                // David Soroko, May 14 '15 at 19:09, accessed 3/2/2019
-                // https://stackoverflow.com/questions/30245166/find-the-nearest-closest-value-in-a-sorted-list
-                if (timeStamp.isBefore(pose_history.get(0).t)) {
-                    closest_pose = pose_history.get(0);
-                } else if (timeStamp.isAfter(pose_history.get(pose_history.size() - 1).t)) {
-                    closest_pose = pose_history.get(pose_history.size() - 1);
-                } else {
+        // if (angle != lastAngle && timeStamp != lastTimeStamp) { // Replace with test for new
+        // // data
 
-                    int lo = 0;
-                    int hi = pose_history.size();
+        // // modified binary search
+        // // David Soroko, May 14 '15 at 19:09, accessed 3/2/2019
+        // //
+        // https://stackoverflow.com/questions/30245166/find-the-nearest-closest-value-in-a-sorted-list
+        // if (timeStamp.isBefore(pose_history.get(0).t)) {
+        // closest_pose = pose_history.get(0);
+        // } else if (timeStamp.isAfter(pose_history.get(pose_history.size() - 1).t)) {
+        // closest_pose = pose_history.get(pose_history.size() - 1);
+        // } else {
 
-                    while (lo <= hi) {
-                        int mid = (hi + lo) / 2;
+        // int lo = 0;
+        // int hi = pose_history.size();
 
-                        if (timeStamp.isBefore(pose_history.get(mid).t)) {
-                            hi = mid - 1;
-                        } else if (timeStamp.isAfter(pose_history.get(mid).t)) {
-                            lo = mid + 1;
-                        } else {
-                            closest_pose = pose_history.get(mid);
-                        }
-                    }
-                    closest_pose = pose_history.get(lo).t.getNano() - timeStamp.getNano() < timeStamp.getNano()
-                            - pose_history.get(hi).t.getNano() ? pose_history.get(lo) : pose_history.get(hi);
-                }
+        // while (lo <= hi) {
+        // int mid = (hi + lo) / 2;
 
-                double angle_change_est = Robot.myNavX.ahrs.getAngle() - closest_pose.angle;
-                Robot.myAngle.setDeltaAngle(angle + angle_change_est);
-                lastAngle = angle;
-                lastTimeStamp = timeStamp;
-            }
-        } else {
-            enabled = false;
-        }
+        // if (timeStamp.isBefore(pose_history.get(mid).t)) {
+        // hi = mid - 1;
+        // } else if (timeStamp.isAfter(pose_history.get(mid).t)) {
+        // lo = mid + 1;
+        // } else {
+        // closest_pose = pose_history.get(mid);
+        // }
+        // }
+        // closest_pose = pose_history.get(lo).t.getNano() - timeStamp.getNano() <
+        // timeStamp.getNano()
+        // - pose_history.get(hi).t.getNano() ? pose_history.get(lo) : pose_history.get(hi);
+        // }
+
+        // double angle_change_est = Robot.myNavX.ahrs.getAngle() - closest_pose.angle;
+        // Robot.myAngle.setDeltaAngle(angle + angle_change_est);
+        // lastAngle = angle;
+        // lastTimeStamp = timeStamp;
+        // }
+        // } else {
+        // enabled = false;
+        // }
 
     }
 

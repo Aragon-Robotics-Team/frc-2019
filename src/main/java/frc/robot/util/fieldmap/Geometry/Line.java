@@ -1,4 +1,4 @@
-package frc.robot.util.fieldmap.Geometry;
+package frc.robot.util.fieldmap.geometry;
 
 import org.opencv.core.Point;
 

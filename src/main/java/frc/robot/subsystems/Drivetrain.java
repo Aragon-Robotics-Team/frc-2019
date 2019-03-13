@@ -148,7 +148,7 @@ public class Drivetrain extends Subsystem implements BetterSendable {
 
         distance = newDistance;
         Robot.myVision.visionPositioningServices.poseHistory
-                .addPoseToHistory(Pose(new Point(x, y)));
+                .addPoseToHistory(new Pose(new Point(x, y)));
     }
 
     public double getX() {
