@@ -15,9 +15,6 @@ public class SetLiftPosition extends Command {
         Robot.myLift.setPosition(pos);
     }
 
-    protected void execute() {
-    }
-
     protected boolean isFinished() {
         return true;
     }

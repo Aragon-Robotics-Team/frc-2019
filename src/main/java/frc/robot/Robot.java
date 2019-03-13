@@ -15,33 +15,33 @@ import frc.robot.subsystems.Vision;
 import frc.robot.util.BetterRobot;
 
 public class Robot extends BetterRobot {
-	public static RobotMap map = RobotMap.getMap();
+    public static RobotMap map = RobotMap.getMap();
 
-	// Subsytems must come after RobotMaps
-	// Create subsystem instances here with public static Type var = new Type();
-	public static Drivetrain myDrivetrain = new Drivetrain();
-	public static NavX myNavX = new NavX();
-	public static TurnToAngle myAngle = new TurnToAngle();
-	public static Pneumatics myPneumatics = new Pneumatics();
-	public static Lift myLift = new Lift();
-	public static Intake myIntake = new Intake();
-	public static Vision myVision = new Vision();
+    // Subsytems must come after RobotMaps
+    // Create subsystem instances here with public static Type var = new Type();
+    public static Drivetrain myDrivetrain = new Drivetrain();
+    public static NavX myNavX = new NavX();
+    public static TurnToAngle myAngle = new TurnToAngle();
+    public static Pneumatics myPneumatics = new Pneumatics();
+    public static Lift myLift = new Lift();
+    public static Intake myIntake = new Intake();
+    public static Vision myVision = new Vision();
 
-	// Commands must come after subsytems
-	Command autonomousGroup = new AutonomousGroup(); // Commands will be canceled on disable
-	Command teleopGroup = new TeleopGroup();
-	Command testGroup = new TestGroup();
+    // Commands must come after subsytems
+    Command autonomousGroup = new AutonomousGroup(); // Commands will be canceled on disable
+    Command teleopGroup = new TeleopGroup();
+    Command testGroup = new TestGroup();
 
-	public void _autonomousInit() {
-		autonomousGroup.start();
-		Robot.myNavX.zeroYaw();
-	}
+    public void _autonomousInit() {
+        autonomousGroup.start();
+        Robot.myNavX.zeroYaw();
+    }
 
-	public void _teleopInit() {
-		teleopGroup.start();
-	}
+    public void _teleopInit() {
+        teleopGroup.start();
+    }
 
-	public void _testInit() {
-		testGroup.start();
-	}
+    public void _testInit() {
+        testGroup.start();
+    }
 }

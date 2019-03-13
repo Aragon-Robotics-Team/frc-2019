@@ -9,9 +9,6 @@ public class ControlArcadeDrivetrain extends Command {
         requires(Robot.myDrivetrain);
     }
 
-    protected void initialize() {
-    }
-
     protected void execute() {
         double speedModifier = 1.0;
         if (Robot.map.oi.getSlowMode()) {

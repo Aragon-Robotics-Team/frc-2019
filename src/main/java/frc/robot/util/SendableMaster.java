@@ -133,38 +133,4 @@ public class SendableMaster {
     private static String append(String a, String b) {
         return a + (!isNull(a) && isNull(b) ? "." : "") + b;
     }
-
-    // public void add(BetterSendable betterSendable, String name, Sendable sendable) {
-    // if (!isOpen) {
-    // throw new IllegalStateException("SendableMaster has already been initialized");
-    // }
-
-    // if (!map.containsKey(betterSendable)) {
-    // map.put(betterSendable, new HashMap<String, Sendable>());
-    // }
-
-    // map.get(betterSendable).put(name, sendable);
-    // }
-
-    // private static void initTab() {
-    // isOpen = false;
-
-    // Sendable mainSendable = betterSendable.getMainSendable();
-    // if (mainSendable != null) {
-    // tab.add(mainName, mainSendable);
-    // }
-
-    // Map<String, Sendable> sendables = betterSendable.getSendables();
-    // if (sendables != null) {
-    // for (Map.Entry<String, Sendable> entry : sendables.entrySet()) {
-    // String name = entry.getKey();
-    // Sendable sendable = entry.getValue();
-
-    // if (BetterSendable.class.isAssignableFrom(sendable.getClass())) {
-    // BetterSendable newBetterSendable = (BetterSendable) sendable;
-    // init(tab, name, betterSendable)
-    // }
-    // }
-    // }
-    // }
 }

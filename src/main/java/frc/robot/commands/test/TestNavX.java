@@ -6,12 +6,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 
 public class TestNavX extends Command {
-    public TestNavX() {
-    }
-
-    protected void initialize() {
-    }
-
     protected void execute() {
         if (!Robot.myNavX.isRunning()) {
             SmartDashboard.putBoolean("Running", false);

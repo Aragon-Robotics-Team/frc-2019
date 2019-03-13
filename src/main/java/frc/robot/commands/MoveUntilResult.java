@@ -20,9 +20,6 @@ public class MoveUntilResult<T> extends Command {
         this.wanted = wanted;
     }
 
-    protected void initialize() {
-    }
-
     protected void execute() {
         if (!_isFinished()) {
             setter.accept(velocity);

@@ -15,6 +15,10 @@ public class EnableableCommand {
             public void enable() {
                 command.start();
             }
+
+            public String toString() {
+                return command.toString();
+            }
         };
     }
 }
