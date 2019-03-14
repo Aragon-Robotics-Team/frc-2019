@@ -23,7 +23,9 @@ public class HotasX extends OIBase {
     void setUpButtons() {
         getButton(2).whenPressed(new SetVacuum(true));
         getButton(3).whenPressed(new SetVacuum(false));
+        getButton(4).whenPressed(new SetVacuum(false));
 
+        getButton(6).whenPressed(new QuickPiston());
         getButton(9).whenPressed(new QuickPiston());
 
         // 10 : turn to visible target

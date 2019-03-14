@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.SendableBase;
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import frc.robot.Robot;
 import frc.robot.commands.intake.intake.CalibrateIntakeEncoder;
 import frc.robot.commands.intake.intake.ControlIntakeJoystick;
@@ -24,6 +26,7 @@ public class Intake extends BetterSubsystem implements BetterSendable, Disableab
     public BetterSubsystem pistonSubsystem;
 
     Position lastPosition;
+    boolean isVacuumOn;
 
     public enum Position {
         Stowed(0), Intake(1967), Vertical(389), Horizontal(2733), Max(Horizontal.pos);
@@ -76,8 +79,9 @@ public class Intake extends BetterSubsystem implements BetterSendable, Disableab
 
     public void createSendable(SendableMaster master) {
         master.add(controller);
+        master.add(new IntakeSendable(this));
         master.add(new ResetIntakeEncoder());
-        master.add(new ControlIntakeJoystick());
+        master.add("Intake Joystick", new ControlIntakeJoystick());
         master.add(new ControlVacuumJoystick());
 
         Robot.instance.addCommand(new CalibrateIntakeEncoder(), true);
@@ -98,6 +102,7 @@ public class Intake extends BetterSubsystem implements BetterSendable, Disableab
     }
 
     public void setVacuum(boolean on) {
+        isVacuumOn = on;
         if (on) {
             vacuumController.set(1.0);
         } else {
@@ -111,5 +116,18 @@ public class Intake extends BetterSubsystem implements BetterSendable, Disableab
 
     public void disable() {
         controller.setBrakeMode(false);
+    }
+}
+
+
+class IntakeSendable extends SendableBase {
+    Intake intake;
+
+    public IntakeSendable(Intake intake) {
+        this.intake = intake;
+    }
+
+    public void initSendable(SendableBuilder builder) {
+        builder.addBooleanProperty("Vacuum", () -> intake.isVacuumOn, null);
     }
 }

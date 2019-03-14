@@ -57,7 +57,7 @@ public class Lift extends BetterSubsystem implements BetterSendable {
     public void createSendable(SendableMaster master) {
         master.add(controller);
         master.add(new ResetLiftEncoder());
-        master.add(new ControlLiftJoystick());
+        master.add("Lift Joystick", new ControlLiftJoystick());
 
         Robot.instance.addCommand(new CalibrateLiftEncoder(), true);
     }

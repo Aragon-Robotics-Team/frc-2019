@@ -23,13 +23,13 @@ public class ButtonBoard2 extends OIBase {
         getButton(1).whenPressed(new SetVacuum(true));
         getButton(2).whenPressed(new SetVacuum(false));
 
-        getButton(3).whenPressed(new SetLiftPosition(Lift.Position.Hatch3));
+        getButton(3).whenPressed(new SetLiftPosition(Lift.Position.Hatch1));
         getButton(4).whenPressed(new SetLiftPosition(Lift.Position.Hatch2));
-        getButton(5).whenPressed(new SetLiftPosition(Lift.Position.Hatch1));
+        getButton(5).whenPressed(new SetLiftPosition(Lift.Position.Hatch3));
 
-        getButton(6).whenPressed(new SetLiftPosition(Lift.Position.Port1));
+        getButton(6).whenPressed(new SetLiftPosition(Lift.Position.Port3));
         getButton(7).whenPressed(new SetLiftPosition(Lift.Position.Port2));
-        getButton(8).whenPressed(new SetLiftPosition(Lift.Position.Port3));
+        getButton(8).whenPressed(new SetLiftPosition(Lift.Position.Port1));
 
         // 12: Emergency stop (not connected?)
     }
