@@ -47,6 +47,7 @@ public class BetterTalonSRX implements BetterSendable, BetterSpeedController {
         talon.setNeutralMode(config.neutralMode);
 
         talon.selectProfileSlot(0, 0);
+        talon.selectProfileSlot(1, 1);
 
         talon.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, timeout);
         talon.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, timeout);
@@ -184,6 +185,12 @@ public class BetterTalonSRX implements BetterSendable, BetterSpeedController {
 
     public boolean getReverseLimitSwitch() {
         return sensorCollection.isRevLimitSwitchClosed();
+    }
+
+    // Other getters
+
+    public int getDeviceID() {
+        return talon.getDeviceID();
     }
 
     // Other setters

@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.RemoteSensorSource;
 import edu.wpi.first.wpilibj.SendableBase;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
@@ -51,6 +53,14 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
         rightConfig.maxTickVelocity = 1142.0;
         rightConfig.slot0.kP = 0.7;
         rightConfig.ticksPerInch = 76.485294;
+        rightConfig.remoteFilter0.remoteSensorDeviceID = leftController.getDeviceID();
+        rightConfig.remoteFilter0.remoteSensorSource = RemoteSensorSource.TalonSRX_SelectedSensor;
+        rightConfig.sum0Term = FeedbackDevice.RemoteSensor0;
+        rightConfig.sum1Term = FeedbackDevice.QuadEncoder;
+        rightConfig.diff0Term = FeedbackDevice.QuadEncoder;
+        rightConfig.diff1Term = FeedbackDevice.RemoteSensor0;
+        rightConfig.encoder = BetterTalonSRXConfig.Encoder.RemoteSensor;
+        rightConfig.auxPIDPolarity = false;
         rightController = new BetterTalonSRX(map.rightMainCanID(), rightConfig);
 
         BetterFollowerConfig leftSlaveConfig = new BetterFollowerConfig();
@@ -99,7 +109,12 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
         rightController.setOldPercent(y * max * 0.85);
     }
 
-    public void controlArcade(double x, double y) { // x is up/down; y is right/left
+    public void controlArcade(double x, double y) {
+        double ticksPer100ms = x * 1000;
+        double turn = y + rightController.talon.getSelectedSensorPosition(1);
+    }
+
+    public void controlArcadeOld(double x, double y) { // x is up/down; y is right/left
         // differentialDrive.arcadeDrive(x, y, false);
 
         // double rp = 0;

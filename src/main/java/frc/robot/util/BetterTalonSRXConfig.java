@@ -19,7 +19,7 @@ public class BetterTalonSRXConfig extends TalonSRXConfiguration {
     public boolean debug;
 
     public enum Encoder {
-        USDigital, CTREMag;
+        USDigital, CTREMag, RemoteSensor;
 
         void applyConfig(BetterTalonSRXConfig config) {
             // Setting config.primaryPID.selectedFeedbackSensor(FeedbackDevice.QuadEncoder) is same
@@ -36,6 +36,12 @@ public class BetterTalonSRXConfig extends TalonSRXConfiguration {
                     config.auxiliaryPID.selectedFeedbackSensor =
                             FeedbackDevice.CTRE_MagEncoder_Absolute;
                     break;
+                case RemoteSensor:
+                    config.primaryPID.selectedFeedbackSensor = FeedbackDevice.SensorSum;
+                    config.primaryPID.selectedFeedbackCoefficient = 0.5;
+                    config.auxiliaryPID.selectedFeedbackSensor = FeedbackDevice.SensorDifference;
+                    config.auxiliaryPID.selectedFeedbackCoefficient = 1;
+                    break;
                 default:
                     throw new IllegalArgumentException();
             }
@@ -47,7 +53,7 @@ public class BetterTalonSRXConfig extends TalonSRXConfiguration {
         invert = false;
         invertEncoder = false;
         neutralMode = NeutralMode.Brake;
-        deadband = new Deadband(0.125, 0); // Warning: 0 deadband!;
+        deadband = new Deadband(0.125, 0.001); // Warning: 0 deadband!;
         maxTickVelocity = 0;
         encoder = Encoder.USDigital;
         lowTickMag = 0;
@@ -65,6 +71,7 @@ public class BetterTalonSRXConfig extends TalonSRXConfiguration {
         clearPositionOnLimitR = true;
         voltageCompSaturation = 10.0;
         feedbackNotContinuous = true; // Do not wrap absolute 4095 -> 4096. Always 4095 -> 0
+        neutralDeadband = 0.001;
 
         // Todo: current limit, voltage compensation
     }
