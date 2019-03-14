@@ -45,7 +45,8 @@ public class HotasX extends OIBase {
     }
 
     public double getRightSpeed() {
-        return -deadband.calc(getJoystick().getRawAxis(1), true);
+        // Slider on left hand - right is positive
+        return deadband.calc(getJoystick().getRawAxis(4), true);
     }
 
     public boolean getSlowMode() {

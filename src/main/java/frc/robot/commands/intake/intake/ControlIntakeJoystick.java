@@ -8,4 +8,8 @@ public class ControlIntakeJoystick extends ControlMotorJoystick {
         super(Robot.myIntake.controller);
         requires(Robot.myIntake.intakeSubsystem);
     }
+
+    public double getMax() {
+        return 0.5;
+    }
 }
