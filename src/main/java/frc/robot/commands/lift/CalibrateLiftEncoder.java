@@ -15,7 +15,7 @@ public class CalibrateLiftEncoder extends CommandGroup {
         requires(Robot.myLift);
 
         addSequential(new MoveUntilResult<Boolean>(-0.75, setSpeed, getReverseLimit, true));
-        addSequential(new ClearReverseLimit());
+        addSequential(new LiftClearReverseLimit());
         addSequential(new SetLiftPosition(Position.Stowed));
     }
 }
