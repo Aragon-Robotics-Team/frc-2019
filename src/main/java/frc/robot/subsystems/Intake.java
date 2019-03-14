@@ -29,7 +29,7 @@ public class Intake extends BetterSubsystem implements BetterSendable, Disableab
     boolean isVacuumOn;
 
     public enum Position {
-        Stowed(0), Intake(1967), Vertical(389), Horizontal(2733), Max(Horizontal.pos);
+        Stowed(0), Intake(1967), Vertical(349), Horizontal(2733), Max(Horizontal.pos);
 
         final double pos;
         public static final double ticksPerInch = 1;

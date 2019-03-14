@@ -1,6 +1,5 @@
 package frc.robot.util;
 
-import static frc.robot.util.Mock.mock;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.DoubleSupplier;
@@ -70,7 +69,7 @@ public class BetterTalonSRX implements BetterSendable, BetterSpeedController {
 
         resetEncoder();
 
-        sensorCollection = isReal ? talon.getSensorCollection() : mock(SensorCollection.class);
+        sensorCollection = isReal ? talon.getSensorCollection() : Mock.mock(SensorCollection.class);
 
         if (config.encoder == BetterTalonSRXConfig.Encoder.CTREMag && config.crossZeroMag != null) {
             int low = config.lowTickMag;
