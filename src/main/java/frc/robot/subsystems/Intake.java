@@ -56,6 +56,7 @@ public class Intake extends BetterSubsystem implements BetterSendable, Disableab
         config.motionAcceleration = 300 * 2;
         config.forwardSoftLimitEnable = true;
         config.forwardSoftLimitThreshold = Position.Max.toTicks();
+        config.openloopRamp = 0.25;
 
         controller = new BetterTalonSRX(map.controllerCanID(), config);
 

@@ -22,6 +22,7 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
     BetterTalonSRX rightController;
     BetterFollower leftSlaveController;
     BetterFollower rightSlaveController;
+    boolean slow;
 
     double distance;
     double x;
@@ -69,6 +70,7 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
         stop();
         setBrake(true);
         reset();
+        setSlow(false);
     }
 
     public void createSendable(SendableMaster master) {
@@ -90,8 +92,11 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
     }
 
     public void control(double x, double y) {
-        leftController.setOldPercent(x * 0.7 * 1.1);
-        rightController.setOldPercent(y * 0.7);
+        double max = slow ? 0.7 : 1.0;
+
+        // DesireOutput * max(liftPos) * max actual (instead of velocity PID) * swerve compensate
+        leftController.setOldPercent(x * max * 0.85 * 1.1);
+        rightController.setOldPercent(y * max * 0.85);
     }
 
     public void controlArcade(double x, double y) { // x is up/down; y is right/left
@@ -129,6 +134,14 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
 
     public void stop() {
         control(0, 0);
+    }
+
+    public void setSlow(boolean slow) {
+        this.slow = slow;
+
+        double ramp = slow ? 0.5 : 0.1;
+        leftController.setOpenLoopRamp(ramp);
+        rightController.setOpenLoopRamp(ramp);
     }
 
     public void updatePosition() {

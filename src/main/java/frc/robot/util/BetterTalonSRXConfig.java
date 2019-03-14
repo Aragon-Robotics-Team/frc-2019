@@ -59,8 +59,9 @@ public class BetterTalonSRXConfig extends TalonSRXConfiguration {
         // Set defaults below for non-BetterTalonSRXConfig options
 
         openloopRamp = 0.1;
-        nominalOutputForward = 0.1;
-        nominalOutputReverse = 0.1;
+        closedloopRamp = 0.1;
+        nominalOutputForward = 0;
+        nominalOutputReverse = 0;
         clearPositionOnLimitR = true;
         voltageCompSaturation = 10.0;
         feedbackNotContinuous = true; // Do not wrap absolute 4095 -> 4096. Always 4095 -> 0

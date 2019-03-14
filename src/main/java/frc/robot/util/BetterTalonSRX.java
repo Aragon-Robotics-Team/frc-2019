@@ -62,7 +62,6 @@ public class BetterTalonSRX implements BetterSendable, BetterSpeedController {
                 config.primaryPID.selectedFeedbackSensor != config.auxiliaryPID.selectedFeedbackSensor;
         deadband = config.deadband;
 
-        timeout = 0;
         ticksPerInch = config.ticksPerInch;
         slaves = new ArrayList<BetterFollower>(1); // 1 max expected follower
         maxTickVelocity = config.maxTickVelocity;
@@ -102,6 +101,8 @@ public class BetterTalonSRX implements BetterSendable, BetterSpeedController {
         // So if they set a magic type, then we are probably going to use magic
         sendable.isMagic = lastControlType == ControlType.Magic;
         master.add(sendable);
+
+        timeout = 0; // Done configuring by now, so can disable timeout
     }
 
     // Setting Output
@@ -201,6 +202,10 @@ public class BetterTalonSRX implements BetterSendable, BetterSpeedController {
     public void addFollower(BetterFollower slave) { // Add all followers before setting brake mode
         slaves.add(slave);
         slave.follow(talon);
+    }
+
+    public void setOpenLoopRamp(double ramp) {
+        talon.configOpenloopRamp(ramp, timeout);
     }
 }
 

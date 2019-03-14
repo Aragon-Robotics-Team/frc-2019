@@ -37,17 +37,22 @@ public class Lift extends BetterSubsystem implements BetterSendable {
         config.invert = map.invertLift();
         config.invertEncoder = map.invertLiftEncoder();
         config.ticksPerInch = Position.ticksPerInch;
-        config.slot0.kP = 8.0;
-        config.slot0.allowableClosedloopError = 5;
+        config.slot0.kP = 2.0;
+        config.slot0.allowableClosedloopError = 10;
         config.motionCruiseVelocity = 1000;
         config.motionAcceleration = 1000 * 4;
         config.forwardSoftLimitEnable = true;
         config.forwardSoftLimitThreshold = Position.Max.toTicks();
+        config.openloopRamp = 0.25;
 
         controller = new BetterTalonSRX(map.controllerCanID(), config);
 
         resetEncoder();
         setPosition(Position.Stowed);
+    }
+
+    public void periodic() {
+        Robot.myDrivetrain.setSlow(controller.getInch() >= 20);
     }
 
     public String getTabName() {
