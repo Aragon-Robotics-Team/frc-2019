@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 public class BetterTalonSRX implements BetterSendable, BetterSpeedController {
     final Deadband deadband;
 
-    final TalonSRX talon;
+    public final TalonSRX talon;
     final double ticksPerInch;
     int timeout = 300; // milliseconds
     final SendableSRX sendable;
@@ -155,11 +155,19 @@ public class BetterTalonSRX implements BetterSendable, BetterSpeedController {
     // Encoder
 
     public double getEncoderRate() {
-        return talon.getSelectedSensorVelocity(0);
+        return getEncoderRate(0);
     }
 
     public double getEncoderPos() {
-        return talon.getSelectedSensorPosition(0);
+        return getEncoderPos(0);
+    }
+
+    public double getEncoderRate(int id) {
+        return talon.getSelectedSensorVelocity(id);
+    }
+
+    public double getEncoderPos(int id) {
+        return talon.getSelectedSensorPosition(id);
     }
 
     public void resetEncoder() {

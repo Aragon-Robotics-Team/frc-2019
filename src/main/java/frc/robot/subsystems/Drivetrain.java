@@ -1,6 +1,9 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.FollowerType;
 import com.ctre.phoenix.motorcontrol.RemoteSensorSource;
 import edu.wpi.first.wpilibj.SendableBase;
 import edu.wpi.first.wpilibj.command.InstantCommand;
@@ -41,9 +44,9 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
         leftConfig.invert = map.invertLeft();
         leftConfig.invertEncoder = map.invertLeftEncoder();
         // (tick_speed for 100% output) / (max measured tick_speed)
-        leftConfig.maxTickVelocity = 1112.0;
+        leftConfig.maxTickVelocity = 1223.0;
         // leftConfig.slot0.kF = (1023.0 / 1112.0) * 1.13;
-        leftConfig.slot0.kP = 0.7;
+        leftConfig.slot0.kP = 0.5;
         leftConfig.ticksPerInch = 76.485294;
         leftController = new BetterTalonSRX(map.leftMainCanID(), leftConfig);
 
@@ -51,7 +54,7 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
         rightConfig.invert = map.invertRight();
         rightConfig.invertEncoder = map.invertRightEncoder();
         rightConfig.maxTickVelocity = 1142.0;
-        rightConfig.slot0.kP = 0.7;
+        rightConfig.slot0.kP = 0.1;
         rightConfig.ticksPerInch = 76.485294;
         rightConfig.remoteFilter0.remoteSensorDeviceID = leftController.getDeviceID();
         rightConfig.remoteFilter0.remoteSensorSource = RemoteSensorSource.TalonSRX_SelectedSensor;
@@ -61,6 +64,14 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
         rightConfig.diff1Term = FeedbackDevice.RemoteSensor0;
         rightConfig.encoder = BetterTalonSRXConfig.Encoder.RemoteSensor;
         rightConfig.auxPIDPolarity = false;
+        rightConfig.slot0.integralZone = 100;
+        rightConfig.slot0.closedLoopPeakOutput = 0.5;
+        rightConfig.slot0.closedLoopPeriod = 1;
+        rightConfig.slot1.integralZone = 300;
+        rightConfig.slot1.closedLoopPeakOutput = 0.5;
+        rightConfig.slot1.kP = 2.0;
+        rightConfig.slot1.kD = 4.0;
+        rightConfig.slot1.closedLoopPeriod = 1;
         rightController = new BetterTalonSRX(map.rightMainCanID(), rightConfig);
 
         BetterFollowerConfig leftSlaveConfig = new BetterFollowerConfig();
@@ -111,7 +122,10 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
 
     public void controlArcade(double x, double y) {
         double ticksPer100ms = x * 1000;
-        double turn = y + rightController.talon.getSelectedSensorPosition(1);
+        double turn = y + rightController.getEncoderPos(1);
+
+        rightController.talon.set(ControlMode.Velocity, ticksPer100ms, DemandType.AuxPID, turn);
+        leftController.talon.follow(rightController.talon, FollowerType.AuxOutput1);
     }
 
     public void controlArcadeOld(double x, double y) { // x is up/down; y is right/left
