@@ -15,8 +15,7 @@ public class Lift extends BetterSubsystem implements BetterSendable {
     Position lastPosition;
 
     public enum Position {
-        Stowed(0), Hatch1(0), Port1(15), Hatch2(65), Port2(65), Hatch3(65), Port3(65), Max(
-                Port3.pos);
+        Stowed(0), Hatch1(0), Port1(15), Hatch2(65), Port2(65), Hatch3(65), Port3(65), Max(Port3.pos);
 
         final double pos;
         public static final double ticksPerInch = 254.625;
@@ -52,7 +51,7 @@ public class Lift extends BetterSubsystem implements BetterSendable {
     }
 
     public void periodic() {
-        Robot.myDrivetrain.setSlow(controller.getInch() >= 20);
+        // Robot.myDrivetrain.setSlow(controller.getInch() >= 20);
     }
 
     public String getTabName() {

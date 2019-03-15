@@ -92,7 +92,7 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
     }
 
     public void control(double x, double y) {
-        double max = slow ? 0.7 : 1.0;
+        double max = slow ? 0.3 : 0.7;
 
         // DesireOutput * max(liftPos) * max actual (instead of velocity PID) * swerve compensate
         leftController.setOldPercent(x * max * 0.85 * 1.1);
@@ -138,8 +138,9 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
 
     public void setSlow(boolean slow) {
         this.slow = slow;
+        System.out.println(slow);
 
-        double ramp = slow ? 0.5 : 0.1;
+        double ramp = slow ? 1 : 0.2;
         leftController.setOpenLoopRamp(ramp);
         rightController.setOpenLoopRamp(ramp);
     }
