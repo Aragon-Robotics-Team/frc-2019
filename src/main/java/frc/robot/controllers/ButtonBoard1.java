@@ -1,11 +1,11 @@
 package frc.robot.controllers;
 
+import edu.wpi.first.wpilibj.command.InstantCommand;
+import frc.robot.Robot;
 import frc.robot.commands.intake.intake.CalibrateIntakeEncoder;
-import frc.robot.commands.intake.intake.ControlIntakeJoystick;
 import frc.robot.commands.intake.intake.SetIntakePosition;
 import frc.robot.commands.intake.piston.QuickPiston;
 import frc.robot.commands.lift.CalibrateLiftEncoder;
-import frc.robot.commands.lift.ControlLiftJoystick;
 import frc.robot.map.RobotMap;
 import frc.robot.subsystems.Intake;
 
@@ -34,8 +34,8 @@ public class ButtonBoard1 extends OIBase {
         getButton(6).whenPressed(new CalibrateIntakeEncoder());
         getButton(7).whenPressed(new CalibrateLiftEncoder());
 
-        getButton(8).whenPressed(new ControlIntakeJoystick());
-        getButton(9).whenPressed(new ControlLiftJoystick());
+        getButton(8).whenPressed(new InstantCommand(() -> Robot.myDrivetrain.setSlow(false)));
+        getButton(9).whenPressed(new InstantCommand(() -> Robot.myDrivetrain.setSlow(true)));
 
         // 6 - 9 : Hab mechanism
         // 12 : Emergency stop
