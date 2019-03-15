@@ -1,13 +1,16 @@
-package frc.robot.commands.intake;
+package frc.robot.commands.intake.intake;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.Intake.Position;
 
-public class SetIntakePosition extends Command {
+public class RawSetIntakePosition extends Command {
     Position pos;
 
-    public SetIntakePosition(Position pos) {
+    public RawSetIntakePosition(Position pos) {
+        requires(Robot.myIntake.intakeSubsystem);
+        setRunWhenDisabled(true);
+
         this.pos = pos;
     }
 

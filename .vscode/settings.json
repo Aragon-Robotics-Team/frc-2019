@@ -1,26 +1,31 @@
 {
-  "java.configuration.updateBuildConfiguration": "automatic",
-  "files.exclude": {
-    "**/.git": true,
-    "**/.svn": true,
-    "**/.hg": true,
-    "**/CVS": true,
-    "**/.DS_Store": true,
-    "**/{,.}gradle*": true, // Everything gradle except .gradle files
-    "**/bin/": true, // bin folder
-    "**/build/": true, // build folder
-    "vendordeps/": true,
-    ".gitignore": false,
-    "**/.project": true,
-    "**/.gitattributes": true,
-    "**/.classpath": true,
-    "**/.settings": true,
-    "**/.wpilib": true,
-    "**/lib": true // vision/lib jars
-  },
-  "java.format.settings.url": "https://raw.githubusercontent.com/google/styleguide/gh-pages/eclipse-java-google-style.xml",
-  "editor.formatOnSave": true,
-  "wpilib.autoStartRioLog": false,
-  "wpilib.autoSaveOnDeploy": true,
-  "wpilib.skipTests": true
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/{,.}gradle*": true, // Everything gradle except .gradle files
+        "**/bin/": true, // bin folder
+        "**/build/": true, // build folder
+        "vendordeps/": true,
+        ".gitignore": false,
+        "**/.project": true,
+        "**/.gitattributes": true,
+        "**/.classpath": true,
+        "**/.settings": true,
+        "**/.wpilib": true,
+        "**/lib": true // vision/lib jars
+    },
+    "java.format.settings.url": "https://raw.githubusercontent.com/google/styleguide/gh-pages/eclipse-java-google-style.xml",
+    "editor.formatOnSave": true,
+    "wpilib.autoStartRioLog": false,
+    "wpilib.autoSaveOnDeploy": true,
+    "wpilib.skipTests": true,
+    "editor.detectIndentation": false,
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    "files.insertFinalNewline": true,
+    "files.trimFinalNewlines": true
 }

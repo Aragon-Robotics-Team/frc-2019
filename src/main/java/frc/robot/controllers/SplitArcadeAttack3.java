@@ -1,6 +1,8 @@
 package frc.robot.controllers;
 
-public class SplitArcadeAttack3 extends OI {
+import edu.wpi.first.wpilibj.SendableBase;
+
+public class SplitArcadeAttack3 extends SendableBase implements OI {
     Attack3 leftJoystick;
     Attack3 rightJoystick;
 

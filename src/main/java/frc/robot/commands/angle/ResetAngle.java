@@ -4,9 +4,6 @@ import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
 public class ResetAngle extends Command {
-    public ResetAngle() {
-    }
-
     protected void initialize() {
         setTimeout(1);
     }

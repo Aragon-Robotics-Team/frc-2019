@@ -1,4 +1,4 @@
-package frc.robot.commands.intake;
+package frc.robot.commands.intake.vacuum;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;

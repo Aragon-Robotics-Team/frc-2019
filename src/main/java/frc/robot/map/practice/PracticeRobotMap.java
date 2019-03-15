@@ -1,7 +1,8 @@
-package frc.robot.map;
+package frc.robot.map.practice;
 
 import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import frc.robot.map.RobotMap;
 
 class DrivetrainImpl extends RobotMap.Drivetrain {
     public Integer leftMainCanID() {
@@ -17,7 +18,26 @@ class DrivetrainImpl extends RobotMap.Drivetrain {
     }
 
     public Integer rightSlaveCanID() {
-        return 3;
+        return 5;
+    }
+
+    public boolean invertLeft() {
+        return false;
+    }
+
+    public boolean invertLeftEncoder() {
+        return false;
+
+    }
+
+    public boolean invertRight() {
+        return true;
+
+    }
+
+    public boolean invertRightEncoder() {
+        return false;
+
     }
 
     public Class<? extends BaseMotorController> slaveController() {
@@ -28,29 +48,50 @@ class DrivetrainImpl extends RobotMap.Drivetrain {
 
 class IntakeImpl extends RobotMap.Intake {
     public Integer controllerCanID() {
-        return null;
+        return 6;
     }
 
     public Integer vacuumPort() {
-        return null;
+        return 7;
     }
 
     public Integer pistonPCMPort() {
-        return null;
+        return 0;
     }
+
+    public boolean invertIntake() {
+        return true;
+    }
+
+    public boolean invertIntakeEncoder() {
+        return false;
+    }
+
+    public boolean invertVacuum() {
+        return false;
+    }
+
 }
 
 
 class LiftImpl extends RobotMap.Lift {
     public Integer controllerCanID() {
-        return null;
+        return 2;
+    }
+
+    public boolean invertLift() {
+        return true;
+    }
+
+    public boolean invertLiftEncoder() {
+        return false;
     }
 }
 
 
 class PneumaticsImpl extends RobotMap.Pneumatics {
     public Integer PCMCanID() {
-        return null;
+        return 1;
     }
 }
 

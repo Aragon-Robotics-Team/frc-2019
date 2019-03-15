@@ -1,50 +1,40 @@
 package frc.robot.controllers;
 
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.buttons.Button;
-import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import frc.robot.commands.drivetrain.ControlArcadeDrivetrain;
 import frc.robot.commands.drivetrain.ControlDrivetrain;
+import frc.robot.map.RobotMap;
+import frc.robot.util.Deadband;
 
-public class F310 extends OI {
-	Joystick mainJoystick;
+public class F310 extends OIBase {
+	static Deadband deadband = new Deadband(0, 0.2);
 
-	Button buttonDown;
-	Button buttonRight;
-	Button buttonLeft;
-	Button buttonUp;
+	public F310() {
+		super();
+	}
 
-	// button.whenPressed(new ExampleCommand());
+	public F310(Integer port) {
+		super(port);
+	}
 
-	// button.whileHeld(new ExampleCommand());
+	int getDefaultPort() {
+		return RobotMap.Joystick.f310Port();
+	}
 
-	// button.whenReleased(new ExampleCommand());
-
-	public F310(int joystickPort) {
-
-		mainJoystick = new Joystick(joystickPort);
-
-		buttonDown = new JoystickButton(mainJoystick, 1);
-		buttonRight = new JoystickButton(mainJoystick, 2);
-		buttonLeft = new JoystickButton(mainJoystick, 3);
-		buttonUp = new JoystickButton(mainJoystick, 4);
-
-		buttonDown.whenPressed(new ControlDrivetrain());
-		buttonUp.whenPressed(new ControlArcadeDrivetrain());
+	void setUpButtons() {
+		getButton(1).whenPressed(new ControlDrivetrain()); // Down
+		getButton(4).whenPressed(new ControlArcadeDrivetrain()); // Up
 	}
 
 	public double getLeftSpeed() {
-		// System.out.println("left" + mainJoystick.getRawAxis(1));
-		return -1.0 * mainJoystick.getRawAxis(1);
+		return -1.0 * getJoystick().getRawAxis(1);
 	}
 
 	public double getLeftRotation() {
-		return mainJoystick.getRawAxis(0);
+		return getJoystick().getRawAxis(0);
 	}
 
 	public double getRightSpeed() {
-		// System.out.println("right" + mainJoystick.getRawAxis(5));
-		return -1.0 * mainJoystick.getRawAxis(5);
+		return -1.0 * deadband.calc(getJoystick().getRawAxis(5), true);
 	}
 
 	public boolean getSlowMode() {
