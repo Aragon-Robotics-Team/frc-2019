@@ -4,57 +4,101 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SendableBase;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import edu.wpi.first.wpilibj.buttons.Trigger;
 
 public abstract class OIBase extends SendableBase implements OI {
-	private Joystick joystick;
-	private Button[] buttons;
+    private Joystick joystick;
+    private Button[] buttons;
+    private POVTrigger povTrigger;
 
-	private static final int AMOUNT_BUTTONS = 12;
+    private static final int AMOUNT_BUTTONS = 12;
 
-	public OIBase() {
-		this(null);
-	}
+    public OIBase() {
+        this(null);
+    }
 
-	public OIBase(Integer port) {
-		if (port == null) {
-			port = getDefaultPort();
-		}
+    public OIBase(Integer port) {
+        if (port == null) {
+            port = getDefaultPort();
+        }
 
-		joystick = new Joystick(port);
-		buttons = new Button[AMOUNT_BUTTONS + 1]; // So buttons range 1-max; button0 = null
+        joystick = new Joystick(port);
+        buttons = new Button[AMOUNT_BUTTONS + 1]; // So buttons range 1-max; button0 = null
 
-		for (int index = 1; index < (AMOUNT_BUTTONS + 1); index++) {
-			buttons[index] = new JoystickButton(joystick, index);
-		}
+        for (int index = 1; index < (AMOUNT_BUTTONS + 1); index++) {
+            buttons[index] = new JoystickButton(joystick, index);
+        }
 
-		setUpButtons();
-	}
+        povTrigger = new POVTrigger(this);
 
-	abstract int getDefaultPort();
+        setUpButtons();
+    }
 
-	abstract void setUpButtons();
+    abstract int getDefaultPort();
 
-	final Joystick getJoystick() {
-		return joystick;
-	}
+    abstract void setUpButtons();
 
-	final Button getButton(int button) {
-		return buttons[button];
-	}
+    final Joystick getJoystick() {
+        return joystick;
+    }
 
-	public double getLeftSpeed() {
-		return 0;
-	}
+    final POVTrigger getPOVTrigger() {
+        return povTrigger;
+    }
 
-	public double getLeftRotation() {
-		return 0;
-	}
+    final Button getButton(int button) {
+        return buttons[button];
+    }
 
-	public double getRightSpeed() {
-		return 0;
-	}
+    public double getLeftSpeed() {
+        return 0;
+    }
 
-	public boolean getSlowMode() {
-		return false;
-	}
+    public double getLeftRotation() {
+        return 0;
+    }
+
+    public double getRightSpeed() {
+        return 0;
+    }
+
+    public boolean getSlowMode() {
+        return false;
+    }
+
+    public Integer getPOV() {
+        int pov = getJoystick().getPOV();
+        switch (pov) {
+            case 0:
+                return 0;
+            case 45:
+                return 1;
+            case 90:
+                return 2;
+            case 135:
+                return 3;
+            case 180:
+                return 4;
+            case 225:
+                return 5;
+            case 270:
+                return 6;
+            case 315:
+                return 7;
+        }
+        return null;
+    }
+}
+
+
+class POVTrigger extends Trigger {
+    public OIBase oi;
+
+    public POVTrigger(OIBase oi) {
+        this.oi = oi;
+    }
+
+    public boolean get() {
+        return (oi.getPOV() != null);
+    }
 }

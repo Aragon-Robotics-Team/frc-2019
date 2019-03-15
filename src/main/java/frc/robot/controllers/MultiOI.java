@@ -32,4 +32,8 @@ public class MultiOI extends SendableBase implements OI {
     public boolean disableCompressor() {
         return master.disableCompressor();
     }
+
+    public Integer getPOV() {
+        return master.getPOV();
+    }
 }

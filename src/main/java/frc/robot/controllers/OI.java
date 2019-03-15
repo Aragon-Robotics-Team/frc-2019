@@ -14,6 +14,10 @@ public interface OI extends BetterSendable, Sendable {
 
     public boolean getSlowMode();
 
+    public default Integer getPOV() {
+        return null;
+    }
+
     public default boolean disableCompressor() {
         return getSlowMode();
     }
