@@ -5,7 +5,7 @@ import frc.robot.commands.ControlMotorJoystick;
 
 public class ControlLiftJoystick extends ControlMotorJoystick {
     public ControlLiftJoystick() {
-        super(Robot.myLift.controller);
+        super(Robot.myLift);
         requires(Robot.myLift);
     }
 

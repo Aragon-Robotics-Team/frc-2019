@@ -1,16 +1,19 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.SendableBase;
+import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import frc.robot.Robot;
 import frc.robot.commands.lift.CalibrateLiftEncoder;
 import frc.robot.commands.lift.ControlLiftJoystick;
 import frc.robot.commands.lift.ResetLiftEncoder;
 import frc.robot.util.BetterSendable;
+import frc.robot.util.BetterSpeedController;
 import frc.robot.util.BetterSubsystem;
 import frc.robot.util.BetterTalonSRX;
 import frc.robot.util.BetterTalonSRXConfig;
 import frc.robot.util.SendableMaster;
 
-public class Lift extends BetterSubsystem implements BetterSendable {
+public class Lift extends BetterSubsystem implements BetterSendable, BetterSpeedController {
     public BetterTalonSRX controller;
     Position lastPosition;
 
@@ -76,7 +79,52 @@ public class Lift extends BetterSubsystem implements BetterSendable {
         controller.setMagic(position.pos);
     }
 
+    public void set(double vel) {
+        lastPosition = Position.Stowed;
+        controller.setOldPercent(vel);
+    }
+
     public boolean isStowed() {
         return lastPosition == Position.Stowed;
+    }
+}
+
+
+class SendableLift extends SendableBase {
+    Lift lift;
+
+    public SendableLift(Lift lift) {
+        this.lift = lift;
+    }
+
+    double getHatch() {
+        switch (lift.lastPosition) {
+            case Hatch1:
+                return 1;
+            case Hatch2:
+                return 2;
+            case Hatch3:
+                return 3;
+            default:
+                return 0;
+        }
+    }
+
+    double getPort() {
+        switch (lift.lastPosition) {
+            case Port1:
+                return 1;
+            case Port2:
+                return 2;
+            case Port3:
+                return 3;
+            default:
+                return 0;
+        }
+    }
+
+    public void initSendable(SendableBuilder builder) {
+        builder.addDoubleProperty("Hatch", this::getHatch, null);
+        builder.addDoubleProperty("Port", this::getPort, null);
     }
 }
