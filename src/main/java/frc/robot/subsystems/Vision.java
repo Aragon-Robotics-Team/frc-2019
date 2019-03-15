@@ -9,15 +9,15 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.Robot;
 import frc.robot.subsystems.Vision.VisionPositioningServices.PoseHistory.Pose;
 import frc.robot.util.BetterSendable;
+import frc.robot.util.BetterSubsystem;
 import frc.robot.util.Mock;
 import frc.robot.util.SendableMaster;
 import frc.robot.util.fieldmap.MapInference;
 
-public class Vision extends Subsystem implements BetterSendable {
+public class Vision extends BetterSubsystem implements BetterSendable {
     Relay ledController;
     public TimeServices timeServices = new TimeServices();
     public VisionPositioningServices visionPositioningServices = new VisionPositioningServices();
@@ -46,9 +46,6 @@ public class Vision extends Subsystem implements BetterSendable {
             ledController.set(Relay.Value.kOn);
             ledController.set(Relay.Value.kOff);
         }
-    }
-
-    public void initDefaultCommand() {
     }
 
     public class TimeServices {
@@ -189,5 +186,4 @@ public class Vision extends Subsystem implements BetterSendable {
             }, EntryListenerFlags.kUpdate | EntryListenerFlags.kLocal);
         }
     }
-
 }

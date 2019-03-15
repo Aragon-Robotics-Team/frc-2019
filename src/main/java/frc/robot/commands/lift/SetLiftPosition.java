@@ -1,24 +1,13 @@
 package frc.robot.commands.lift;
 
-import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.Robot;
+import edu.wpi.first.wpilibj.command.CommandGroup;
 import frc.robot.subsystems.Lift.Position;
 
-public class SetLiftPosition extends Command {
-    Position pos;
-
+public class SetLiftPosition extends CommandGroup {
     public SetLiftPosition(Position pos) {
-        this.pos = pos;
-    }
+        setRunWhenDisabled(true);
 
-    protected void initialize() {
-        Robot.myLift.setPosition(pos);
-    }
-
-    protected void execute() {
-    }
-
-    protected boolean isFinished() {
-        return true;
+        addSequential(new LiftClearReverseLimit());
+        addSequential(new RawSetLiftPosition(pos));
     }
 }

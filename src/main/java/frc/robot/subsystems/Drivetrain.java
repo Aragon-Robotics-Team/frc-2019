@@ -3,26 +3,28 @@ package frc.robot.subsystems;
 import org.opencv.core.Point;
 import edu.wpi.first.wpilibj.SendableBase;
 import edu.wpi.first.wpilibj.command.InstantCommand;
-import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import frc.robot.Robot;
+import frc.robot.commands.drivetrain.ControlArcadeDrivetrain;
 import frc.robot.commands.drivetrain.IdleDrivetrain;
-import frc.robot.commands.drivetrain.ResetDrivetrain;
 import frc.robot.commands.drivetrain.ResetDrivetrainLocator;
 import frc.robot.commands.drivetrain.SetBrakeMode;
 import frc.robot.subsystems.Vision.VisionPositioningServices.PoseHistory.Pose;
 import frc.robot.util.BetterFollower;
 import frc.robot.util.BetterFollowerConfig;
 import frc.robot.util.BetterSendable;
+import frc.robot.util.BetterSubsystem;
 import frc.robot.util.BetterTalonSRX;
 import frc.robot.util.BetterTalonSRXConfig;
+import frc.robot.util.Disableable;
 import frc.robot.util.SendableMaster;
 
-public class Drivetrain extends Subsystem implements BetterSendable {
+public class Drivetrain extends BetterSubsystem implements BetterSendable, Disableable {
     BetterTalonSRX leftController;
     BetterTalonSRX rightController;
     BetterFollower leftSlaveController;
     BetterFollower rightSlaveController;
+    boolean slow;
 
     public static double distance;
     public static double leftPos;
@@ -30,7 +32,9 @@ public class Drivetrain extends Subsystem implements BetterSendable {
 
     double x;
     double y;
-    public Object syncLock;
+    public Object syncLock = new Object();
+
+    static final double DRIVE_SPEED = 1000;
 
     DrivetrainSendable drivetrainSendable;
 
@@ -38,16 +42,18 @@ public class Drivetrain extends Subsystem implements BetterSendable {
         var map = Robot.map.drivetrain;
 
         BetterTalonSRXConfig leftConfig = new BetterTalonSRXConfig();
-        leftConfig.invert = false;
+        leftConfig.invert = map.invertLeft();
+        leftConfig.invertEncoder = map.invertLeftEncoder();
         // (tick_speed for 100% output) / (max measured tick_speed)
         leftConfig.maxTickVelocity = 1112.0;
-        leftConfig.slot0.kF = (1023.0 / 1112.0) * 1.13;
+        // leftConfig.slot0.kF = (1023.0 / 1112.0) * 1.13;
         leftConfig.slot0.kP = 0.7;
         leftConfig.ticksPerInch = 76.485294;
         leftController = new BetterTalonSRX(map.leftMainCanID(), leftConfig);
 
         BetterTalonSRXConfig rightConfig = new BetterTalonSRXConfig();
-        rightConfig.invert = true;
+        rightConfig.invert = map.invertRight();
+        rightConfig.invertEncoder = map.invertRightEncoder();
         rightConfig.maxTickVelocity = 1142.0;
         rightConfig.slot0.kP = 0.7;
         rightConfig.ticksPerInch = 76.485294;
@@ -67,7 +73,10 @@ public class Drivetrain extends Subsystem implements BetterSendable {
 
         drivetrainSendable = new DrivetrainSendable(this);
 
-        (new ResetDrivetrain()).start();
+        stop();
+        setBrake(true);
+        reset();
+        setSlow(false);
     }
 
     public void createSendable(SendableMaster master) {
@@ -81,6 +90,7 @@ public class Drivetrain extends Subsystem implements BetterSendable {
         master.add("Coast", new SetBrakeMode(false));
         master.add("Reset Encoder", new InstantCommand(this::resetEncoders));
         master.add("Reset Position", new InstantCommand(this::reset));
+        master.add(new ControlArcadeDrivetrain());
     }
 
     public void periodic() {
@@ -88,8 +98,11 @@ public class Drivetrain extends Subsystem implements BetterSendable {
     }
 
     public void control(double x, double y) {
-        leftController.setPercent(x);
-        rightController.setPercent(y);
+        double max = slow ? 0.7 : 1.0;
+
+        // DesireOutput * max(liftPos) * max actual (instead of velocity PID) * swerve compensate
+        leftController.setOldPercent(x * max * 0.85 * 1.1);
+        rightController.setOldPercent(y * max * 0.85);
     }
 
     public void controlArcade(double x, double y) { // x is up/down; y is right/left
@@ -127,6 +140,14 @@ public class Drivetrain extends Subsystem implements BetterSendable {
 
     public void stop() {
         control(0, 0);
+    }
+
+    public void setSlow(boolean slow) {
+        this.slow = slow;
+
+        double ramp = slow ? 0.5 : 0.1;
+        leftController.setOpenLoopRamp(ramp);
+        rightController.setOpenLoopRamp(ramp);
     }
 
     public void updatePosition() {
@@ -171,6 +192,10 @@ public class Drivetrain extends Subsystem implements BetterSendable {
     public void resetEncoders() {
         leftController.resetEncoder();
         rightController.resetEncoder();
+    }
+
+    public void disable() {
+        setBrake(true);
     }
 
     public void initDefaultCommand() {

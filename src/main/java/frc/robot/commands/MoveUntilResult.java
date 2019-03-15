@@ -20,18 +20,22 @@ public class MoveUntilResult<T> extends Command {
         this.wanted = wanted;
     }
 
-    protected void initialize() {
-    }
-
     protected void execute() {
-        setter.accept(velocity);
+        if (!_isFinished()) {
+            setter.accept(velocity);
+        }
     }
 
     protected void end() {
         setter.accept(0.0);
     }
 
-    protected boolean isFinished() {
+    // Allow isFinished to be overridden by providing default
+    private boolean _isFinished() {
         return (getter.get() == wanted);
+    }
+
+    protected boolean isFinished() {
+        return _isFinished();
     }
 }

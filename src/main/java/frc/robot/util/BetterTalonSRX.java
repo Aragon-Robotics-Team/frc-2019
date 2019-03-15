@@ -1,8 +1,8 @@
 package frc.robot.util;
 
-import static frc.robot.util.Mock.mock;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.DoubleSupplier;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SensorCollection;
@@ -11,18 +11,20 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.SendableBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 
-public class BetterTalonSRX implements BetterSendable {
-    Deadband deadband;
+public class BetterTalonSRX implements BetterSendable, BetterSpeedController {
+    final Deadband deadband;
 
-    TalonSRX talon;
-    double ticksPerInch;
+    final TalonSRX talon;
+    final double ticksPerInch;
     int timeout = 300; // milliseconds
-    SendableSRX sendable;
+    final SendableSRX sendable;
     double lastOutput;
-    boolean isReal;
+    final boolean isReal;
     SensorCollection sensorCollection;
     List<BetterFollower> slaves;
-    double maxTickVelocity;
+    final double maxTickVelocity;
+    final double zeroPosition;
+    final boolean debug;
 
     enum ControlType {
         Percent, Magic, OldPercent;
@@ -53,26 +55,40 @@ public class BetterTalonSRX implements BetterSendable {
             talon.enableVoltageCompensation(true);
         }
 
-        if (config.encoder == BetterTalonSRXConfig.Encoder.CTREMag) {
+        sendable = new SendableSRX(this);
+        // If two different sensors are configured, we have a second sensor
+        sendable.secondSensor =
+                config.primaryPID.selectedFeedbackSensor != config.auxiliaryPID.selectedFeedbackSensor;
+        deadband = config.deadband;
+
+        ticksPerInch = config.ticksPerInch;
+        slaves = new ArrayList<BetterFollower>(1); // 1 max expected follower
+        maxTickVelocity = config.maxTickVelocity;
+        zeroPosition = config.zeroPosition;
+        debug = config.debug;
+
+        resetEncoder();
+
+        sensorCollection = isReal ? talon.getSensorCollection() : Mock.mock(SensorCollection.class);
+
+        if (config.encoder == BetterTalonSRXConfig.Encoder.CTREMag && config.crossZeroMag != null) {
             int low = config.lowTickMag;
             int high = config.highTickMag;
             boolean zero = config.crossZeroMag;
 
             sensorCollection.syncQuadratureWithPulseWidth(low, high, zero, 0, timeout);
+            setMagic(zeroPosition);
+            if (debug) {
+                System.out.printf("%s mag encoder %s %s\n", talon.getBaseID(), low, high, zero);
+            }
+        } else if (debug) {
+            System.out.println(talon.getBaseID() + " not syncing mag encoder");
         }
 
-        resetEncoder();
-
-        sendable = new SendableSRX(this);
-        deadband = config.deadband;
-        sensorCollection = isReal ? talon.getSensorCollection() : mock(SensorCollection.class);
-
-        timeout = 0;
-        ticksPerInch = config.ticksPerInch;
-        slaves = new ArrayList<BetterFollower>(1); // 1 max expected follower
-        maxTickVelocity = config.maxTickVelocity;
-
-        System.out.println(canID + " kF: " + config.slot0.kF + " maxV: " + config.maxTickVelocity);
+        if (debug) {
+            System.out.println(
+                    canID + " kF: " + config.slot0.kF + " maxV: " + config.maxTickVelocity);
+        }
     }
 
     public BetterTalonSRX(int deviceNumber) {
@@ -80,12 +96,21 @@ public class BetterTalonSRX implements BetterSendable {
     }
 
     public void createSendable(SendableMaster master) {
+        // Usually this method is called after init zero position/speed is set in subsystem
+        // So if they set a magic type, then we are probably going to use magic
+        sendable.isMagic = lastControlType == ControlType.Magic;
         master.add(sendable);
+
+        timeout = 0; // Done configuring by now, so can disable timeout
     }
 
     // Setting Output
 
     public void set(double output) {
+        setOldPercent(output);
+    }
+
+    public void setOld(double output) {
         if (lastControlType == ControlType.Percent) {
             setPercent(output);
         } else if (lastControlType == ControlType.Magic) {
@@ -97,9 +122,10 @@ public class BetterTalonSRX implements BetterSendable {
         }
     }
 
-    public void setPercent(double output) {
+    public void setPercent(double percent) {
+        double max = 1;
         lastControlType = ControlType.Percent;
-        lastOutput = deadband.calc(output) * maxTickVelocity;
+        lastOutput = deadband.calc(percent) * max; // * maxTickVelocity;
 
         // Velocity PIDF: Need kF and kP minimum
         talon.set(ControlMode.Velocity, lastOutput);
@@ -136,8 +162,8 @@ public class BetterTalonSRX implements BetterSendable {
     }
 
     public void resetEncoder() {
-        talon.setSelectedSensorPosition(0, 0, timeout);
-        setMagic(0.0);
+        talon.setSelectedSensorPosition((int) zeroPosition, 0, timeout);
+        setMagic(zeroPosition);
     }
 
     public double getInch() {
@@ -176,29 +202,57 @@ public class BetterTalonSRX implements BetterSendable {
         slaves.add(slave);
         slave.follow(talon);
     }
+
+    public void setOpenLoopRamp(double ramp) {
+        talon.configOpenloopRamp(ramp, timeout);
+    }
 }
 
 
 class SendableSRX extends SendableBase {
-    BetterTalonSRX talon;
+    BetterTalonSRX t;
+    boolean isMagic;
+    boolean secondSensor;
 
     public SendableSRX(BetterTalonSRX talon) {
-        this.talon = talon;
+        this.t = talon;
     }
 
-    public void initSendable(SendableBuilder builder) {
-        builder.addDoubleProperty("Output", talon::get, talon::set);
-        builder.addDoubleProperty("Velocity", talon::getEncoderRate, null);
-        builder.addDoubleProperty("Distance", talon::getEncoderPos, null);
+    // Magic Wrapper; only call supplier if in magic
+    private DoubleSupplier magic(DoubleSupplier supplier) {
+        return new DoubleSupplier() {
+            public double getAsDouble() {
+                if (t.lastControlType == BetterTalonSRX.ControlType.Magic) {
+                    return supplier.getAsDouble();
+                } else {
+                    return -1;
+                }
+            }
+        };
+    }
 
-        builder.addDoubleProperty("MagicError", talon.talon::getClosedLoopError, null);
-        builder.addDoubleProperty("MagicTarget", talon.talon::getClosedLoopTarget, null);
-        builder.addDoubleProperty("MagicVelocity", talon.talon::getActiveTrajectoryVelocity, null);
-        builder.addDoubleProperty("MagicPosition", talon.talon::getActiveTrajectoryPosition, null);
+    public void initSendable(SendableBuilder b) {
+        if (t.debug) {
+            System.out.printf("%s Magic %s 2Sensor %s", t.talon.getBaseID(), isMagic, secondSensor);
+        }
 
-        builder.addDoubleProperty("Wanted Inches", talon::getSet, talon::set);
-        builder.addDoubleProperty("Current Inches", talon::getInch, null);
+        b.addDoubleProperty("Output", t::get, t::set);
+        b.addDoubleProperty("Velocity", t::getEncoderRate, null);
+        b.addDoubleProperty("Distance", t::getEncoderPos, null);
+        if (secondSensor) {
+            b.addDoubleProperty("Distance 2", () -> t.talon.getSelectedSensorPosition(1), null);
+        }
 
-        builder.addBooleanProperty("Reverse Limit", talon::getReverseLimitSwitch, null);
+        if (isMagic) {
+            b.addDoubleProperty("MagicError", magic(t.talon::getClosedLoopError), null);
+            b.addDoubleProperty("MagicTarget", magic(t.talon::getClosedLoopTarget), null);
+            b.addDoubleProperty("MagicVel", magic(t.talon::getActiveTrajectoryVelocity), null);
+            b.addDoubleProperty("MagicPos", magic(t.talon::getActiveTrajectoryPosition), null);
+
+            b.addDoubleProperty("Wanted Inches", magic(t::getSet), t::set);
+            b.addDoubleProperty("Current Inches", magic(t::getInch), null);
+        }
+
+        b.addBooleanProperty("Reverse Limit", t::getReverseLimitSwitch, null);
     }
 }

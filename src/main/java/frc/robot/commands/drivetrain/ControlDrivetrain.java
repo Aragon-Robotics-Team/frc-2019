@@ -9,9 +9,6 @@ public class ControlDrivetrain extends Command {
         requires(Robot.myDrivetrain);
     }
 
-    protected void initialize() {
-    }
-
     protected void execute() {
         Robot.myDrivetrain.control(Robot.map.oi.getLeftSpeed(), Robot.map.oi.getRightSpeed());
     }

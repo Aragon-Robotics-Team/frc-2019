@@ -5,14 +5,13 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SendableBase;
 import edu.wpi.first.wpilibj.command.InstantCommand;
-import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import frc.robot.Robot;
 import frc.robot.util.BetterSendable;
 import frc.robot.util.Mock;
 import frc.robot.util.SendableMaster;
 
-public class NavX extends Subsystem implements BetterSendable {
+public class NavX implements BetterSendable {
     public AHRS ahrs;
     boolean isReal;
     NavXSendable sendable;
@@ -57,9 +56,6 @@ public class NavX extends Subsystem implements BetterSendable {
         }
 
         ahrs.reset(); // Might be either reset() or zeroYaw()
-    }
-
-    public void initDefaultCommand() {
     }
 }
 

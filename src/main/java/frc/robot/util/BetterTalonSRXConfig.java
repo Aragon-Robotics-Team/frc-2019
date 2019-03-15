@@ -14,7 +14,9 @@ public class BetterTalonSRXConfig extends TalonSRXConfiguration {
     public Encoder encoder;
     public int lowTickMag;
     public int highTickMag;
-    public boolean crossZeroMag;
+    public Boolean crossZeroMag;
+    public double zeroPosition;
+    public boolean debug;
 
     public enum Encoder {
         USDigital, CTREMag;
@@ -26,12 +28,13 @@ public class BetterTalonSRXConfig extends TalonSRXConfiguration {
             switch (this) {
                 case USDigital:
                     config.primaryPID.selectedFeedbackSensor = FeedbackDevice.QuadEncoder;
+                    config.auxiliaryPID.selectedFeedbackSensor = FeedbackDevice.QuadEncoder;
                     break;
                 case CTREMag:
                     config.primaryPID.selectedFeedbackSensor =
                             FeedbackDevice.CTRE_MagEncoder_Relative;
                     config.auxiliaryPID.selectedFeedbackSensor =
-                            FeedbackDevice.CTRE_MagEncoder_Relative;
+                            FeedbackDevice.CTRE_MagEncoder_Absolute;
                     break;
                 default:
                     throw new IllegalArgumentException();
@@ -49,13 +52,16 @@ public class BetterTalonSRXConfig extends TalonSRXConfiguration {
         encoder = Encoder.USDigital;
         lowTickMag = 0;
         highTickMag = 0;
-        crossZeroMag = false;
+        crossZeroMag = null;
+        zeroPosition = 0;
+        debug = false;
 
         // Set defaults below for non-BetterTalonSRXConfig options
 
         openloopRamp = 0.1;
-        nominalOutputForward = 0.1;
-        nominalOutputReverse = 0.1;
+        closedloopRamp = 0.1;
+        nominalOutputForward = 0;
+        nominalOutputReverse = 0;
         clearPositionOnLimitR = true;
         voltageCompSaturation = 10.0;
         feedbackNotContinuous = true; // Do not wrap absolute 4095 -> 4096. Always 4095 -> 0

@@ -7,7 +7,7 @@ public class StopDrivetrain extends Command {
 
     public StopDrivetrain() {
         setRunWhenDisabled(true);
-        requires(Robot.myDrivetrain);
+        // requires(Robot.myDrivetrain);
     }
 
     protected void initialize() {

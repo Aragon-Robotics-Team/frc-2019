@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.test;
 
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.command.Command;
@@ -6,12 +6,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 
 public class TestNavX extends Command {
-    public TestNavX() {
-    }
-
-    protected void initialize() {
-    }
-
     protected void execute() {
         if (!Robot.myNavX.isRunning()) {
             SmartDashboard.putBoolean("Running", false);

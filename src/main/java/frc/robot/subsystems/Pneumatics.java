@@ -1,11 +1,11 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.Robot;
+import frc.robot.util.Disableable;
 import frc.robot.util.Mock;
 
-public class Pneumatics extends Subsystem {
+public class Pneumatics implements Disableable {
     Compressor compressor;
     boolean enabled;
 
@@ -16,7 +16,6 @@ public class Pneumatics extends Subsystem {
     }
 
     public void setCompressor(boolean enabled) {
-        System.out.println("Compressor: " + enabled);
         compressor.setClosedLoopControl(enabled);
         this.enabled = enabled;
     }
@@ -33,6 +32,11 @@ public class Pneumatics extends Subsystem {
         return compressor.getPressureSwitchValue();
     }
 
-    public void initDefaultCommand() {
+    public void disable() {
+        setCompressor(false);
+    }
+
+    public void enable() {
+        setCompressor(true);
     }
 }

@@ -15,9 +15,6 @@ public class SetCompressorEnabled extends Command {
         Robot.myPneumatics.setCompressor(enabled.getAsBoolean());
     }
 
-    protected void execute() {
-    }
-
     protected boolean isFinished() {
         return true;
     }
