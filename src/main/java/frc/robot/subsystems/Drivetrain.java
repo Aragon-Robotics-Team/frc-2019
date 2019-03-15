@@ -28,9 +28,9 @@ public class Drivetrain extends Subsystem implements BetterSendable {
     public static double leftPos;
     public static double rightPos;
 
-    double x;
-    double y;
-    public Object syncLock;
+    public double x;
+    public double y;
+    public Object syncLock = new Object();
 
     DrivetrainSendable drivetrainSendable;
 
@@ -151,7 +151,7 @@ public class Drivetrain extends Subsystem implements BetterSendable {
 
         distance = newDistance;
         Robot.myVision.visionPositioningServices.poseHistory
-                .addPoseToHistory(new Pose(new Point(x, y)));
+                .addPoseToHistory(new Pose(new Point(x, y), Robot.myNavX.ahrs.getAngle()));
     }
 
     public double getX() {
@@ -177,7 +177,6 @@ public class Drivetrain extends Subsystem implements BetterSendable {
         setDefaultCommand(new IdleDrivetrain());
     }
 }
-
 
 class DrivetrainSendable extends SendableBase {
     Drivetrain drivetrain;

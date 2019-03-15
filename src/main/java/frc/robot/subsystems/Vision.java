@@ -16,6 +16,7 @@ import frc.robot.util.BetterSendable;
 import frc.robot.util.Mock;
 import frc.robot.util.SendableMaster;
 import frc.robot.util.fieldmap.MapInference;
+import frc.robot.util.fieldmap.Map.Target;
 
 public class Vision extends Subsystem implements BetterSendable {
     Relay ledController;
@@ -71,14 +72,17 @@ public class Vision extends Subsystem implements BetterSendable {
             public static class Pose {
                 public Point position;
                 public double time;
+                public double angle;
 
-                public Pose(Point position, double time) {
+                public Pose(Point position, double angle, double time) {
                     this.position = position;
+                    this.angle = angle;
                     this.time = time;
                 }
 
-                public Pose(Point position) {
+                public Pose(Point position, double angle) {
                     this.position = position;
+                    this.angle = angle;
                     this.time = Timer.getFPGATimestamp();
                 }
             }
@@ -91,8 +95,8 @@ public class Vision extends Subsystem implements BetterSendable {
                 synchronized (concretes) {
                     synchronized (Robot.myDrivetrain.syncLock) {
                         for (int i = 0; i < history_length; i++) {
-                            concretes.add(new Pose(
-                                    new Point(Robot.myDrivetrain.x, Robot.myDrivetrain.y)));
+                            concretes.add(new Pose(new Point(Robot.myDrivetrain.x, Robot.myDrivetrain.y),
+                                    Robot.myNavX.ahrs.getAngle()));
                         }
                     }
                 }
@@ -105,7 +109,7 @@ public class Vision extends Subsystem implements BetterSendable {
                 }
             }
 
-            public Point getPos(double time) {
+            public Pose getPose(double time) {
                 int l = 0;
                 int h = concretes.size() - 1;
                 int m;
@@ -118,10 +122,10 @@ public class Vision extends Subsystem implements BetterSendable {
                     }
                 }
                 if (l > concretes.size() - 1) {
-                    return concretes.get(concretes.size() - 1).position;
+                    return concretes.get(concretes.size() - 1);
                 }
                 if (h < 0) {
-                    return concretes.get(0).position;
+                    return concretes.get(0);
                 }
                 Pose hPose, lPose;
                 synchronized (concretes) {
@@ -130,26 +134,29 @@ public class Vision extends Subsystem implements BetterSendable {
                 }
                 double time_delta = hPose.time - lPose.time;
                 double time_position = time - hPose.time;
+                double time_coefficient = (time_position / time_delta);
                 double x_delta = hPose.position.x - lPose.position.x;
                 double y_delta = hPose.position.y - lPose.position.y;
-                double x_position = hPose.position.x + x_delta * (time_position / time_delta);
-                double y_position = hPose.position.y + y_delta * (time_position / time_delta);
-                return (new Point(x_position, y_position));
+                double angle_delta = hPose.angle - lPose.angle;
+                double x_position = hPose.position.x + x_delta * time_coefficient;
+                double y_position = hPose.position.y + y_delta * time_coefficient;
+                double angle = hPose.angle * angle_delta * time_coefficient;
+                return (new Pose(new Point(x_position, y_position), angle, time));
             }
 
             public void UpdatePoseHistory(Pose p, double trust) {
-                Point oldPos = getPos(p.time);
-                Point delta = new Point((p.position.x - oldPos.x) * trust,
-                        (p.position.y - oldPos.y) * trust);
+                Pose oldPose = getPose(p.time);
+                Pose delta = new Pose(new Point((p.position.x - oldPose.position.x) * trust,
+                        (p.position.y - oldPose.position.y) * trust), (p.angle - oldPose.angle) * trust, 0);
                 synchronized (concretes) {
                     for (int i = 0; i < concretes.size(); i++) {
-                        concretes.get(i).position.x += delta.x;
-                        concretes.get(i).position.y += delta.y;
+                        concretes.get(i).position.x += delta.position.x;
+                        concretes.get(i).position.y += delta.position.y;
                     }
                 }
                 synchronized (Robot.myDrivetrain.syncLock) {
-                    Robot.myDrivetrain.x += delta.x;
-                    Robot.myDrivetrain.y += delta.y;
+                    Robot.myDrivetrain.x += delta.position.x;
+                    Robot.myDrivetrain.y += delta.position.y;
                 }
             }
         }
@@ -159,32 +166,38 @@ public class Vision extends Subsystem implements BetterSendable {
             NetworkTable table = inst.getTable("table");
             NetworkTableEntry latency = table.getEntry("latency");
             latency.addListener((event) -> {
-                Duration latency_val =
-                        ByteArrayInput.getNetworkObject(Duration.ZERO, "table", "latency");
-                double[] angles =
-                        ByteArrayInput.getNetworkObject(new double[0], "table", "target_offsets");
+                double time = Timer.getFPGATimestamp();
+                Duration latency_val = ByteArrayInput.getNetworkObject(Duration.ofDays(0), "table", "latency");
+                double[] angles = ByteArrayInput.getNetworkObject(new double[0], "table", "target_offsets");
+                int validAngles = angles.length;
                 if (angles.length != 0) {
+                    Pose oldPose = poseHistory.getPose((double) latency_val.getSeconds()
+                            + latency_val.getNano() / 1000000000 - Timer.getFPGATimestamp());
                     Point avgNewPos = new Point(0, 0);
                     double map_angle;
-                    Point oldPos = poseHistory.getPos((double) latency_val.getSeconds()
-                            + latency_val.getNano() / 1000000000 - Timer.getFPGATimestamp());
                     Point newPos;
                     for (double angle : angles) {
-                        map_angle = Robot.myNavX.ahrs.getAngle() + 90 - angle;
-                        newPos = MapInference.getPos(oldPos, map_angle,
-                                MapInference.get_closest_targets_by_angle(oldPos, map_angle)[0]);
-                        avgNewPos.x += newPos.x;
-                        avgNewPos.y += newPos.y;
+                        map_angle = oldPose.angle + 90 - angle;
+                        Target[] t = MapInference.get_closest_targets_by_angle(oldPose.position, map_angle);
+                        if (t.length > 0) {
+                            newPos = MapInference.getPos(oldPose.position, map_angle, t[0]);
+                            avgNewPos.x += newPos.x;
+                            avgNewPos.y += newPos.y;
+                        } else {
+                            validAngles -= 1;
+                        }
                     }
-                    avgNewPos.x /= angles.length;
-                    avgNewPos.y /= angles.length;
-                    poseHistory.UpdatePoseHistory(new Pose(avgNewPos,
-                            (double) latency_val.getSeconds() + latency_val.getNano() / 1000000000),
-                            0.1);
+                    if (validAngles > 0) {
+                        avgNewPos.x /= angles.length;
+                        avgNewPos.y /= angles.length;
+                        poseHistory.UpdatePoseHistory(
+                                new Pose(avgNewPos,
+                                        time - (double) latency_val.getSeconds() + latency_val.getNano() / 1000000000),
+                                0.1);
+                    }
 
                 } else {
-                    System.out.println(
-                            "latentcy.getDouble(-1) returned -1... This is not supposed to happen!!");
+                    System.out.println("latentcy.getDouble(-1) returned -1... This is not supposed to happen!!");
                 }
             }, EntryListenerFlags.kUpdate | EntryListenerFlags.kLocal);
         }

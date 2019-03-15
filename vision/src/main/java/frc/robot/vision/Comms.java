@@ -125,7 +125,7 @@ public class Comms {
                         }
                     }
                 }, EntryListenerFlags.kUpdate | EntryListenerFlags.kLocal);
-                time.schedule(this, 0, 10);
+                time.schedule(this, 0, 70);
             }
 
             public void run() {
