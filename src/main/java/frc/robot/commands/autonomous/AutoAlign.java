@@ -16,6 +16,7 @@ import frc.robot.util.fieldmap.Map.Target;
 import frc.robot.vision.CoordTransform;
 
 public class AutoAlign extends Command {
+    boolean old;
     boolean enabled;
     double lastAngle;
     Instant lastTimeStamp;
@@ -30,6 +31,14 @@ public class AutoAlign extends Command {
         SmartDashboard.putNumber("Wanted Angle Vision", 0);
     }
 
+    public AutoAlign(boolean old) {
+        requires(Robot.myDrivetrain); // This will exit ControlArcadeDrivetrain
+        requires(Robot.myAngle);
+        setTimeout(5);
+        SmartDashboard.putNumber("Wanted Angle Vision", 0);
+        this.old = old;
+    }
+
     protected void initialize() {
         enabled = false;
         lastAngle = -360; // Impossible value
@@ -39,6 +48,14 @@ public class AutoAlign extends Command {
     }
 
     protected void execute() {
+        if (old) {
+            execute_old();
+        } else {
+            execute_experimental();
+        }
+    }
+
+    protected void execute_old() {
         double[] angles = ByteArrayInput.getNetworkObject(new double[0], "table", "target_offsets");
 
         if (angles.length != 0) {
