@@ -24,7 +24,10 @@ public class Drivetrain extends Subsystem implements BetterSendable {
     BetterFollower leftSlaveController;
     BetterFollower rightSlaveController;
 
-    double distance;
+    public static double distance;
+    public static double leftPos;
+    public static double rightPos;
+
     double x;
     double y;
     Object syncLock;
@@ -127,8 +130,8 @@ public class Drivetrain extends Subsystem implements BetterSendable {
     }
 
     public void updatePosition() {
-        double leftPos = leftController.getInch();
-        double rightPos = rightController.getInch();
+        leftPos = leftController.getInch();
+        rightPos = rightController.getInch();
         double newDistance = (leftPos + rightPos) / 2;
 
         double angle = Robot.myNavX.ahrs.getYaw();
