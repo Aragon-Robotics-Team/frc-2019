@@ -2,7 +2,9 @@ package frc.robot.subsystems;
 
 import java.time.Duration;
 import java.util.ArrayList;
+
 import org.opencv.core.Point;
+
 import edu.wpi.first.networktables.EntryListenerFlags;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -15,6 +17,7 @@ import frc.robot.util.BetterSendable;
 import frc.robot.util.BetterSubsystem;
 import frc.robot.util.Mock;
 import frc.robot.util.SendableMaster;
+import frc.robot.util.fieldmap.Map.Target;
 import frc.robot.util.fieldmap.MapInference;
 
 public class Vision extends BetterSubsystem implements BetterSendable {
@@ -68,15 +71,18 @@ public class Vision extends BetterSubsystem implements BetterSendable {
             public static class Pose {
                 public Point position;
                 public double time;
+                public double angle;
 
-                public Pose(Point position, double time) {
+                public Pose(Point position, double angle, double time) {
                     this.position = position;
                     this.time = time;
+                    this.angle = angle;
                 }
 
                 public Pose(Point position) {
                     this.position = position;
                     this.time = Timer.getFPGATimestamp();
+                    this.angle = Robot.myNavX.ahrs.getAngle() + 90;
                 }
             }
 
@@ -88,8 +94,7 @@ public class Vision extends BetterSubsystem implements BetterSendable {
                 synchronized (concretes) {
                     synchronized (Robot.myDrivetrain.syncLock) {
                         for (int i = 0; i < history_length; i++) {
-                            concretes.add(new Pose(
-                                    new Point(Robot.myDrivetrain.x, Robot.myDrivetrain.y)));
+                            concretes.add(new Pose(new Point(Robot.myDrivetrain.x, Robot.myDrivetrain.y)));
                         }
                     }
                 }
@@ -102,7 +107,7 @@ public class Vision extends BetterSubsystem implements BetterSendable {
                 }
             }
 
-            public Point getPos(double time) {
+            public Pose getPose(double time) {
                 int l = 0;
                 int h = concretes.size() - 1;
                 int m;
@@ -115,29 +120,30 @@ public class Vision extends BetterSubsystem implements BetterSendable {
                     }
                 }
                 if (l > concretes.size() - 1) {
-                    return concretes.get(concretes.size() - 1).position;
+                    return concretes.get(concretes.size() - 1);
                 }
                 if (h < 0) {
-                    return concretes.get(0).position;
+                    return concretes.get(0);
                 }
                 Pose hPose, lPose;
                 synchronized (concretes) {
                     hPose = concretes.get(h);
                     lPose = concretes.get(l);
                 }
-                double time_delta = hPose.time - lPose.time;
-                double time_position = time - hPose.time;
+                double time_coefficient = (time - hPose.time) / (lPose.time - hPose.time);
+                double angle_delta = hPose.angle - lPose.angle;
                 double x_delta = hPose.position.x - lPose.position.x;
                 double y_delta = hPose.position.y - lPose.position.y;
-                double x_position = hPose.position.x + x_delta * (time_position / time_delta);
-                double y_position = hPose.position.y + y_delta * (time_position / time_delta);
-                return (new Point(x_position, y_position));
+                double x_position = hPose.position.x + x_delta * time_coefficient;
+                double y_position = hPose.position.y + y_delta * time_coefficient;
+                double angle = hPose.angle + angle_delta * time_coefficient;
+                return new Pose(new Point(x_position, y_position), angle, time);
             }
 
             public void UpdatePoseHistory(Pose p, double trust) {
-                Point oldPos = getPos(p.time);
-                Point delta = new Point((p.position.x - oldPos.x) * trust,
-                        (p.position.y - oldPos.y) * trust);
+                Pose oldPos = getPose(p.time);
+                Point delta = new Point((p.position.x - oldPos.position.x) * trust,
+                        (p.position.y - oldPos.position.y) * trust);
                 synchronized (concretes) {
                     for (int i = 0; i < concretes.size(); i++) {
                         concretes.get(i).position.x += delta.x;
@@ -156,32 +162,38 @@ public class Vision extends BetterSubsystem implements BetterSendable {
             NetworkTable table = inst.getTable("table");
             NetworkTableEntry latency = table.getEntry("latency");
             latency.addListener((event) -> {
-                Duration latency_val =
-                        ByteArrayInput.getNetworkObject(Duration.ZERO, "table", "latency");
-                double[] angles =
-                        ByteArrayInput.getNetworkObject(new double[0], "table", "target_offsets");
+                double time = Timer.getFPGATimestamp();
+                Duration latency_val = ByteArrayInput.getNetworkObject(Duration.ZERO, "table", "latency");
+                double[] angles = ByteArrayInput.getNetworkObject(new double[0], "table", "target_offsets");
+                int validAngles = angles.length;
                 if (angles.length != 0) {
-                    Point avgNewPos = new Point(0, 0);
-                    double map_angle;
-                    Point oldPos = poseHistory.getPos((double) latency_val.getSeconds()
+                    Pose oldPose = poseHistory.getPose((double) latency_val.getSeconds()
                             + latency_val.getNano() / 1000000000 - Timer.getFPGATimestamp());
+                    Point avgNewPos = new Point(0, 0);
                     Point newPos;
+                    double map_angle;
                     for (double angle : angles) {
-                        map_angle = Robot.myNavX.ahrs.getAngle() + 90 - angle;
-                        newPos = MapInference.getPos(oldPos, map_angle,
-                                MapInference.get_closest_targets_by_angle(oldPos, map_angle)[0]);
-                        avgNewPos.x += newPos.x;
-                        avgNewPos.y += newPos.y;
+                        map_angle = oldPose.angle - angle;
+                        Target[] sortedTargets = MapInference.get_closest_targets_by_angle(oldPose.position, map_angle);
+                        if (sortedTargets.length > 0) {
+                            newPos = MapInference.getPos(oldPose.position, map_angle, sortedTargets[0]);
+                            avgNewPos.x += newPos.x;
+                            avgNewPos.y += newPos.y;
+                        } else {
+                            validAngles--;
+                        }
                     }
-                    avgNewPos.x /= angles.length;
-                    avgNewPos.y /= angles.length;
-                    poseHistory.UpdatePoseHistory(new Pose(avgNewPos,
-                            (double) latency_val.getSeconds() + latency_val.getNano() / 1000000000),
-                            0.1);
+                    if (validAngles > 0) {
+                        avgNewPos.x /= validAngles;
+                        avgNewPos.y /= validAngles;
+                        poseHistory.UpdatePoseHistory(
+                                new Pose(avgNewPos, oldPose.angle,
+                                        time - (double) latency_val.getSeconds() + latency_val.getNano() / 1000000000),
+                                0.05);
+                    }
 
                 } else {
-                    System.out.println(
-                            "latentcy.getDouble(-1) returned -1... This is not supposed to happen!!");
+                    System.out.println("latentcy.getDouble(-1) returned -1... This is not supposed to happen!!");
                 }
             }, EntryListenerFlags.kUpdate | EntryListenerFlags.kLocal);
         }
