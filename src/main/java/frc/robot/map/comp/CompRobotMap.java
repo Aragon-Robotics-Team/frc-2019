@@ -52,7 +52,7 @@ class IntakeImpl extends RobotMap.Intake {
     }
 
     public Integer vacuumPort() {
-        return null;
+        return 0;
     }
 
     public Integer pistonPCMPort() {
