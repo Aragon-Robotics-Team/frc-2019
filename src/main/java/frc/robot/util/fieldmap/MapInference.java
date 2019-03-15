@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import com.sun.tools.classfile.TypeAnnotation.Position;
 import org.opencv.core.Point;
 import frc.robot.util.fieldmap.geometry.Line;
 import frc.robot.util.fieldmap.Map.Target;

@@ -30,7 +30,7 @@ public class Drivetrain extends Subsystem implements BetterSendable {
 
     double x;
     double y;
-    Object syncLock;
+    public Object syncLock;
 
     DrivetrainSendable drivetrainSendable;
 

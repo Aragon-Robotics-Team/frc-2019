@@ -10,8 +10,10 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.subsystems.ByteArrayInput;
+import frc.robot.subsystems.Vision.VisionPositioningServices.PoseHistory.Pose;
 import frc.robot.util.fieldmap.MapInference;
 import frc.robot.util.fieldmap.Map.Target;
+import frc.robot.vision.CoordTransform;
 
 public class AutoAlign extends Command {
     boolean enabled;
@@ -57,14 +59,14 @@ public class AutoAlign extends Command {
     }
 
     protected void execute_experimental() {
-        Point p;
+        Point robot_location;
         synchronized (Robot.myDrivetrain.syncLock) {
-            p = new Point(Robot.myDrivetrain.x, Robot.myDrivetrain.y);
+            robot_location = new Point(Robot.myDrivetrain.getX(), Robot.myDrivetrain.getY());
         }
-        Target t = MapInference.get_closest_targets_by_position(p)[0];
+        Target t = MapInference.get_closest_targets_by_position(robot_location)[0];
         Double angle = CoordTransform.toPolar(
                 new double[] {t.center.x - robot_location.x, t.center.y - robot_location.y})[1];
-        Robot.myAngle.setAngle();
+        Robot.myAngle.setAngle(angle);
 
         // pose_history.add(new Pose(clock.instant(), Robot.myNavX.ahrs.getAngle()));
         // if (pose_history.size() > 256) {
