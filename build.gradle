@@ -1,6 +1,10 @@
 plugins {
     id "java"
+<<<<<<< HEAD
     id "edu.wpi.first.GradleRIO" version "2019.3.2"
+=======
+    id "edu.wpi.first.GradleRIO" version "2019.4.1"
+>>>>>>> targetIdentification
 }
 
 sourceCompatibility = JavaVersion.VERSION_11
@@ -42,6 +46,7 @@ def includeDesktopSupport = true
 
 // Maven central needed for JUnit
 repositories {
+    jcenter()
     mavenCentral()
 }
 
@@ -53,6 +58,8 @@ dependencies {
     nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
     testCompile 'junit:junit:4.12'
+    compile "org.mockito:mockito-core:2.+" 
+    compile project(":vision")
 }
 
 // Setting up my Jar File. In this case, adding all libraries into the main jar ('fat jar')

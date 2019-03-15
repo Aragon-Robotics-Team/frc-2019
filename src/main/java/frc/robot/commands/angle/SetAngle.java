@@ -14,9 +14,6 @@ public class SetAngle extends Command {
         Robot.myAngle.setAngle(angle);
     }
 
-    protected void execute() {
-    }
-
     protected boolean isFinished() {
         return true;
     }

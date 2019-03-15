@@ -1,15 +1,10 @@
 package frc.robot.commands.autonomous;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
-import frc.robot.commands.teleop.StopDrivetrain;
+import frc.robot.commands.teleop.TeleopGroup;
 
 public class AutonomousGroup extends CommandGroup {
-
     public AutonomousGroup() {
-        addSequential(new Autonomous1());
-        addSequential(new Autonomous2());
-        addSequential(new Autonomous3());
-        addSequential(new Autonomous4());
-        addSequential(new StopDrivetrain());
+        addSequential(new TeleopGroup());
     }
 }

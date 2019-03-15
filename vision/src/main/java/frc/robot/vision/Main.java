@@ -10,6 +10,7 @@ package frc.robot.vision;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.Clock;
 import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.Gson;
@@ -18,10 +19,15 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import edu.wpi.cscore.CvSource;
+import edu.wpi.cscore.MjpegServer;
+import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.VideoSource;
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.networktables.EntryListenerFlags;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.vision.VisionThread;
 
 public final class Main {
 	private static String configFile = "/boot/frc.json";
@@ -30,14 +36,15 @@ public final class Main {
 		public String name;
 		public String path;
 		public JsonObject config;
+		public JsonElement streamConfig;
 	}
 
 	public static int team;
 	public static boolean server;
-	public static List<CameraConfig> cameras = new ArrayList<>();
+	public static List<CameraConfig> cameraConfigs = new ArrayList<>();
 
-	private static VisionThread visionThread;
-	private static final Object imgLock = new Object();
+	public static CvSource augmentCam;
+	public static Clock clock = Clock.systemUTC();
 
 	private Main() {
 	}
@@ -71,9 +78,12 @@ public final class Main {
 		}
 		cam.path = pathElement.getAsString();
 
+		// stream properties
+		cam.streamConfig = config.get("stream");
+
 		cam.config = config;
 
-		cameras.add(cam);
+		cameraConfigs.add(cam);
 		return true;
 	}
 
@@ -136,17 +146,24 @@ public final class Main {
 	/**
 	 * Start running the camera.
 	 */
-	public static void startCamera(CameraConfig config) {
+	public static VideoSource startCamera(CameraConfig config, boolean startMjpegServer) {
 		System.out.println("Starting camera '" + config.name + "' on " + config.path);
-		VideoSource camera =
-				CameraServer.getInstance().startAutomaticCapture(config.name, config.path);
+		CameraServer inst = CameraServer.getInstance();
+		UsbCamera camera = new UsbCamera(config.name, config.path);
+		if (startMjpegServer) {
+			MjpegServer server = inst.startAutomaticCapture(camera);
+		}
 
 		Gson gson = new GsonBuilder().create();
 
 		camera.setConfigJson(gson.toJson(config.config));
+		camera.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen);
 
-		visionThread = new VisionThread(camera, new Grip(), Main::pipelineProcess);
+		if (config.streamConfig != null) {
+			// server.setConfigJson(gson.toJson(config.streamConfig));
+		}
 
+		return camera;
 	}
 
 	/**
@@ -171,11 +188,35 @@ public final class Main {
 			System.out.println("Setting up NetworkTables client for team " + team);
 			ntinst.startClientTeam(team);
 		}
+		// start timeservices
+		Comms.initTimeServices();
 
 		// start cameras
-		for (CameraConfig camera : cameras) {
-			startCamera(camera);
+		System.out.println("starting augmentcam.");
+		CameraServer inst = CameraServer.getInstance();
+		augmentCam = inst.putVideo("Augmented", 320, 240);
+
+		List<VideoSource> cameras = new ArrayList<>();
+		for (CameraConfig cameraConfig : cameraConfigs) {
+			if (cameraConfig.config.has("name")
+					&& cameraConfig.config.get("name").getAsString().equals("Vision")) {
+				cameras.add(startCamera(cameraConfig, false));
+				Comms.createVisionThread(cameras.get(cameras.size() - 1), augmentCam,
+						Comms::gripProcessVideoDiagnostic);
+			} else {
+				cameras.add(startCamera(cameraConfig, true));
+			}
+			if (cameraConfig.config.has("name")
+					&& cameraConfig.config.get("name").getAsString().equals("Sandstorm")) {
+				NetworkTable table = ntinst.getTable("CameraPublisher");
+				NetworkTable darude = table.getSubTable("Sandstorm");
+				NetworkTable darude_properties = darude.getSubTable("Property");
+				NetworkTableEntry entry = darude_properties.getEntry("Artist");
+				entry.setString("Darude");
+			}
+
 		}
+
 
 		// loop forever
 		for (;;) {
@@ -185,9 +226,5 @@ public final class Main {
 				return;
 			}
 		}
-	}
-
-	public static void pipelineProcess(Grip pipeline) {
-		System.out.println(pipeline.filterContoursOutput());
 	}
 }

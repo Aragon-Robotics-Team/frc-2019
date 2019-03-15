@@ -7,21 +7,33 @@ public class Deadband {
 
     public Deadband(double minValue, double deadband) {
         this.minValue = minValue;
-        m = calcM(minValue);
+        m = calcM(minValue, deadband);
         this.deadband = deadband;
     }
 
     public double calc(double input) {
-        if (isDeadband(input)) {
-            return 0;
-        } else if (input > 0) {
-            return m * (input - deadband) + minValue;
-        } else {
-            return m * (input + deadband) - minValue;
-        }
+        return calc(input, false);
     }
 
-    private double calcM(double minValue) {
+    public double calc(double input, boolean square) {
+        double output;
+
+        if (isDeadband(input)) {
+            output = 0;
+        } else if (input > 0) {
+            output = m * (input - deadband) + minValue;
+        } else {
+            output = m * (input + deadband) - minValue;
+        }
+
+        if (square) {
+            output = Math.copySign(output * output, output);
+        }
+
+        return output;
+    }
+
+    private static double calcM(double minValue, double deadband) {
         return (1.0 - minValue) / (1 - deadband);
     }
 
