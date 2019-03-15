@@ -76,7 +76,7 @@ class IntakeImpl extends RobotMap.Intake {
 
 class LiftImpl extends RobotMap.Lift {
     public Integer controllerCanID() {
-        return null;
+        return 1;
     }
 
     public boolean invertLift() {

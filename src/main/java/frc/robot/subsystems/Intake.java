@@ -10,6 +10,7 @@ import frc.robot.commands.intake.intake.ResetIntakeEncoder;
 import frc.robot.commands.intake.vacuum.ControlVacuumJoystick;
 import frc.robot.util.BetterSendable;
 import frc.robot.util.BetterSolenoid;
+import frc.robot.util.BetterSpeedController;
 import frc.robot.util.BetterSubsystem;
 import frc.robot.util.BetterTalonSRX;
 import frc.robot.util.BetterTalonSRXConfig;
@@ -17,7 +18,8 @@ import frc.robot.util.Disableable;
 import frc.robot.util.Mock;
 import frc.robot.util.SendableMaster;
 
-public class Intake extends BetterSubsystem implements BetterSendable, Disableable {
+public class Intake extends BetterSubsystem
+        implements BetterSendable, Disableable, BetterSpeedController {
     public BetterTalonSRX controller;
     public Talon vacuumController;
     BetterSolenoid pistonController;
@@ -115,6 +117,11 @@ public class Intake extends BetterSubsystem implements BetterSendable, Disableab
         pistonController.set(on);
     }
 
+    public void set(double vel) {
+        lastPosition = Position.Stowed;
+        controller.setOldPercent(vel);
+    }
+
     public void disable() {
         controller.setBrakeMode(false);
     }
@@ -123,12 +130,21 @@ public class Intake extends BetterSubsystem implements BetterSendable, Disableab
 
 class IntakeSendable extends SendableBase {
     Intake intake;
+    static double ANGLE_ZERO = Intake.Position.Vertical.pos;
+    static double ANGLE_NINETY = Intake.Position.Horizontal.pos;
+    static double TICKS_PER_ANGLE = (ANGLE_NINETY - ANGLE_ZERO) / 90;
 
     public IntakeSendable(Intake intake) {
         this.intake = intake;
     }
 
+    double getAngle() {
+        return (intake.controller.getEncoderPos() - ANGLE_ZERO) / TICKS_PER_ANGLE;
+    }
+
     public void initSendable(SendableBuilder builder) {
+        builder.setSmartDashboardType("Gyro");
+        builder.addDoubleProperty("Value", this::getAngle, null);
         builder.addBooleanProperty("Vacuum", () -> intake.isVacuumOn, null);
     }
 }
