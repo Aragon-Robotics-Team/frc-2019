@@ -10,7 +10,7 @@ class DrivetrainImpl extends RobotMap.Drivetrain {
     }
 
     public Integer rightMainCanID() {
-        return 8;
+        return 0; // Loan 6662
     }
 
     public Integer leftSlaveCanID() {
@@ -68,7 +68,7 @@ class IntakeImpl extends RobotMap.Intake {
     }
 
     public boolean invertVacuum() {
-        return false;
+        return true;
     }
 
 }
