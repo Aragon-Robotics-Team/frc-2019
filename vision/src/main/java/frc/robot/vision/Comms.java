@@ -96,6 +96,7 @@ public class Comms {
 
     public static void initTimeServices() {
         timeServices = new TimeServices();
+        timeServices.start();
     }
 
     public static class TimeServices {
