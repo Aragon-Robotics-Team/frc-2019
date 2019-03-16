@@ -25,18 +25,18 @@ public class AutoAlign extends Command {
     public List<Pose> pose_history = new ArrayList<Pose>();
 
     public AutoAlign() {
-        requires(Robot.myDrivetrain); // This will exit ControlArcadeDrivetrain
-        requires(Robot.myAngle);
-        setTimeout(5);
-        SmartDashboard.putNumber("Wanted Angle Vision", 0);
+        // requires(Robot.myDrivetrain); // This will exit ControlArcadeDrivetrain
+        // requires(Robot.myAngle);
+        // setTimeout(5);
+        // SmartDashboard.putNumber("Wanted Angle Vision", 0);
     }
 
     public AutoAlign(boolean old) {
-        requires(Robot.myDrivetrain); // This will exit ControlArcadeDrivetrain
-        requires(Robot.myAngle);
-        setTimeout(5);
-        SmartDashboard.putNumber("Wanted Angle Vision", 0);
-        this.old = old;
+        // requires(Robot.myDrivetrain); // This will exit ControlArcadeDrivetrain
+        // requires(Robot.myAngle);
+        // setTimeout(5);
+        // SmartDashboard.putNumber("Wanted Angle Vision", 0);
+        // this.old = old;
     }
 
     protected void initialize() {
@@ -81,8 +81,8 @@ public class AutoAlign extends Command {
             robot_location = new Point(Robot.myDrivetrain.getX(), Robot.myDrivetrain.getY());
         }
         Target t = MapInference.get_closest_targets_by_position(robot_location)[0];
-        Double angle = CoordTransform.toPolar(
-                new double[] {t.center.x - robot_location.x, t.center.y - robot_location.y})[1];
+        Double angle = CoordTransform
+                .toPolar(new double[] { t.center.x - robot_location.x, t.center.y - robot_location.y })[1];
         Robot.myAngle.setAngle(angle);
 
         // pose_history.add(new Pose(clock.instant(), Robot.myNavX.ahrs.getAngle()));
@@ -100,7 +100,8 @@ public class AutoAlign extends Command {
         // enabled = true;
         // double angle = angles[0];
 
-        // if (angle != lastAngle && timeStamp != lastTimeStamp) { // Replace with test for new
+        // if (angle != lastAngle && timeStamp != lastTimeStamp) { // Replace with test
+        // for new
         // // data
 
         // // modified binary search
@@ -129,7 +130,8 @@ public class AutoAlign extends Command {
         // }
         // closest_pose = pose_history.get(lo).t.getNano() - timeStamp.getNano() <
         // timeStamp.getNano()
-        // - pose_history.get(hi).t.getNano() ? pose_history.get(lo) : pose_history.get(hi);
+        // - pose_history.get(hi).t.getNano() ? pose_history.get(lo) :
+        // pose_history.get(hi);
         // }
 
         // double angle_change_est = Robot.myNavX.ahrs.getAngle() - closest_pose.angle;
@@ -148,6 +150,7 @@ public class AutoAlign extends Command {
     }
 
     protected boolean isFinished() {
-        return isTimedOut();
+        // return isTimedOut();
+        return true;
     }
 }

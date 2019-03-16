@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
+
 import edu.wpi.first.wpilibj.SendableBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import frc.robot.Robot;
@@ -18,8 +20,7 @@ public class Lift extends BetterSubsystem implements BetterSendable, BetterSpeed
     Position lastPosition;
 
     public enum Position {
-        Stowed(0), Hatch1(0), Port1(15), Hatch2(65), Port2(65), Hatch3(65), Port3(65), Max(
-                Port3.pos);
+        Stowed(0), Hatch1(0), Port1(15), Hatch2(65), Port2(65), Hatch3(65), Port3(65), Max(Port3.pos);
 
         final double pos;
         public static final double ticksPerInch = 254.625;
@@ -40,13 +41,14 @@ public class Lift extends BetterSubsystem implements BetterSendable, BetterSpeed
         config.invert = map.invertLift();
         config.invertEncoder = map.invertLiftEncoder();
         config.ticksPerInch = Position.ticksPerInch;
-        config.slot0.kP = 2.0;
-        config.slot0.allowableClosedloopError = 10;
+        // config.slot0.kP = 2.0;
+        // config.slot0.allowableClosedloopError = 10;
         config.motionCruiseVelocity = 1000;
         config.motionAcceleration = 1000 * 4;
         config.forwardSoftLimitEnable = true;
         config.forwardSoftLimitThreshold = Position.Max.toTicks();
         config.openloopRamp = 0.25;
+        config.forwardLimitSwitchNormal = LimitSwitchNormal.Disabled;
 
         controller = new BetterTalonSRX(map.controllerCanID(), config);
 
@@ -90,7 +92,6 @@ public class Lift extends BetterSubsystem implements BetterSendable, BetterSpeed
     }
 }
 
-
 class SendableLift extends SendableBase {
     Lift lift;
 
@@ -100,27 +101,27 @@ class SendableLift extends SendableBase {
 
     final double getHatch() {
         switch (lift.lastPosition) {
-            case Hatch1:
-                return 1;
-            case Hatch2:
-                return 2;
-            case Hatch3:
-                return 3;
-            default:
-                return 0;
+        case Hatch1:
+            return 1;
+        case Hatch2:
+            return 2;
+        case Hatch3:
+            return 3;
+        default:
+            return 0;
         }
     }
 
     final double getPort() {
         switch (lift.lastPosition) {
-            case Port1:
-                return 1;
-            case Port2:
-                return 2;
-            case Port3:
-                return 3;
-            default:
-                return 0;
+        case Port1:
+            return 1;
+        case Port2:
+            return 2;
+        case Port3:
+            return 3;
+        default:
+            return 0;
         }
     }
 

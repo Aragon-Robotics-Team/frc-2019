@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
+
 import edu.wpi.first.wpilibj.SendableBase;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
@@ -18,8 +20,7 @@ import frc.robot.util.Disableable;
 import frc.robot.util.Mock;
 import frc.robot.util.SendableMaster;
 
-public class Intake extends BetterSubsystem
-        implements BetterSendable, Disableable, BetterSpeedController {
+public class Intake extends BetterSubsystem implements BetterSendable, Disableable, BetterSpeedController {
     public BetterTalonSRX controller;
     public Talon vacuumController;
     BetterSolenoid pistonController;
@@ -56,9 +57,10 @@ public class Intake extends BetterSubsystem
         config.slot0.allowableClosedloopError = 5;
         config.motionCruiseVelocity = 300;
         config.motionAcceleration = 300 * 2;
-        config.forwardSoftLimitEnable = true;
-        config.forwardSoftLimitThreshold = Position.Max.toTicks();
+        // config.forwardSoftLimitEnable = true;
+        // config.forwardSoftLimitThreshold = Position.Max.toTicks();
         config.openloopRamp = 0.25;
+        config.forwardLimitSwitchNormal = LimitSwitchNormal.Disabled;
 
         controller = new BetterTalonSRX(map.controllerCanID(), config);
 
@@ -126,7 +128,6 @@ public class Intake extends BetterSubsystem
         controller.setBrakeMode(false);
     }
 }
-
 
 class IntakeSendable extends SendableBase {
     Intake intake;

@@ -4,22 +4,21 @@ import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
 public class TurnCardinal extends Command {
-    public static final double[] angles =
-            new double[] {-118.75, -90, -61.25, 0, 61.25, 90, 118.75, 180};
+    public static final double[] angles = new double[] { -118.75, -90, -61.25, 0, 61.25, 90, 118.75, 180 };
     public static double target = 0;
     public static int target_index = -1;
     public static double tollerance = .5; // tollerance degrees
 
     public TurnCardinal(boolean direction) {
-        requires(Robot.myDrivetrain);
-        if (target_index == -1) {
-            target = getClosestAngle(direction);
-            Robot.myAngle.setAngle(target);
-            Robot.myAngle.enable();
-        } else {
-            target = getNextAngle(direction);
-            Robot.myAngle.setAngle(target);
-        }
+        // requires(Robot.myDrivetrain);
+        // if (target_index == -1) {
+        // target = getClosestAngle(direction);
+        // Robot.myAngle.setAngle(target);
+        // Robot.myAngle.enable();
+        // } else {
+        // target = getNextAngle(direction);
+        // Robot.myAngle.setAngle(target);
+        // }
     }
 
     public double getClosestAngle(boolean direction) {
@@ -60,8 +59,9 @@ public class TurnCardinal extends Command {
     }
 
     protected boolean isFinished() {
-        return (!Robot.myAngle.enabled
-                || equalsWithTollerance(Robot.myNavX.ahrs.getAngle(), target));
+        // return (!Robot.myAngle.enabled
+        // || equalsWithTollerance(Robot.myNavX.ahrs.getAngle(), target));
+        return true;
     }
 
     public boolean equalsWithTollerance(double angle1, double angle2) {

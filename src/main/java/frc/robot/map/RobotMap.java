@@ -25,8 +25,7 @@ public abstract class RobotMap implements BetterSendable {
 
     public void init() {
         if (oi == null) {
-            oi = new MultiOI(new HotasX(), new ButtonBoard1(), new ButtonBoard2(),
-                    new ButtonBoardOld());
+            oi = new MultiOI(new HotasX(), new ButtonBoard1(), new ButtonBoard2());
         }
     }
 
