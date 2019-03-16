@@ -1,5 +1,6 @@
 package frc.robot.controllers;
 
+import frc.robot.commands.angle.TurnAbsoluteCardinalAndDrive;
 import frc.robot.commands.intake.piston.QuickPiston;
 import frc.robot.commands.intake.vacuum.SetVacuum;
 import frc.robot.map.RobotMap;
@@ -27,6 +28,7 @@ public class HotasX extends OIBase {
 
         getButton(6).whenPressed(new QuickPiston());
         getButton(9).whenPressed(new QuickPiston());
+        getPOVTrigger().whenActive(new TurnAbsoluteCardinalAndDrive());
 
         // 10 : turn to visible target
 

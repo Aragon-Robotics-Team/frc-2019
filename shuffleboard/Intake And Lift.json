@@ -43,7 +43,7 @@
               "Visuals/Show velocity vectors": true
             }
           },
-          "0,6": {
+          "0,7": {
             "size": [
               4,
               2
@@ -51,15 +51,15 @@
             "content": {
               "_type": "Voltage View",
               "_source0": "network_table:///Shuffleboard/Drivetrain/Left Wheels/Velocity",
-              "_title": "/Shuffleboard/Drivetrain/Left Wheels/Velocity",
+              "_title": "Left Velocity",
               "Range/Min": -1.0,
               "Range/Max": 1.0,
               "Range/Center": 0.0,
               "Visuals/Orientation": "HORIZONTAL",
-              "Visuals/Number of tick marks": 5
+              "Visuals/Number of tick marks": 3
             }
           },
-          "4,6": {
+          "4,7": {
             "size": [
               4,
               2
@@ -67,12 +67,12 @@
             "content": {
               "_type": "Voltage View",
               "_source0": "network_table:///Shuffleboard/Drivetrain/Right Wheels/Velocity",
-              "_title": "/Shuffleboard/Drivetrain/Right Wheels/Velocity",
+              "_title": "Right Velocity",
               "Range/Min": -1.0,
               "Range/Max": 1.0,
               "Range/Center": 0.0,
               "Visuals/Orientation": "HORIZONTAL",
-              "Visuals/Number of tick marks": 5
+              "Visuals/Number of tick marks": 3
             }
           },
           "20,0": {
@@ -123,7 +123,7 @@
             "content": {
               "_type": "Voltage View",
               "_source0": "network_table:///Shuffleboard/Lift/BetterTalonSRX/Current Inches",
-              "_title": "/Shuffleboard/Lift/BetterTalonSRX/Current Inches",
+              "_title": "Hatch",
               "Range/Min": 0.0,
               "Range/Max": 3.0,
               "Range/Center": 0.0,
@@ -139,7 +139,7 @@
             "content": {
               "_type": "Voltage View",
               "_source0": "network_table:///Shuffleboard/Lift/BetterTalonSRX/Current Inches",
-              "_title": "/Shuffleboard/Lift/BetterTalonSRX/Current Inches",
+              "_title": "Port",
               "Range/Min": 0.0,
               "Range/Max": 3.0,
               "Range/Center": 0.0,
@@ -155,7 +155,7 @@
             "content": {
               "_type": "Voltage View",
               "_source0": "network_table:///Shuffleboard/Lift/BetterTalonSRX/Current Inches",
-              "_title": "/Shuffleboard/Lift/BetterTalonSRX/Current Inches",
+              "_title": "Error",
               "Range/Min": -1.0,
               "Range/Max": 1.0,
               "Range/Center": 0.0,

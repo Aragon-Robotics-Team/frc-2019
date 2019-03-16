@@ -22,11 +22,11 @@ public class Comms {
 
         System.out.println("init visionthread");
         GripPostProcessing pipeline = new GripPostProcessing();
-        VisionThread visionThread = new VisionThread(camera, pipeline, (p) -> callback.accept(p, outputVideo));
+        VisionThread visionThread =
+                new VisionThread(camera, pipeline, (p) -> callback.accept(p, outputVideo));
         /*
          * something like this for GRIP: VisionThread visionThread = new
-         * VisionThread(cameras.get(0), new GripPipeline(), pipeline -> { ...
-         * });CvSource
+         * VisionThread(cameras.get(0), new GripPipeline(), pipeline -> { ... });CvSource
          */
         visionThread.start();
         System.out.println("started visionthread");
@@ -37,9 +37,9 @@ public class Comms {
         double[] x_offset_angles = new double[p.visionTargets.size()];
         for (int i = 0; i < p.visionTargets.size(); i++) {
             GripPostProcessing.VisionTarget v = p.visionTargets.get(i);
-            x_offset_angles[i] = CoordTransform
-                    .transformCoordsToOffsetAngle(new double[] { (double) v.bounding.x + 0.5 * v.bounding.width,
-                            (double) v.bounding.y + 0.5 * v.bounding.height })[0];
+            x_offset_angles[i] = CoordTransform.transformCoordsToOffsetAngle(
+                    new double[] {(double) v.bounding.x + 0.5 * v.bounding.width,
+                            (double) v.bounding.y + 0.5 * v.bounding.height})[0];
         }
         ByteArrayOutput.setNetworkObject(x_offset_angles, "table", "target_offsets");
         if (p.visionTargets.size() > 0) {
@@ -69,9 +69,9 @@ public class Comms {
         double[] x_offset_angles = new double[p.visionTargets.size()];
         for (int i = 0; i < p.visionTargets.size(); i++) {
             GripPostProcessing.VisionTarget v = p.visionTargets.get(i);
-            x_offset_angles[i] = CoordTransform
-                    .transformCoordsToOffsetAngle(new double[] { (double) v.bounding.x + 0.5 * v.bounding.width,
-                            (double) v.bounding.y + 0.5 * v.bounding.height })[0];
+            x_offset_angles[i] = CoordTransform.transformCoordsToOffsetAngle(
+                    new double[] {(double) v.bounding.x + 0.5 * v.bounding.width,
+                            (double) v.bounding.y + 0.5 * v.bounding.height})[0];
         }
         ByteArrayOutput.setNetworkObject(x_offset_angles, "table", "target_offsets");
         if (p.visionTargets.size() > 0) {
@@ -114,8 +114,8 @@ public class Comms {
         }
 
         public class Pinger extends TimerTask {
-            public NetworkTableEntry ping_service = NetworkTableInstance.getDefault().getTable("table")
-                    .getEntry("ping_service");
+            public NetworkTableEntry ping_service =
+                    NetworkTableInstance.getDefault().getTable("table").getEntry("ping_service");
 
             public Pinger() {
                 ping_service.addListener((event) -> {
@@ -125,7 +125,7 @@ public class Comms {
                         }
                     }
                 }, EntryListenerFlags.kUpdate | EntryListenerFlags.kLocal);
-                time.schedule(this, 0, 10);
+                time.schedule(this, 0, 200);
             }
 
             public void run() {
