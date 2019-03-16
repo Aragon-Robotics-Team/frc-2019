@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 public class BetterTalonSRX implements BetterSendable, BetterSpeedController {
     final Deadband deadband;
 
-    final TalonSRX talon;
+    public final TalonSRX talon;
     final double ticksPerInch;
     int timeout = 300; // milliseconds
     final SendableSRX sendable;

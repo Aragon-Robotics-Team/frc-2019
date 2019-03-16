@@ -31,7 +31,7 @@ public class MoveUntilResult<T> extends Command {
     }
 
     // Allow isFinished to be overridden by providing default
-    private boolean _isFinished() {
+    final private boolean _isFinished() {
         return (getter.get() == wanted);
     }
 

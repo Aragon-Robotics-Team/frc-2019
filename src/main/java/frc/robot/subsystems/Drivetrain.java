@@ -125,7 +125,10 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
 
         // Implementation stolen from DifferentialDrive.class WPILib
 
-        y = TURN_DEADBAND.calc(y, true) - 0.25;
+        // y = TURN_DEADBAND.calc(y, true) - 0.25;
+
+        // double new_y = Math.min(Math.abs(y), 0.75);
+        y *= 0.75;
 
         final double epsilon = 0.0001;
 

@@ -13,6 +13,7 @@ public class BetterSolenoid implements BetterSendable {
         var map = Robot.map.pneumatics;
 
         isReal = port != null;
+        System.out.println("S: " + isReal + " " + map.PCMCanID() + " " + port);
         solenoid = isReal ? new Solenoid(map.PCMCanID(), port) : Mock.mock(Solenoid.class);
     }
 

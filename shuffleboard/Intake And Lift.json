@@ -1,760 +1,751 @@
 {
-  "tabPane": [
-    {
-      "title": "Intake",
-      "autoPopulate": false,
-      "autoPopulatePrefix": "",
-      "widgetPane": {
-        "gridSize": 128.0,
-        "showGrid": true,
-        "hgap": 16.0,
-        "vgap": 16.0,
-        "tiles": {
-          "4,3": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Number Slider",
-              "_source0": "network_table:///Shuffleboard/Intake/Intake/Wanted Inches",
-              "_title": "Shuffleboard/Intake/Intake/Wanted Inches",
-              "Slider Settings/Min": -5.0,
-              "Slider Settings/Max": 1.0,
-              "Slider Settings/Block increment": 0.0625
+    "tabPane": [
+        {
+            "title": "Intake",
+            "autoPopulate": false,
+            "autoPopulatePrefix": "",
+            "widgetPane": {
+                "gridSize": 128.0,
+                "showGrid": true,
+                "hgap": 16.0,
+                "vgap": 16.0,
+                "tiles": {
+                    "4,3": {
+                        "size": [
+                            2,
+                            1
+                        ],
+                        "content": {
+                            "_type": "Number Slider",
+                            "_source0": "network_table:///Shuffleboard/Intake/Intake/Wanted Inches",
+                            "_title": "Shuffleboard/Intake/Intake/Wanted Inches",
+                            "Slider Settings/Min": -5.0,
+                            "Slider Settings/Max": 1.0,
+                            "Slider Settings/Block increment": 0.0625
+                        }
+                    },
+                    "3,2": {
+                        "size": [
+                            3,
+                            1
+                        ],
+                        "content": {
+                            "_type": "Number Slider",
+                            "_source0": "network_table:///Shuffleboard/Intake/Intake/Wanted Inches",
+                            "_title": "Shuffleboard/Intake/Intake/Wanted Inches",
+                            "Slider Settings/Min": 0.0,
+                            "Slider Settings/Max": 1.0,
+                            "Slider Settings/Block increment": 0.0625
+                        }
+                    },
+                    "3,3": {
+                        "size": [
+                            1,
+                            1
+                        ],
+                        "content": {
+                            "_type": "Number Slider",
+                            "_source0": "network_table:///Shuffleboard/Intake/Intake/Wanted Inches",
+                            "_title": "Shuffleboard/Intake/Intake/Wanted Inches",
+                            "Slider Settings/Min": 0.0,
+                            "Slider Settings/Max": 1.0E-4,
+                            "Slider Settings/Block increment": 0.0625
+                        }
+                    },
+                    "0,3": {
+                        "size": [
+                            3,
+                            1
+                        ],
+                        "content": {
+                            "_type": "Boolean Box",
+                            "_source0": "network_table:///Shuffleboard/Intake/Intake/Reverse Limit",
+                            "_title": "Shuffleboard/Intake/Intake/Reverse Limit",
+                            "Colors/Color when true": "#7CFC00FF",
+                            "Colors/Color when false": "#8B0000FF"
+                        }
+                    },
+                    "0,0": {
+                        "size": [
+                            3,
+                            3
+                        ],
+                        "content": {
+                            "_type": "Graph",
+                            "_source0": "network_table:///Shuffleboard/Intake/Intake/Distance",
+                            "_title": "Shuffleboard/Intake/Intake/Distance",
+                            "Graph/Visible time": 30.0
+                        }
+                    },
+                    "3,1": {
+                        "size": [
+                            3,
+                            1
+                        ],
+                        "content": {
+                            "_type": "Number Slider",
+                            "_source0": "network_table:///Shuffleboard/Intake/Intake/Current Inches",
+                            "_title": "Shuffleboard/Intake/Intake/Current Inches",
+                            "Slider Settings/Min": 0.0,
+                            "Slider Settings/Max": 1.0,
+                            "Slider Settings/Block increment": 0.0625
+                        }
+                    },
+                    "6,1": {
+                        "size": [
+                            3,
+                            3
+                        ],
+                        "content": {
+                            "_type": "Network Table Tree",
+                            "_source0": "network_table:///Shuffleboard/Intake/Intake",
+                            "_title": "Shuffleboard/Intake/Intake"
+                        }
+                    },
+                    "3,0": {
+                        "size": [
+                            3,
+                            1
+                        ],
+                        "content": {
+                            "_type": "Command",
+                            "_source0": "network_table:///Shuffleboard/Intake/ResetIntakeEncoder",
+                            "_title": "Shuffleboard/Intake/ResetIntakeEncoder"
+                        }
+                    },
+                    "6,0": {
+                        "size": [
+                            3,
+                            1
+                        ],
+                        "content": {
+                            "_type": "Number Bar",
+                            "_source0": "network_table:///Shuffleboard/Intake/Intake/Output",
+                            "_title": "Shuffleboard/Intake/Intake/Output",
+                            "Range/Min": -1.0,
+                            "Range/Max": 1.0,
+                            "Range/Center": 0.0,
+                            "Visuals/Num tick marks": 5.0,
+                            "Visuals/Show text": true
+                        }
+                    }
+                }
             }
-          },
-          "3,2": {
-            "size": [
-              3,
-              1
-            ],
-            "content": {
-              "_type": "Number Slider",
-              "_source0": "network_table:///Shuffleboard/Intake/Intake/Wanted Inches",
-              "_title": "Shuffleboard/Intake/Intake/Wanted Inches",
-              "Slider Settings/Min": 0.0,
-              "Slider Settings/Max": 1.0,
-              "Slider Settings/Block increment": 0.0625
+        },
+        {
+            "title": "Drive",
+            "autoPopulate": false,
+            "autoPopulatePrefix": "",
+            "widgetPane": {
+                "gridSize": 128.0,
+                "showGrid": true,
+                "hgap": 16.0,
+                "vgap": 16.0,
+                "tiles": {
+                    "0,0": {
+                        "size": [
+                            3,
+                            3
+                        ],
+                        "content": {
+                            "_type": "Network Table Tree",
+                            "_source0": "network_table:///Shuffleboard/Drive/Left Wheels",
+                            "_title": "Shuffleboard/Drive/Left Wheels"
+                        }
+                    },
+                    "3,0": {
+                        "size": [
+                            3,
+                            3
+                        ],
+                        "content": {
+                            "_type": "Network Table Tree",
+                            "_source0": "network_table:///Shuffleboard/Drive/Right Wheels",
+                            "_title": "Shuffleboard/Drive/Right Wheels"
+                        }
+                    },
+                    "3,3": {
+                        "size": [
+                            3,
+                            1
+                        ],
+                        "content": {
+                            "_type": "Number Bar",
+                            "_source0": "network_table:///Shuffleboard/Drive/Right Wheels/Output",
+                            "_title": "Shuffleboard/Drive/Right Wheels/Output",
+                            "Range/Min": -1.0,
+                            "Range/Max": 1.0,
+                            "Range/Center": 0.0,
+                            "Visuals/Num tick marks": 5.0,
+                            "Visuals/Show text": true
+                        }
+                    },
+                    "0,3": {
+                        "size": [
+                            3,
+                            1
+                        ],
+                        "content": {
+                            "_type": "Number Bar",
+                            "_source0": "network_table:///Shuffleboard/Drive/Left Wheels/Output",
+                            "_title": "Shuffleboard/Drive/Left Wheels/Output",
+                            "Range/Min": -1.0,
+                            "Range/Max": 1.0,
+                            "Range/Center": 0.0,
+                            "Visuals/Num tick marks": 5.0,
+                            "Visuals/Show text": true
+                        }
+                    },
+                    "6,0": {
+                        "size": [
+                            2,
+                            2
+                        ],
+                        "content": {
+                            "_type": "Gyro",
+                            "_source0": "network_table:///Shuffleboard/Drive/Joystick",
+                            "_title": "/Shuffleboard/Drive/Joystick",
+                            "Visuals/Major tick spacing": 45.0,
+                            "Visuals/Starting angle": 180.0,
+                            "Visuals/Show tick mark ring": true
+                        }
+                    },
+                    "8,2": {
+                        "size": [
+                            1,
+                            1
+                        ],
+                        "content": {
+                            "_type": "Boolean Box",
+                            "_source0": "network_table:///Shuffleboard/Drive/Joystick/SloMo",
+                            "_title": "/Shuffleboard/Drive/Joystick/SloMo",
+                            "Colors/Color when true": "#7CFC00FF",
+                            "Colors/Color when false": "#8B0000FF"
+                        }
+                    },
+                    "6,4": {
+                        "size": [
+                            4,
+                            1
+                        ],
+                        "content": {
+                            "_type": "Voltage View",
+                            "_source0": "network_table:///Shuffleboard/Drive/Joystick/X",
+                            "_title": "/Shuffleboard/Drive/Joystick/X",
+                            "Range/Min": -1.0,
+                            "Range/Max": 1.0,
+                            "Range/Center": 0.0,
+                            "Visuals/Orientation": "HORIZONTAL",
+                            "Visuals/Number of tick marks": 11
+                        }
+                    },
+                    "9,0": {
+                        "size": [
+                            1,
+                            4
+                        ],
+                        "content": {
+                            "_type": "Voltage View",
+                            "_source0": "network_table:///Shuffleboard/Drive/Joystick/Y",
+                            "_title": "/Shuffleboard/Drive/Joystick/Y",
+                            "Range/Min": -1.0,
+                            "Range/Max": 1.0,
+                            "Range/Center": 0.0,
+                            "Visuals/Orientation": "VERTICAL",
+                            "Visuals/Number of tick marks": 11
+                        }
+                    },
+                    "8,0": {
+                        "size": [
+                            1,
+                            1
+                        ],
+                        "content": {
+                            "_type": "Text View",
+                            "_source0": "network_table:///Shuffleboard/Drive/Joystick/X",
+                            "_title": "Shuffleboard/Drive/Joystick/X"
+                        }
+                    },
+                    "8,1": {
+                        "size": [
+                            1,
+                            1
+                        ],
+                        "content": {
+                            "_type": "Text View",
+                            "_source0": "network_table:///Shuffleboard/Drive/Joystick/Y",
+                            "_title": "Shuffleboard/Drive/Joystick/Y"
+                        }
+                    },
+                    "6,2": {
+                        "size": [
+                            2,
+                            1
+                        ],
+                        "content": {
+                            "_type": "Command",
+                            "_source0": "network_table:///Shuffleboard/Drive/Brake",
+                            "_title": "Shuffleboard/Drive/Brake"
+                        }
+                    },
+                    "6,3": {
+                        "size": [
+                            2,
+                            1
+                        ],
+                        "content": {
+                            "_type": "Command",
+                            "_source0": "network_table:///Shuffleboard/Drive/Coast",
+                            "_title": "Shuffleboard/Drive/Coast"
+                        }
+                    },
+                    "0,4": {
+                        "size": [
+                            2,
+                            1
+                        ],
+                        "content": {
+                            "_type": "Command",
+                            "_source0": "network_table:///Shuffleboard/Drive/Reset Encoder",
+                            "_title": "Shuffleboard/Drive/Reset Encoder"
+                        }
+                    },
+                    "2,4": {
+                        "size": [
+                            2,
+                            1
+                        ],
+                        "content": {
+                            "_type": "Command",
+                            "_source0": "network_table:///Shuffleboard/Drive/Reset Position",
+                            "_title": "Shuffleboard/Drive/Reset Position"
+                        }
+                    },
+                    "10,0": {
+                        "size": [
+                            3,
+                            3
+                        ],
+                        "content": {
+                            "_type": "Graph",
+                            "_source0": "network_table:///Shuffleboard/Drive/Drivetrain/X",
+                            "_title": "Shuffleboard/Drive/Drivetrain/X",
+                            "Graph/Visible time": 30.0
+                        }
+                    },
+                    "6,5": {
+                        "size": [
+                            2,
+                            1
+                        ],
+                        "content": {
+                            "_type": "Text View",
+                            "_source0": "network_table:///Shuffleboard/Drive/Drivetrain/X",
+                            "_title": "Shuffleboard/Drive/Drivetrain/X"
+                        }
+                    },
+                    "10,3": {
+                        "size": [
+                            3,
+                            3
+                        ],
+                        "content": {
+                            "_type": "Graph",
+                            "_source0": "network_table:///Shuffleboard/Drive/Drivetrain/Y",
+                            "_title": "Shuffleboard/Drive/Drivetrain/Y",
+                            "Graph/Visible time": 30.0
+                        }
+                    },
+                    "8,5": {
+                        "size": [
+                            2,
+                            1
+                        ],
+                        "content": {
+                            "_type": "Text View",
+                            "_source0": "network_table:///Shuffleboard/Drive/Drivetrain/Y",
+                            "_title": "Shuffleboard/Drive/Drivetrain/Y"
+                        }
+                    }
+                }
             }
-          },
-          "3,3": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Number Slider",
-              "_source0": "network_table:///Shuffleboard/Intake/Intake/Wanted Inches",
-              "_title": "Shuffleboard/Intake/Intake/Wanted Inches",
-              "Slider Settings/Min": 0.0,
-              "Slider Settings/Max": 1.0E-4,
-              "Slider Settings/Block increment": 0.0625
+        },
+        {
+            "title": "Lift",
+            "autoPopulate": false,
+            "autoPopulatePrefix": "",
+            "widgetPane": {
+                "gridSize": 128.0,
+                "showGrid": true,
+                "hgap": 16.0,
+                "vgap": 16.0,
+                "tiles": {
+                    "0,0": {
+                        "size": [
+                            3,
+                            3
+                        ],
+                        "content": {
+                            "_type": "Graph",
+                            "_source0": "network_table:///Shuffleboard/Lift/Lift/Distance",
+                            "_title": "Shuffleboard/Lift/Lift/Distance",
+                            "Graph/Visible time": 30.0
+                        }
+                    },
+                    "3,1": {
+                        "size": [
+                            3,
+                            1
+                        ],
+                        "content": {
+                            "_type": "Number Slider",
+                            "_source0": "network_table:///Shuffleboard/Lift/Lift/Current Inches",
+                            "_title": "Shuffleboard/Lift/Lift/Current Inches",
+                            "Slider Settings/Min": 0.0,
+                            "Slider Settings/Max": 28.0,
+                            "Slider Settings/Block increment": 0.01
+                        }
+                    },
+                    "3,2": {
+                        "size": [
+                            3,
+                            1
+                        ],
+                        "content": {
+                            "_type": "Number Slider",
+                            "_source0": "network_table:///Shuffleboard/Lift/Lift/Wanted Inches",
+                            "_title": "Shuffleboard/Lift/Lift/Wanted Inches",
+                            "Slider Settings/Min": 0.0,
+                            "Slider Settings/Max": 28.0,
+                            "Slider Settings/Block increment": 0.0625
+                        }
+                    },
+                    "3,3": {
+                        "size": [
+                            1,
+                            1
+                        ],
+                        "content": {
+                            "_type": "Number Slider",
+                            "_source0": "network_table:///Shuffleboard/Lift/Lift/Wanted Inches",
+                            "_title": "Shuffleboard/Lift/Lift/Wanted Inches",
+                            "Slider Settings/Min": 0.0,
+                            "Slider Settings/Max": 1.0E-4,
+                            "Slider Settings/Block increment": 0.0625
+                        }
+                    },
+                    "4,3": {
+                        "size": [
+                            2,
+                            1
+                        ],
+                        "content": {
+                            "_type": "Number Slider",
+                            "_source0": "network_table:///Shuffleboard/Lift/Lift/Wanted Inches",
+                            "_title": "Shuffleboard/Lift/Lift/Wanted Inches",
+                            "Slider Settings/Min": -5.0,
+                            "Slider Settings/Max": 0.0,
+                            "Slider Settings/Block increment": 0.0625
+                        }
+                    },
+                    "3,0": {
+                        "size": [
+                            3,
+                            1
+                        ],
+                        "content": {
+                            "_type": "Command",
+                            "_source0": "network_table:///Shuffleboard/Lift/ResetLiftEncoder",
+                            "_title": "Shuffleboard/Lift/ResetLiftEncoder"
+                        }
+                    },
+                    "6,0": {
+                        "size": [
+                            3,
+                            1
+                        ],
+                        "content": {
+                            "_type": "Number Bar",
+                            "_source0": "network_table:///Shuffleboard/Lift/Lift/Output",
+                            "_title": "Shuffleboard/Lift/Lift/Output",
+                            "Range/Min": -1.0,
+                            "Range/Max": 1.0,
+                            "Range/Center": 0.0,
+                            "Visuals/Num tick marks": 5.0,
+                            "Visuals/Show text": true
+                        }
+                    },
+                    "6,1": {
+                        "size": [
+                            3,
+                            3
+                        ],
+                        "content": {
+                            "_type": "Network Table Tree",
+                            "_source0": "network_table:///Shuffleboard/Lift/Lift",
+                            "_title": "Shuffleboard/Lift/Lift"
+                        }
+                    }
+                }
             }
-          },
-          "0,3": {
-            "size": [
-              3,
-              1
-            ],
-            "content": {
-              "_type": "Boolean Box",
-              "_source0": "network_table:///Shuffleboard/Intake/Intake/Reverse Limit",
-              "_title": "Shuffleboard/Intake/Intake/Reverse Limit",
-              "Colors/Color when true": "#7CFC00FF",
-              "Colors/Color when false": "#8B0000FF"
+        },
+        {
+            "title": "Gyro",
+            "autoPopulate": false,
+            "autoPopulatePrefix": "",
+            "widgetPane": {
+                "gridSize": 128.0,
+                "showGrid": true,
+                "hgap": 16.0,
+                "vgap": 16.0,
+                "tiles": {
+                    "0,0": {
+                        "size": [
+                            3,
+                            2
+                        ],
+                        "content": {
+                            "_type": "Graph",
+                            "_source0": "network_table:///SmartDashboard/NavX Angle",
+                            "_title": "SmartDashboard/NavX Angle",
+                            "Graph/Visible time": 30.0
+                        }
+                    },
+                    "3,0": {
+                        "size": [
+                            3,
+                            2
+                        ],
+                        "content": {
+                            "_type": "Simple Dial",
+                            "_source0": "network_table:///SmartDashboard/NavX Angle",
+                            "_title": "SmartDashboard/NavX Angle",
+                            "Range/Min": -180.0,
+                            "Range/Max": 180.0,
+                            "Visuals/Show value": true
+                        }
+                    },
+                    "3,2": {
+                        "size": [
+                            3,
+                            1
+                        ],
+                        "content": {
+                            "_type": "Text View",
+                            "_source0": "network_table:///SmartDashboard/NavX Angle",
+                            "_title": "SmartDashboard/NavX Angle"
+                        }
+                    },
+                    "8,0": {
+                        "size": [
+                            5,
+                            4
+                        ],
+                        "content": {
+                            "_type": "Camera Stream",
+                            "_source0": "camera_server://Augmented",
+                            "_title": "Augmented",
+                            "Crosshair/Show crosshair": true,
+                            "Crosshair/Crosshair color": "#FFFFFFFF",
+                            "Controls/Show controls": true,
+                            "Controls/Rotation": "NONE",
+                            "compression": -1.0,
+                            "fps": -1,
+                            "imageWidth": 0,
+                            "imageHeight": 0
+                        }
+                    },
+                    "0,3": {
+                        "size": [
+                            3,
+                            2
+                        ],
+                        "content": {
+                            "_type": "Simple Dial",
+                            "_source0": "network_table:///SmartDashboard/Set Angle",
+                            "_title": "SmartDashboard/Set Angle",
+                            "Range/Min": -180.0,
+                            "Range/Max": 180.0,
+                            "Visuals/Show value": true
+                        }
+                    },
+                    "1,5": {
+                        "size": [
+                            3,
+                            1
+                        ],
+                        "content": {
+                            "_type": "Number Slider",
+                            "_source0": "network_table:///SmartDashboard/PID Out",
+                            "_title": "SmartDashboard/PID Out",
+                            "Slider Settings/Min": -1.0,
+                            "Slider Settings/Max": 1.0,
+                            "Slider Settings/Block increment": 0.0625
+                        }
+                    },
+                    "3,3": {
+                        "size": [
+                            3,
+                            2
+                        ],
+                        "content": {
+                            "_type": "Simple Dial",
+                            "_source0": "network_table:///SmartDashboard/Diff Angle",
+                            "_title": "SmartDashboard/Diff Angle",
+                            "Range/Min": -180.0,
+                            "Range/Max": 180.0,
+                            "Visuals/Show value": true
+                        }
+                    },
+                    "4,5": {
+                        "size": [
+                            2,
+                            1
+                        ],
+                        "content": {
+                            "_type": "Command",
+                            "_source0": "network_table:///Shuffleboard/Vision/AutoAlign",
+                            "_title": "Shuffleboard/Vision/AutoAlign"
+                        }
+                    },
+                    "0,2": {
+                        "size": [
+                            1,
+                            1
+                        ],
+                        "content": {
+                            "_type": "Text View",
+                            "_source0": "network_table:///SmartDashboard/Wanted Angle Vision",
+                            "_title": "/SmartDashboard/Wanted Angle Vision"
+                        }
+                    },
+                    "1,2": {
+                        "size": [
+                            2,
+                            1
+                        ],
+                        "content": {
+                            "_type": "Simple Dial",
+                            "_source0": "network_table:///SmartDashboard/Wanted Angle Vision",
+                            "_title": "/SmartDashboard/Wanted Angle Vision",
+                            "Range/Min": 0.0,
+                            "Range/Max": 100.0,
+                            "Visuals/Show value": true
+                        }
+                    },
+                    "6,0": {
+                        "size": [
+                            2,
+                            3
+                        ],
+                        "content": {
+                            "_type": "PID Controller",
+                            "_source0": "network_table:///Shuffleboard/Vison/PIDController[1]",
+                            "_title": "Shuffleboard/Vison/PIDController[1]"
+                        }
+                    }
+                }
             }
-          },
-          "0,0": {
-            "size": [
-              3,
-              3
-            ],
-            "content": {
-              "_type": "Graph",
-              "_source0": "network_table:///Shuffleboard/Intake/Intake/Distance",
-              "_title": "Shuffleboard/Intake/Intake/Distance",
-              "Graph/Visible time": 30.0,
-              "Visible data/Shuffleboard/Intake/Intake/Distance": true
+        },
+        {
+            "title": "Tab 9",
+            "autoPopulate": false,
+            "autoPopulatePrefix": "",
+            "widgetPane": {
+                "gridSize": 128.0,
+                "showGrid": true,
+                "hgap": 16.0,
+                "vgap": 16.0,
+                "tiles": {
+                    "0,0": {
+                        "size": [
+                            2,
+                            2
+                        ],
+                        "content": {
+                            "_type": "Graph",
+                            "_source0": "network_table:///Shuffleboard/Drive/Right Wheels/Distance",
+                            "_title": "Shuffleboard/Drive/Right Wheels/Distance",
+                            "Graph/Visible time": 30.0
+                        }
+                    },
+                    "0,2": {
+                        "size": [
+                            2,
+                            2
+                        ],
+                        "content": {
+                            "_type": "Graph",
+                            "_source0": "network_table:///Shuffleboard/Drive/Left Wheels/Distance",
+                            "_title": "Shuffleboard/Drive/Left Wheels/Distance",
+                            "Graph/Visible time": 30.0
+                        }
+                    },
+                    "2,0": {
+                        "size": [
+                            4,
+                            4
+                        ],
+                        "content": {
+                            "_type": "Graph",
+                            "_source0": "network_table:///Shuffleboard/Drive/Left Wheels/Velocity",
+                            "_title": "Shuffleboard/Drive/Left Wheels/Velocity",
+                            "Graph/Visible time": 30.0
+                        }
+                    },
+                    "6,0": {
+                        "size": [
+                            4,
+                            4
+                        ],
+                        "content": {
+                            "_type": "Graph",
+                            "_source0": "network_table:///Shuffleboard/Drive/Right Wheels/Velocity",
+                            "_title": "Shuffleboard/Drive/Right Wheels/Velocity",
+                            "Graph/Visible time": 30.0
+                        }
+                    },
+                    "7,5": {
+                        "size": [
+                            2,
+                            1
+                        ],
+                        "content": {
+                            "_type": "Text View",
+                            "_source0": "network_table:///Shuffleboard/Drive/Right Wheels/Velocity",
+                            "_title": "Shuffleboard/Drive/Right Wheels/Velocity"
+                        }
+                    },
+                    "3,5": {
+                        "size": [
+                            2,
+                            1
+                        ],
+                        "content": {
+                            "_type": "Text View",
+                            "_source0": "network_table:///Shuffleboard/Drive/Left Wheels/Velocity",
+                            "_title": "Shuffleboard/Drive/Left Wheels/Velocity"
+                        }
+                    },
+                    "4,4": {
+                        "size": [
+                            4,
+                            1
+                        ],
+                        "content": {
+                            "_type": "Command",
+                            "_source0": "network_table:///Shuffleboard/Drive/Reset Encoder",
+                            "_title": "Shuffleboard/Drive/Reset Encoder"
+                        }
+                    }
+                }
             }
-          },
-          "3,1": {
-            "size": [
-              3,
-              1
-            ],
-            "content": {
-              "_type": "Number Slider",
-              "_source0": "network_table:///Shuffleboard/Intake/Intake/Current Inches",
-              "_title": "Shuffleboard/Intake/Intake/Current Inches",
-              "Slider Settings/Min": 0.0,
-              "Slider Settings/Max": 1.0,
-              "Slider Settings/Block increment": 0.0625
-            }
-          },
-          "6,1": {
-            "size": [
-              3,
-              3
-            ],
-            "content": {
-              "_type": "Network Table Tree",
-              "_source0": "network_table:///Shuffleboard/Intake/Intake",
-              "_title": "Shuffleboard/Intake/Intake"
-            }
-          },
-          "3,0": {
-            "size": [
-              3,
-              1
-            ],
-            "content": {
-              "_type": "Command",
-              "_source0": "network_table:///Shuffleboard/Intake/ResetIntakeEncoder",
-              "_title": "Shuffleboard/Intake/ResetIntakeEncoder"
-            }
-          },
-          "6,0": {
-            "size": [
-              3,
-              1
-            ],
-            "content": {
-              "_type": "Number Bar",
-              "_source0": "network_table:///Shuffleboard/Intake/Intake/Output",
-              "_title": "Shuffleboard/Intake/Intake/Output",
-              "Range/Min": -1.0,
-              "Range/Max": 1.0,
-              "Range/Center": 0.0,
-              "Visuals/Num tick marks": 5.0,
-              "Visuals/Show text": true
-            }
-          }
         }
-      }
-    },
-    {
-      "title": "Drive",
-      "autoPopulate": false,
-      "autoPopulatePrefix": "",
-      "widgetPane": {
-        "gridSize": 128.0,
-        "showGrid": true,
-        "hgap": 16.0,
-        "vgap": 16.0,
-        "tiles": {
-          "0,0": {
-            "size": [
-              3,
-              3
-            ],
-            "content": {
-              "_type": "Network Table Tree",
-              "_source0": "network_table:///Shuffleboard/Drive/Left Wheels",
-              "_title": "Shuffleboard/Drive/Left Wheels"
-            }
-          },
-          "3,0": {
-            "size": [
-              3,
-              3
-            ],
-            "content": {
-              "_type": "Network Table Tree",
-              "_source0": "network_table:///Shuffleboard/Drive/Right Wheels",
-              "_title": "Shuffleboard/Drive/Right Wheels"
-            }
-          },
-          "3,3": {
-            "size": [
-              3,
-              1
-            ],
-            "content": {
-              "_type": "Number Bar",
-              "_source0": "network_table:///Shuffleboard/Drive/Right Wheels/Output",
-              "_title": "Shuffleboard/Drive/Right Wheels/Output",
-              "Range/Min": -1.0,
-              "Range/Max": 1.0,
-              "Range/Center": 0.0,
-              "Visuals/Num tick marks": 5.0,
-              "Visuals/Show text": true
-            }
-          },
-          "0,3": {
-            "size": [
-              3,
-              1
-            ],
-            "content": {
-              "_type": "Number Bar",
-              "_source0": "network_table:///Shuffleboard/Drive/Left Wheels/Output",
-              "_title": "Shuffleboard/Drive/Left Wheels/Output",
-              "Range/Min": -1.0,
-              "Range/Max": 1.0,
-              "Range/Center": 0.0,
-              "Visuals/Num tick marks": 5.0,
-              "Visuals/Show text": true
-            }
-          },
-          "6,0": {
-            "size": [
-              2,
-              2
-            ],
-            "content": {
-              "_type": "Gyro",
-              "_source0": "network_table:///Shuffleboard/Drive/Joystick",
-              "_title": "/Shuffleboard/Drive/Joystick",
-              "Visuals/Major tick spacing": 45.0,
-              "Visuals/Starting angle": 180.0,
-              "Visuals/Show tick mark ring": true
-            }
-          },
-          "8,2": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Boolean Box",
-              "_source0": "network_table:///Shuffleboard/Drive/Joystick/SloMo",
-              "_title": "/Shuffleboard/Drive/Joystick/SloMo",
-              "Colors/Color when true": "#7CFC00FF",
-              "Colors/Color when false": "#8B0000FF"
-            }
-          },
-          "6,4": {
-            "size": [
-              4,
-              1
-            ],
-            "content": {
-              "_type": "Voltage View",
-              "_source0": "network_table:///Shuffleboard/Drive/Joystick/X",
-              "_title": "/Shuffleboard/Drive/Joystick/X",
-              "Range/Min": -1.0,
-              "Range/Max": 1.0,
-              "Range/Center": 0.0,
-              "Visuals/Orientation": "HORIZONTAL",
-              "Visuals/Number of tick marks": 11
-            }
-          },
-          "9,0": {
-            "size": [
-              1,
-              4
-            ],
-            "content": {
-              "_type": "Voltage View",
-              "_source0": "network_table:///Shuffleboard/Drive/Joystick/Y",
-              "_title": "/Shuffleboard/Drive/Joystick/Y",
-              "Range/Min": -1.0,
-              "Range/Max": 1.0,
-              "Range/Center": 0.0,
-              "Visuals/Orientation": "VERTICAL",
-              "Visuals/Number of tick marks": 11
-            }
-          },
-          "8,0": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///Shuffleboard/Drive/Joystick/X",
-              "_title": "Shuffleboard/Drive/Joystick/X"
-            }
-          },
-          "8,1": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///Shuffleboard/Drive/Joystick/Y",
-              "_title": "Shuffleboard/Drive/Joystick/Y"
-            }
-          },
-          "6,2": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Command",
-              "_source0": "network_table:///Shuffleboard/Drive/Brake",
-              "_title": "Shuffleboard/Drive/Brake"
-            }
-          },
-          "6,3": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Command",
-              "_source0": "network_table:///Shuffleboard/Drive/Coast",
-              "_title": "Shuffleboard/Drive/Coast"
-            }
-          },
-          "0,4": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Command",
-              "_source0": "network_table:///Shuffleboard/Drive/Reset Encoder",
-              "_title": "Shuffleboard/Drive/Reset Encoder"
-            }
-          },
-          "2,4": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Command",
-              "_source0": "network_table:///Shuffleboard/Drive/Reset Position",
-              "_title": "Shuffleboard/Drive/Reset Position"
-            }
-          },
-          "10,0": {
-            "size": [
-              3,
-              3
-            ],
-            "content": {
-              "_type": "Graph",
-              "_source0": "network_table:///Shuffleboard/Drive/Drivetrain/X",
-              "_title": "Shuffleboard/Drive/Drivetrain/X",
-              "Graph/Visible time": 30.0,
-              "Visible data/Shuffleboard/Drive/Drivetrain/X": true
-            }
-          },
-          "6,5": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///Shuffleboard/Drive/Drivetrain/X",
-              "_title": "Shuffleboard/Drive/Drivetrain/X"
-            }
-          },
-          "10,3": {
-            "size": [
-              3,
-              3
-            ],
-            "content": {
-              "_type": "Graph",
-              "_source0": "network_table:///Shuffleboard/Drive/Drivetrain/Y",
-              "_title": "Shuffleboard/Drive/Drivetrain/Y",
-              "Graph/Visible time": 30.0,
-              "Visible data/Shuffleboard/Drive/Drivetrain/Y": true
-            }
-          },
-          "8,5": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///Shuffleboard/Drive/Drivetrain/Y",
-              "_title": "Shuffleboard/Drive/Drivetrain/Y"
-            }
-          }
-        }
-      }
-    },
-    {
-      "title": "Lift",
-      "autoPopulate": false,
-      "autoPopulatePrefix": "",
-      "widgetPane": {
-        "gridSize": 128.0,
-        "showGrid": true,
-        "hgap": 16.0,
-        "vgap": 16.0,
-        "tiles": {
-          "0,0": {
-            "size": [
-              3,
-              3
-            ],
-            "content": {
-              "_type": "Graph",
-              "_source0": "network_table:///Shuffleboard/Lift/Lift/Distance",
-              "_title": "Shuffleboard/Lift/Lift/Distance",
-              "Graph/Visible time": 30.0,
-              "Visible data/Shuffleboard/Lift/Lift/Distance": true
-            }
-          },
-          "3,1": {
-            "size": [
-              3,
-              1
-            ],
-            "content": {
-              "_type": "Number Slider",
-              "_source0": "network_table:///Shuffleboard/Lift/Lift/Current Inches",
-              "_title": "Shuffleboard/Lift/Lift/Current Inches",
-              "Slider Settings/Min": 0.0,
-              "Slider Settings/Max": 28.0,
-              "Slider Settings/Block increment": 0.01
-            }
-          },
-          "3,2": {
-            "size": [
-              3,
-              1
-            ],
-            "content": {
-              "_type": "Number Slider",
-              "_source0": "network_table:///Shuffleboard/Lift/Lift/Wanted Inches",
-              "_title": "Shuffleboard/Lift/Lift/Wanted Inches",
-              "Slider Settings/Min": 0.0,
-              "Slider Settings/Max": 28.0,
-              "Slider Settings/Block increment": 0.0625
-            }
-          },
-          "3,3": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Number Slider",
-              "_source0": "network_table:///Shuffleboard/Lift/Lift/Wanted Inches",
-              "_title": "Shuffleboard/Lift/Lift/Wanted Inches",
-              "Slider Settings/Min": 0.0,
-              "Slider Settings/Max": 1.0E-4,
-              "Slider Settings/Block increment": 0.0625
-            }
-          },
-          "4,3": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Number Slider",
-              "_source0": "network_table:///Shuffleboard/Lift/Lift/Wanted Inches",
-              "_title": "Shuffleboard/Lift/Lift/Wanted Inches",
-              "Slider Settings/Min": -5.0,
-              "Slider Settings/Max": 0.0,
-              "Slider Settings/Block increment": 0.0625
-            }
-          },
-          "3,0": {
-            "size": [
-              3,
-              1
-            ],
-            "content": {
-              "_type": "Command",
-              "_source0": "network_table:///Shuffleboard/Lift/ResetLiftEncoder",
-              "_title": "Shuffleboard/Lift/ResetLiftEncoder"
-            }
-          },
-          "6,0": {
-            "size": [
-              3,
-              1
-            ],
-            "content": {
-              "_type": "Number Bar",
-              "_source0": "network_table:///Shuffleboard/Lift/Lift/Output",
-              "_title": "Shuffleboard/Lift/Lift/Output",
-              "Range/Min": -1.0,
-              "Range/Max": 1.0,
-              "Range/Center": 0.0,
-              "Visuals/Num tick marks": 5.0,
-              "Visuals/Show text": true
-            }
-          },
-          "6,1": {
-            "size": [
-              3,
-              3
-            ],
-            "content": {
-              "_type": "Network Table Tree",
-              "_source0": "network_table:///Shuffleboard/Lift/Lift",
-              "_title": "Shuffleboard/Lift/Lift"
-            }
-          }
-        }
-      }
-    },
-    {
-      "title": "Gyro",
-      "autoPopulate": false,
-      "autoPopulatePrefix": "",
-      "widgetPane": {
-        "gridSize": 128.0,
-        "showGrid": true,
-        "hgap": 16.0,
-        "vgap": 16.0,
-        "tiles": {
-          "0,0": {
-            "size": [
-              3,
-              2
-            ],
-            "content": {
-              "_type": "Graph",
-              "_source0": "network_table:///SmartDashboard/NavX Angle",
-              "_title": "SmartDashboard/NavX Angle",
-              "Graph/Visible time": 30.0,
-              "Visible data/SmartDashboard/NavX Angle": true
-            }
-          },
-          "3,0": {
-            "size": [
-              3,
-              2
-            ],
-            "content": {
-              "_type": "Simple Dial",
-              "_source0": "network_table:///SmartDashboard/NavX Angle",
-              "_title": "SmartDashboard/NavX Angle",
-              "Range/Min": -180.0,
-              "Range/Max": 180.0,
-              "Visuals/Show value": true
-            }
-          },
-          "3,2": {
-            "size": [
-              3,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/NavX Angle",
-              "_title": "SmartDashboard/NavX Angle"
-            }
-          },
-          "8,0": {
-            "size": [
-              5,
-              4
-            ],
-            "content": {
-              "_type": "Camera Stream",
-              "_source0": "camera_server://Augmented",
-              "_title": "Augmented",
-              "Crosshair/Show crosshair": true,
-              "Crosshair/Crosshair color": "#FFFFFFFF",
-              "Controls/Show controls": true,
-              "Controls/Rotation": "NONE",
-              "compression": -1.0,
-              "fps": -1,
-              "imageWidth": 0,
-              "imageHeight": 0
-            }
-          },
-          "0,3": {
-            "size": [
-              3,
-              2
-            ],
-            "content": {
-              "_type": "Simple Dial",
-              "_source0": "network_table:///SmartDashboard/Set Angle",
-              "_title": "SmartDashboard/Set Angle",
-              "Range/Min": -180.0,
-              "Range/Max": 180.0,
-              "Visuals/Show value": true
-            }
-          },
-          "1,5": {
-            "size": [
-              3,
-              1
-            ],
-            "content": {
-              "_type": "Number Slider",
-              "_source0": "network_table:///SmartDashboard/PID Out",
-              "_title": "SmartDashboard/PID Out",
-              "Slider Settings/Min": -1.0,
-              "Slider Settings/Max": 1.0,
-              "Slider Settings/Block increment": 0.0625
-            }
-          },
-          "3,3": {
-            "size": [
-              3,
-              2
-            ],
-            "content": {
-              "_type": "Simple Dial",
-              "_source0": "network_table:///SmartDashboard/Diff Angle",
-              "_title": "SmartDashboard/Diff Angle",
-              "Range/Min": -180.0,
-              "Range/Max": 180.0,
-              "Visuals/Show value": true
-            }
-          },
-          "4,5": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Command",
-              "_source0": "network_table:///Shuffleboard/Vision/AutoAlign",
-              "_title": "Shuffleboard/Vision/AutoAlign"
-            }
-          },
-          "0,2": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Wanted Angle Vision",
-              "_title": "/SmartDashboard/Wanted Angle Vision"
-            }
-          },
-          "1,2": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Simple Dial",
-              "_source0": "network_table:///SmartDashboard/Wanted Angle Vision",
-              "_title": "/SmartDashboard/Wanted Angle Vision",
-              "Range/Min": 0.0,
-              "Range/Max": 100.0,
-              "Visuals/Show value": true
-            }
-          },
-          "6,0": {
-            "size": [
-              2,
-              3
-            ],
-            "content": {
-              "_type": "PID Controller",
-              "_source0": "network_table:///Shuffleboard/Vison/PIDController[1]",
-              "_title": "Shuffleboard/Vison/PIDController[1]"
-            }
-          }
-        }
-      }
-    },
-    {
-      "title": "Tab 9",
-      "autoPopulate": false,
-      "autoPopulatePrefix": "",
-      "widgetPane": {
-        "gridSize": 128.0,
-        "showGrid": true,
-        "hgap": 16.0,
-        "vgap": 16.0,
-        "tiles": {
-          "0,0": {
-            "size": [
-              2,
-              2
-            ],
-            "content": {
-              "_type": "Graph",
-              "_source0": "network_table:///Shuffleboard/Drive/Right Wheels/Distance",
-              "_title": "Shuffleboard/Drive/Right Wheels/Distance",
-              "Graph/Visible time": 30.0,
-              "Visible data/Shuffleboard/Drive/Right Wheels/Distance": true
-            }
-          },
-          "0,2": {
-            "size": [
-              2,
-              2
-            ],
-            "content": {
-              "_type": "Graph",
-              "_source0": "network_table:///Shuffleboard/Drive/Left Wheels/Distance",
-              "_title": "Shuffleboard/Drive/Left Wheels/Distance",
-              "Graph/Visible time": 30.0,
-              "Visible data/Shuffleboard/Drive/Left Wheels/Distance": true
-            }
-          },
-          "2,0": {
-            "size": [
-              4,
-              4
-            ],
-            "content": {
-              "_type": "Graph",
-              "_source0": "network_table:///Shuffleboard/Drive/Left Wheels/Velocity",
-              "_title": "Shuffleboard/Drive/Left Wheels/Velocity",
-              "Graph/Visible time": 30.0,
-              "Visible data/Shuffleboard/Drive/Left Wheels/Velocity": true
-            }
-          },
-          "6,0": {
-            "size": [
-              4,
-              4
-            ],
-            "content": {
-              "_type": "Graph",
-              "_source0": "network_table:///Shuffleboard/Drive/Right Wheels/Velocity",
-              "_title": "Shuffleboard/Drive/Right Wheels/Velocity",
-              "Graph/Visible time": 30.0,
-              "Visible data/Shuffleboard/Drive/Right Wheels/Velocity": true
-            }
-          },
-          "7,5": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///Shuffleboard/Drive/Right Wheels/Velocity",
-              "_title": "Shuffleboard/Drive/Right Wheels/Velocity"
-            }
-          },
-          "3,5": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///Shuffleboard/Drive/Left Wheels/Velocity",
-              "_title": "Shuffleboard/Drive/Left Wheels/Velocity"
-            }
-          },
-          "4,4": {
-            "size": [
-              4,
-              1
-            ],
-            "content": {
-              "_type": "Command",
-              "_source0": "network_table:///Shuffleboard/Drive/Reset Encoder",
-              "_title": "Shuffleboard/Drive/Reset Encoder"
-            }
-          }
-        }
-      }
+    ],
+    "windowGeometry": {
+        "x": -7.0,
+        "y": 2.0,
+        "width": 1932.0,
+        "height": 1045.0
     }
-  ],
-  "windowGeometry": {
-    "x": -8.0,
-    "y": -8.0,
-    "width": 1936.0,
-    "height": 1056.0
-  }
 }

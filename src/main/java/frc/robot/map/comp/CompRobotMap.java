@@ -52,7 +52,7 @@ class IntakeImpl extends RobotMap.Intake {
     }
 
     public Integer pistonPCMPort() {
-        return 0;
+        return 7;
     }
 
     public boolean invertIntake() {
