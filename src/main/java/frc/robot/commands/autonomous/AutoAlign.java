@@ -16,7 +16,7 @@ import frc.robot.util.fieldmap.Map.Target;
 import frc.robot.vision.CoordTransform;
 
 public class AutoAlign extends Command {
-    boolean old;
+    boolean old = true;
     boolean enabled;
     double lastAngle;
     Instant lastTimeStamp;

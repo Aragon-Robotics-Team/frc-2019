@@ -1,6 +1,8 @@
 package frc.robot.controllers;
 
 import frc.robot.commands.angle.TurnAbsoluteCardinalAndDrive;
+import frc.robot.commands.autonomous.AutoAlign;
+import frc.robot.commands.drivetrain.IdleDrivetrain;
 import frc.robot.commands.intake.piston.QuickPiston;
 import frc.robot.commands.intake.vacuum.SetVacuum;
 import frc.robot.map.RobotMap;
@@ -23,12 +25,13 @@ public class HotasX extends OIBase {
 
     void setUpButtons() {
         getButton(2).whenPressed(new SetVacuum(true));
-        getButton(3).whenPressed(new SetVacuum(false));
+        getButton(3).whenPressed(new AutoAlign());
+        getButton(3).whenReleased(new IdleDrivetrain());
         getButton(4).whenPressed(new SetVacuum(false));
 
         getButton(6).whenPressed(new QuickPiston());
         getButton(9).whenPressed(new QuickPiston());
-        getPOVTrigger().whenActive(new TurnAbsoluteCardinalAndDrive());
+        getPOVTrigger().whileActive(new TurnAbsoluteCardinalAndDrive());
 
         // 10 : turn to visible target
 
@@ -56,6 +59,6 @@ public class HotasX extends OIBase {
     }
 
     public boolean disableCompressor() {
-        return getButton(3).get();
+        return getButton(1).get();
     }
 }
