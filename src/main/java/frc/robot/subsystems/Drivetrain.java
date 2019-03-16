@@ -14,6 +14,7 @@ import frc.robot.util.BetterSendable;
 import frc.robot.util.BetterSubsystem;
 import frc.robot.util.BetterTalonSRX;
 import frc.robot.util.BetterTalonSRXConfig;
+import frc.robot.util.Deadband;
 import frc.robot.util.Disableable;
 import frc.robot.util.SendableMaster;
 
@@ -29,6 +30,7 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
     double y;
 
     static final double DRIVE_SPEED = 1000;
+    static final Deadband TURN_DEADBAND = new Deadband(0.25, 0);
 
     DrivetrainSendable drivetrainSendable;
 
@@ -96,8 +98,8 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
 
         // DesireOutput * max(liftPos) * max actual (instead of velocity PID) * swerve
         // compensate
-        leftController.setOldPercent(x * max * 1 * 1.1);
-        rightController.setOldPercent(y * max * 1);
+        leftController.setOldPercent(x * max * 0.9 * 1.1);
+        rightController.setOldPercent(y * max * 0.9);
     }
 
     public void controlArcade(double x, double y) { // x is up/down; y is right/left
@@ -112,6 +114,8 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
         // control(lp, rp);
 
         // Implementation stolen from DifferentialDrive.class WPILib
+
+        y = TURN_DEADBAND.calc(y, true) - 0.25;
 
         final double epsilon = 0.0001;
 

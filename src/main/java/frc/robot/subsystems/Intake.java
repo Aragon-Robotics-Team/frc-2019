@@ -8,8 +8,10 @@ import frc.robot.commands.intake.intake.CalibrateIntakeEncoder;
 import frc.robot.commands.intake.intake.ControlIntakeJoystick;
 import frc.robot.commands.intake.intake.ResetIntakeEncoder;
 import frc.robot.commands.intake.vacuum.ControlVacuumJoystick;
+import frc.robot.commands.intake.vacuum.SetVacuum;
 import frc.robot.util.BetterSendable;
 import frc.robot.util.BetterSolenoid;
+import frc.robot.util.BetterSpeedController;
 import frc.robot.util.BetterSubsystem;
 import frc.robot.util.BetterTalonSRX;
 import frc.robot.util.BetterTalonSRXConfig;
@@ -17,7 +19,7 @@ import frc.robot.util.Disableable;
 import frc.robot.util.Mock;
 import frc.robot.util.SendableMaster;
 
-public class Intake extends BetterSubsystem implements BetterSendable, Disableable {
+public class Intake extends BetterSubsystem implements BetterSendable, Disableable, BetterSpeedController {
     public BetterTalonSRX controller;
     public Talon vacuumController;
     BetterSolenoid pistonController;
@@ -29,7 +31,7 @@ public class Intake extends BetterSubsystem implements BetterSendable, Disableab
     boolean isVacuumOn;
 
     public enum Position {
-        Stowed(0), Intake(1967), Vertical(349), Horizontal(2733), Max(Horizontal.pos);
+        Stowed(0), Intake(2045), Vertical(563), Horizontal(Intake.pos), Max(Horizontal.pos);
 
         final double pos;
         public static final double ticksPerInch = 1;
@@ -86,6 +88,7 @@ public class Intake extends BetterSubsystem implements BetterSendable, Disableab
         master.add(new ControlVacuumJoystick());
 
         Robot.instance.addCommand(new CalibrateIntakeEncoder(), true);
+        Robot.instance.addCommand(new SetVacuum(false));
     }
 
     public void resetEncoder() {
@@ -96,6 +99,10 @@ public class Intake extends BetterSubsystem implements BetterSendable, Disableab
         this.lastPosition = position;
         controller.setBrakeMode(true);
         controller.setMagic(position.pos);
+    }
+
+    public void set(double v) {
+        controller.setOldPercent(v);
     }
 
     public boolean isStowed() {
@@ -119,7 +126,6 @@ public class Intake extends BetterSubsystem implements BetterSendable, Disableab
         controller.setBrakeMode(false);
     }
 }
-
 
 class IntakeSendable extends SendableBase {
     Intake intake;

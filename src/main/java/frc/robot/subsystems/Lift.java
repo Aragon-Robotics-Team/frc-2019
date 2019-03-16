@@ -5,12 +5,13 @@ import frc.robot.commands.lift.CalibrateLiftEncoder;
 import frc.robot.commands.lift.ControlLiftJoystick;
 import frc.robot.commands.lift.ResetLiftEncoder;
 import frc.robot.util.BetterSendable;
+import frc.robot.util.BetterSpeedController;
 import frc.robot.util.BetterSubsystem;
 import frc.robot.util.BetterTalonSRX;
 import frc.robot.util.BetterTalonSRXConfig;
 import frc.robot.util.SendableMaster;
 
-public class Lift extends BetterSubsystem implements BetterSendable {
+public class Lift extends BetterSubsystem implements BetterSendable, BetterSpeedController {
     public BetterTalonSRX controller;
     Position lastPosition;
 
@@ -73,6 +74,10 @@ public class Lift extends BetterSubsystem implements BetterSendable {
     public void setPosition(Position position) {
         this.lastPosition = position;
         controller.setMagic(position.pos);
+    }
+
+    public void set(double v) {
+        controller.setOldPercent(v);
     }
 
     public boolean isStowed() {
