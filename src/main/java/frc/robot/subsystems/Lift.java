@@ -16,7 +16,6 @@ public class Lift extends BetterSubsystem implements BetterSendable, BetterSpeed
     Position lastPosition;
     boolean oldInDanger;
 
-
     public enum Position {
         Stowed(0), Hatch1(0), Port1(15), Hatch2(65), Port2(65), Hatch3(65), Port3(65), Max(
                 Port3.pos);
