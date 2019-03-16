@@ -23,7 +23,7 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
     BetterTalonSRX rightController;
     BetterFollower leftSlaveController;
     BetterFollower rightSlaveController;
-    boolean slow;
+    SlowModes slowMode = SlowModes.Normal;
 
     double distance;
     double x;
@@ -33,6 +33,16 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
     static final Deadband TURN_DEADBAND = new Deadband(0.25, 0);
 
     DrivetrainSendable drivetrainSendable;
+
+    public enum SlowModes {
+        Normal(1), Slow(0.85), Fast(1.3);
+
+        double v;
+
+        private SlowModes(double v) {
+            this.v = v;
+        }
+    }
 
     public Drivetrain() {
         var map = Robot.map.drivetrain;
@@ -72,7 +82,7 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
         stop();
         setBrake(true);
         reset();
-        setSlow(false);
+        setSlow(SlowModes.Normal);
     }
 
     public void createSendable(SendableMaster master) {
@@ -94,12 +104,12 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
     }
 
     public void control(double x, double y) {
-        double max = slow ? 0.7 : 1.0;
+        // double max = slowMode ? 0.7 : 1.0;
 
         // DesireOutput * max(liftPos) * max actual (instead of velocity PID) * swerve
         // compensate
-        leftController.setOldPercent(x * max * 0.9 * 1.1);
-        rightController.setOldPercent(y * max * 0.9);
+        leftController.setOldPercent(x * slowMode.v * 0.85 * 1.1);
+        rightController.setOldPercent(y * slowMode.v * 0.85);
     }
 
     public void controlArcade(double x, double y) { // x is up/down; y is right/left
@@ -141,10 +151,11 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
         control(0, 0);
     }
 
-    public void setSlow(boolean slow) {
-        this.slow = slow;
+    public void setSlow(SlowModes slowMode) {
+        this.slowMode = slowMode;
 
-        double ramp = slow ? 0.5 : 0.1;
+        // double ramp = (slowMode.v < ? 0.5 : 0.1;
+        double ramp = 0.25;
         leftController.setOpenLoopRamp(ramp);
         rightController.setOpenLoopRamp(ramp);
     }

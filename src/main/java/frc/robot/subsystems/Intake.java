@@ -129,12 +129,21 @@ public class Intake extends BetterSubsystem implements BetterSendable, Disableab
 
 class IntakeSendable extends SendableBase {
     Intake intake;
+    static double ANGLE_ZERO = Intake.Position.Vertical.pos;
+    static double ANGLE_NINETY = 2800;
+    static double TICKS_PER_ANGLE = (ANGLE_NINETY - ANGLE_ZERO) / 90;
 
     public IntakeSendable(Intake intake) {
         this.intake = intake;
     }
 
+    double getAngle() {
+        return (intake.controller.getEncoderPos() - ANGLE_ZERO) / TICKS_PER_ANGLE;
+    }
+
     public void initSendable(SendableBuilder builder) {
+        builder.setSmartDashboardType("Gyro");
+        builder.addDoubleProperty("Value", this::getAngle, null);
         builder.addBooleanProperty("Vacuum", () -> intake.isVacuumOn, null);
     }
 }

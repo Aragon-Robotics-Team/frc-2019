@@ -10,7 +10,8 @@ public class TeleopGroup extends CommandGroup {
 
     public TeleopGroup() {
         addParallel(new SetCompressorEnabled(() -> !Robot.map.oi.getSlowMode()));
-        addParallel(new ResetLiftEncoder());
+        // addParallel(new ResetLiftEncoder());
+        // addParallel(new Reseti);
         addParallel(new ControlArcadeDrivetrain());
     }
 }

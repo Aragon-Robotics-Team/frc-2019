@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
+
 import frc.robot.Robot;
 import frc.robot.commands.lift.CalibrateLiftEncoder;
 import frc.robot.commands.lift.ControlLiftJoystick;
@@ -44,6 +46,7 @@ public class Lift extends BetterSubsystem implements BetterSendable, BetterSpeed
         config.forwardSoftLimitEnable = true;
         config.forwardSoftLimitThreshold = Position.Max.toTicks();
         config.openloopRamp = 0.25;
+        config.forwardLimitSwitchNormal = LimitSwitchNormal.NormallyClosed;
 
         controller = new BetterTalonSRX(map.controllerCanID(), config);
 
@@ -51,9 +54,9 @@ public class Lift extends BetterSubsystem implements BetterSendable, BetterSpeed
         setPosition(Position.Stowed);
     }
 
-    public void periodic() {
-        Robot.myDrivetrain.setSlow(controller.getInch() >= 20);
-    }
+    // public void periodic() {
+    // Robot.myDrivetrain.setSlow(controller.getInch() >= 20);
+    // }
 
     public String getTabName() {
         return "Lift";
@@ -77,6 +80,7 @@ public class Lift extends BetterSubsystem implements BetterSendable, BetterSpeed
     }
 
     public void set(double v) {
+        lastPosition = Position.Stowed;
         controller.setOldPercent(v);
     }
 

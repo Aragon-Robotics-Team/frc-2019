@@ -4,7 +4,6 @@ import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.controllers.ButtonBoard1;
 import frc.robot.controllers.ButtonBoard2;
-import frc.robot.controllers.ButtonBoardOld;
 import frc.robot.controllers.HotasX;
 import frc.robot.controllers.MultiOI;
 import frc.robot.controllers.OI;
@@ -25,7 +24,7 @@ public abstract class RobotMap implements BetterSendable {
 
     public void init() {
         if (oi == null) {
-            oi = new MultiOI(new HotasX(), new ButtonBoard1(), new ButtonBoard2(), new ButtonBoardOld());
+            oi = new MultiOI(new HotasX(), new ButtonBoard1(), new ButtonBoard2());
         }
     }
 
