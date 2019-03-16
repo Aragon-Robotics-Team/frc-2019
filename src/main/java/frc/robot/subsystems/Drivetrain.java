@@ -94,9 +94,10 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
     public void control(double x, double y) {
         double max = slow ? 0.7 : 1.0;
 
-        // DesireOutput * max(liftPos) * max actual (instead of velocity PID) * swerve compensate
-        leftController.setOldPercent(x * max * 0.85 * 1.1);
-        rightController.setOldPercent(y * max * 0.85);
+        // DesireOutput * max(liftPos) * max actual (instead of velocity PID) * swerve
+        // compensate
+        leftController.setOldPercent(x * max * 1 * 1.1);
+        rightController.setOldPercent(y * max * 1);
     }
 
     public void controlArcade(double x, double y) { // x is up/down; y is right/left
@@ -192,7 +193,6 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
         setDefaultCommand(new IdleDrivetrain());
     }
 }
-
 
 class DrivetrainSendable extends SendableBase {
     Drivetrain drivetrain;
