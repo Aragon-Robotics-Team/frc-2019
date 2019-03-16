@@ -63,6 +63,7 @@ public class Lift extends BetterSubsystem implements BetterSendable, BetterSpeed
     }
 
     public void createSendable(SendableMaster master) {
+        master.add(new SendableLift(this));
         master.add(controller);
         master.add(new ResetLiftEncoder());
         master.add("Lift Joystick", new ControlLiftJoystick());
@@ -97,7 +98,7 @@ class SendableLift extends SendableBase {
         this.lift = lift;
     }
 
-    double getHatch() {
+    final double getHatch() {
         switch (lift.lastPosition) {
             case Hatch1:
                 return 1;
@@ -110,7 +111,7 @@ class SendableLift extends SendableBase {
         }
     }
 
-    double getPort() {
+    final double getPort() {
         switch (lift.lastPosition) {
             case Port1:
                 return 1;
@@ -123,8 +124,14 @@ class SendableLift extends SendableBase {
         }
     }
 
+    final double getError() {
+        final double error = lift.controller.getInch() - lift.lastPosition.pos;
+        return error / 15;
+    }
+
     public void initSendable(SendableBuilder builder) {
         builder.addDoubleProperty("Hatch", this::getHatch, null);
         builder.addDoubleProperty("Port", this::getPort, null);
+        builder.addDoubleProperty("Error", this::getError, null);
     }
 }

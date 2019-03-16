@@ -27,17 +27,14 @@ class DrivetrainImpl extends RobotMap.Drivetrain {
 
     public boolean invertLeftEncoder() {
         return false;
-
     }
 
     public boolean invertRight() {
         return true;
-
     }
 
     public boolean invertRightEncoder() {
         return false;
-
     }
 
     public Class<? extends BaseMotorController> slaveController() {

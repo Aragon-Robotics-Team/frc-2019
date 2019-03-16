@@ -1,176 +1,189 @@
 {
-  "tabPane": [
-    {
-      "title": "Driver Station",
-      "autoPopulate": false,
-      "autoPopulatePrefix": "",
-      "widgetPane": {
-        "gridSize": 36.0,
-        "showGrid": true,
-        "hgap": 10.0,
-        "vgap": 10.0,
-        "tiles": {
-          "9,0": {
-            "size": [
-              11,
-              12
-            ],
-            "content": {
-              "_type": "Camera Stream",
-              "_source0": "camera_server://Sandstorm",
-              "_title": "Sandstorm",
-              "Crosshair/Show crosshair": true,
-              "Crosshair/Crosshair color": "#FFFFFFFF",
-              "Controls/Show controls": true,
-              "Controls/Rotation": "NONE",
-              "compression": -1.0,
-              "fps": 15,
-              "imageWidth": -1,
-              "imageHeight": -1
+    "tabPane": [
+        {
+            "title": "Driver Station",
+            "autoPopulate": false,
+            "autoPopulatePrefix": "",
+            "widgetPane": {
+                "gridSize": 36.0,
+                "showGrid": true,
+                "hgap": 10.0,
+                "vgap": 10.0,
+                "tiles": {
+                    "9,0": {
+                        "size": [
+                            11,
+                            12
+                        ],
+                        "content": {
+                            "_type": "Camera Stream",
+                            "_source0": "camera_server://Sandstorm",
+                            "_title": "Sandstorm",
+                            "Crosshair/Show crosshair": true,
+                            "Crosshair/Crosshair color": "#FFFFFFFF",
+                            "Controls/Show controls": true,
+                            "Controls/Rotation": "NONE",
+                            "compression": -1.0,
+                            "fps": 15,
+                            "imageWidth": -1,
+                            "imageHeight": -1
+                        }
+                    },
+                    "0,0": {
+                        "size": [
+                            9,
+                            6
+                        ],
+                        "content": {
+                            "_type": "Differential Drivebase",
+                            "_source0": "network_table:///Shuffleboard/Drivetrain/Drivetrain",
+                            "_title": "/Shuffleboard/Drivetrain/Drivetrain",
+                            "Wheels/Number of wheels": 6,
+                            "Wheels/Wheel diameter": 50.0,
+                            "Visuals/Show velocity vectors": true
+                        }
+                    },
+                    "0,6": {
+                        "size": [
+                            4,
+                            2
+                        ],
+                        "content": {
+                            "_type": "Voltage View",
+                            "_source0": "network_table:///Shuffleboard/Drivetrain/Left Wheels/Velocity",
+                            "_title": "Left",
+                            "Range/Min": -1.0,
+                            "Range/Max": 1.0,
+                            "Range/Center": 0.0,
+                            "Visuals/Orientation": "HORIZONTAL",
+                            "Visuals/Number of tick marks": 5
+                        }
+                    },
+                    "4,6": {
+                        "size": [
+                            4,
+                            2
+                        ],
+                        "content": {
+                            "_type": "Voltage View",
+                            "_source0": "network_table:///Shuffleboard/Drivetrain/Right Wheels/Velocity",
+                            "_title": "Right",
+                            "Range/Min": -1.0,
+                            "Range/Max": 1.0,
+                            "Range/Center": 0.0,
+                            "Visuals/Orientation": "HORIZONTAL",
+                            "Visuals/Number of tick marks": 5
+                        }
+                    },
+                    "25,0": {
+                        "size": [
+                            5,
+                            5
+                        ],
+                        "content": {
+                            "_type": "Gyro",
+                            "_source0": "network_table:///Shuffleboard/Angle/Yaw",
+                            "_title": "/Shuffleboard/Angle/Yaw",
+                            "Visuals/Major tick spacing": 45.0,
+                            "Visuals/Starting angle": 180.0,
+                            "Visuals/Show tick mark ring": true
+                        }
+                    },
+                    "26,5": {
+                        "size": [
+                            4,
+                            4
+                        ],
+                        "content": {
+                            "_type": "Boolean Box",
+                            "_source0": "network_table:///Shuffleboard/Intake/Intake/Vacuum",
+                            "_title": "Vacuum",
+                            "Colors/Color when true": "#7CFC00FF",
+                            "Colors/Color when false": "#1A1A1AFF"
+                        }
+                    },
+                    "20,0": {
+                        "size": [
+                            5,
+                            5
+                        ],
+                        "content": {
+                            "_type": "Gyro",
+                            "_source0": "network_table:///Shuffleboard/Intake/Intake",
+                            "_title": "Shuffleboard/Intake/Intake",
+                            "Visuals/Major tick spacing": 45.0,
+                            "Visuals/Starting angle": 180.0,
+                            "Visuals/Show tick mark ring": true
+                        }
+                    },
+                    "20,5": {
+                        "size": [
+                            2,
+                            7
+                        ],
+                        "content": {
+                            "_type": "Voltage View",
+                            "_source0": "network_table:///Shuffleboard/Lift/Lift/Hatch",
+                            "_title": "Hatch",
+                            "Range/Min": 0.0,
+                            "Range/Max": 4.0,
+                            "Range/Center": 0.0,
+                            "Visuals/Orientation": "VERTICAL",
+                            "Visuals/Number of tick marks": 5
+                        }
+                    },
+                    "22,5": {
+                        "size": [
+                            2,
+                            7
+                        ],
+                        "content": {
+                            "_type": "Voltage View",
+                            "_source0": "network_table:///Shuffleboard/Lift/Lift/Port",
+                            "_title": "Port",
+                            "Range/Min": 0.0,
+                            "Range/Max": 4.0,
+                            "Range/Center": 0.0,
+                            "Visuals/Orientation": "VERTICAL",
+                            "Visuals/Number of tick marks": 5
+                        }
+                    },
+                    "24,5": {
+                        "size": [
+                            2,
+                            6
+                        ],
+                        "content": {
+                            "_type": "Voltage View",
+                            "_source0": "network_table:///Shuffleboard/Lift/Lift/Error",
+                            "_title": "Error",
+                            "Range/Min": -1.0,
+                            "Range/Max": 1.0,
+                            "Range/Center": 0.0,
+                            "Visuals/Orientation": "VERTICAL",
+                            "Visuals/Number of tick marks": 5
+                        }
+                    }
+                }
             }
-          },
-          "0,0": {
-            "size": [
-              9,
-              6
-            ],
-            "content": {
-              "_type": "Differential Drivebase",
-              "_source0": "network_table:///Shuffleboard/Drivetrain/Drivetrain",
-              "_title": "/Shuffleboard/Drivetrain/Drivetrain",
-              "Wheels/Number of wheels": 6,
-              "Wheels/Wheel diameter": 50.0,
-              "Visuals/Show velocity vectors": true
+        },
+        {
+            "title": "Debug",
+            "autoPopulate": false,
+            "autoPopulatePrefix": "",
+            "widgetPane": {
+                "gridSize": 36.0,
+                "showGrid": true,
+                "hgap": 10.0,
+                "vgap": 10.0,
+                "tiles": {}
             }
-          },
-          "0,7": {
-            "size": [
-              4,
-              2
-            ],
-            "content": {
-              "_type": "Voltage View",
-              "_source0": "network_table:///Shuffleboard/Drivetrain/Left Wheels/Velocity",
-              "_title": "Left Velocity",
-              "Range/Min": -1.0,
-              "Range/Max": 1.0,
-              "Range/Center": 0.0,
-              "Visuals/Orientation": "HORIZONTAL",
-              "Visuals/Number of tick marks": 3
-            }
-          },
-          "4,7": {
-            "size": [
-              4,
-              2
-            ],
-            "content": {
-              "_type": "Voltage View",
-              "_source0": "network_table:///Shuffleboard/Drivetrain/Right Wheels/Velocity",
-              "_title": "Right Velocity",
-              "Range/Min": -1.0,
-              "Range/Max": 1.0,
-              "Range/Center": 0.0,
-              "Visuals/Orientation": "HORIZONTAL",
-              "Visuals/Number of tick marks": 3
-            }
-          },
-          "20,0": {
-            "size": [
-              5,
-              5
-            ],
-            "content": {
-              "_type": "Boolean Box",
-              "_source0": "network_table:///LiveWindow/Ungrouped/Solenoid[1,0]/Value",
-              "_title": "/LiveWindow/Ungrouped/Solenoid[1,0]/Value",
-              "Colors/Color when true": "#7CFC00FF",
-              "Colors/Color when false": "#8B0000FF"
-            }
-          },
-          "25,0": {
-            "size": [
-              5,
-              5
-            ],
-            "content": {
-              "_type": "Gyro",
-              "_source0": "network_table:///Shuffleboard/Angle/Yaw",
-              "_title": "/Shuffleboard/Angle/Yaw",
-              "Visuals/Major tick spacing": 45.0,
-              "Visuals/Starting angle": 180.0,
-              "Visuals/Show tick mark ring": true
-            }
-          },
-          "26,5": {
-            "size": [
-              2,
-              2
-            ],
-            "content": {
-              "_type": "Boolean Box",
-              "_source0": "network_table:///Shuffleboard/Intake/Intake/Vacuum",
-              "_title": "/Shuffleboard/Intake/Intake/Vacuum",
-              "Colors/Color when true": "#7CFC00FF",
-              "Colors/Color when false": "#1A1A1AFF"
-            }
-          },
-          "20,5": {
-            "size": [
-              2,
-              6
-            ],
-            "content": {
-              "_type": "Voltage View",
-              "_source0": "network_table:///Shuffleboard/Lift/BetterTalonSRX/Current Inches",
-              "_title": "Hatch",
-              "Range/Min": 0.0,
-              "Range/Max": 3.0,
-              "Range/Center": 0.0,
-              "Visuals/Orientation": "VERTICAL",
-              "Visuals/Number of tick marks": 4
-            }
-          },
-          "22,5": {
-            "size": [
-              2,
-              6
-            ],
-            "content": {
-              "_type": "Voltage View",
-              "_source0": "network_table:///Shuffleboard/Lift/BetterTalonSRX/Current Inches",
-              "_title": "Port",
-              "Range/Min": 0.0,
-              "Range/Max": 3.0,
-              "Range/Center": 0.0,
-              "Visuals/Orientation": "VERTICAL",
-              "Visuals/Number of tick marks": 4
-            }
-          },
-          "24,5": {
-            "size": [
-              2,
-              6
-            ],
-            "content": {
-              "_type": "Voltage View",
-              "_source0": "network_table:///Shuffleboard/Lift/BetterTalonSRX/Current Inches",
-              "_title": "Error",
-              "Range/Min": -1.0,
-              "Range/Max": 1.0,
-              "Range/Center": 0.0,
-              "Visuals/Orientation": "VERTICAL",
-              "Visuals/Number of tick marks": 3
-            }
-          }
         }
-      }
+    ],
+    "windowGeometry": {
+        "x": -8.0,
+        "y": -8.0,
+        "width": 1382.0,
+        "height": 744.0
     }
-  ],
-  "windowGeometry": {
-    "x": -8.0,
-    "y": -8.0,
-    "width": 1382.0,
-    "height": 744.0
-  }
 }
