@@ -42,13 +42,16 @@ class DrivetrainImpl extends RobotMap.Drivetrain {
     }
 }
 
+
 class IntakeImpl extends RobotMap.Intake {
     public Integer controllerCanID() {
-        return 4;
+        // return 4;
+        return null;
     }
 
     public Integer vacuumPort() {
-        return 0;
+        // return 0;
+        return null;
     }
 
     public Integer pistonPCMPort() {
@@ -69,9 +72,11 @@ class IntakeImpl extends RobotMap.Intake {
 
 }
 
+
 class LiftImpl extends RobotMap.Lift {
     public Integer controllerCanID() {
-        return 1;
+        // return 1;
+        return null;
     }
 
     public boolean invertLift() {
@@ -83,17 +88,20 @@ class LiftImpl extends RobotMap.Lift {
     }
 }
 
+
 class PneumaticsImpl extends RobotMap.Pneumatics {
     public Integer PCMCanID() {
         return 2;
     }
 }
 
+
 class VisionImpl extends RobotMap.Vision {
     public Integer ledPort() {
         return null;
     }
 }
+
 
 public class CompRobotMap extends RobotMap {
     public Drivetrain getDrivetrain() {

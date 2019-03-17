@@ -35,12 +35,14 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
     DrivetrainSendable drivetrainSendable;
 
     public enum SlowModes {
-        Normal(1), Slow(0.85), Fast(1.3);
+        Normal(0.85, 0.25), Fast(1, 0.05);
 
         double v;
+        double r;
 
-        private SlowModes(double v) {
+        private SlowModes(double v, double r) {
             this.v = v;
+            this.r = r;
         }
     }
 
@@ -108,8 +110,8 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
 
         // DesireOutput * max(liftPos) * max actual (instead of velocity PID) * swerve
         // compensate
-        leftController.setOldPercent(x * slowMode.v * 0.85 * 1.1);
-        rightController.setOldPercent(y * slowMode.v * 0.85);
+        leftController.setOldPercent(x * slowMode.v);
+        rightController.setOldPercent(y * slowMode.v);
     }
 
     public void controlArcade(double x, double y) { // x is up/down; y is right/left
@@ -157,10 +159,10 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
     public void setSlow(SlowModes slowMode) {
         this.slowMode = slowMode;
 
-        // double ramp = (slowMode.v < ? 0.5 : 0.1;
-        double ramp = 0.25;
-        leftController.setOpenLoopRamp(ramp);
-        rightController.setOpenLoopRamp(ramp);
+        leftController.setOpenLoopRamp(slowMode.r);
+        rightController.setOpenLoopRamp(slowMode.r);
+
+        System.out.println("SlowMode: " + slowMode.v + " " + slowMode.r);
     }
 
     public void updatePosition() {
@@ -211,6 +213,7 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
         setDefaultCommand(new IdleDrivetrain());
     }
 }
+
 
 class DrivetrainSendable extends SendableBase {
     Drivetrain drivetrain;

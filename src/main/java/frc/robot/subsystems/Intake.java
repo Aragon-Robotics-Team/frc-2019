@@ -94,7 +94,7 @@ public class Intake extends BetterSubsystem
         master.add("Sol", pistonController);
 
         Robot.instance.addCommand(new CalibrateIntakeEncoder(), true);
-        Robot.instance.addCommand(new SetVacuum(false));
+        Robot.instance.addCommand(new SetVacuum(false), true);
     }
 
     public void resetEncoder() {

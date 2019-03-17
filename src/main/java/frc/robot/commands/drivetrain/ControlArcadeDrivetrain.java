@@ -11,9 +11,9 @@ public class ControlArcadeDrivetrain extends Command {
 
     protected void execute() {
         double speedModifier = 1.0;
-        if (Robot.map.oi.getSlowMode()) {
-            speedModifier = 0.5;
-        }
+        // if (Robot.map.oi.getSlowMode()) {
+        // speedModifier = 0.5;
+        // }
         Robot.myDrivetrain.controlArcade(Robot.map.oi.getLeftSpeed() * speedModifier,
                 Robot.map.oi.getLeftRotation() * speedModifier);
     }
