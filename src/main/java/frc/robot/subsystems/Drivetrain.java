@@ -102,7 +102,7 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
     }
 
     public void periodic() {
-        updatePosition();
+        // updatePosition();
     }
 
     public void control(double x, double y) {

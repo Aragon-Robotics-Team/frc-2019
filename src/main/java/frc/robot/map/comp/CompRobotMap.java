@@ -10,7 +10,7 @@ class DrivetrainImpl extends RobotMap.Drivetrain {
     }
 
     public Integer rightMainCanID() {
-        return 0; // Loan 6662
+        return null; // Removed loan from 6662, did not replace yet
     }
 
     public Integer leftSlaveCanID() {
@@ -45,13 +45,11 @@ class DrivetrainImpl extends RobotMap.Drivetrain {
 
 class IntakeImpl extends RobotMap.Intake {
     public Integer controllerCanID() {
-        // return 4;
-        return null;
+        return 4;
     }
 
     public Integer vacuumPort() {
-        // return 0;
-        return null;
+        return 0;
     }
 
     public Integer pistonPCMPort() {
@@ -75,8 +73,7 @@ class IntakeImpl extends RobotMap.Intake {
 
 class LiftImpl extends RobotMap.Lift {
     public Integer controllerCanID() {
-        // return 1;
-        return null;
+        return 1;
     }
 
     public boolean invertLift() {

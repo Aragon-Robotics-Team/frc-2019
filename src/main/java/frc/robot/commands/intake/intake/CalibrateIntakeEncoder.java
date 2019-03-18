@@ -8,7 +8,7 @@ import frc.robot.commands.MoveUntilResult;
 import frc.robot.subsystems.Intake.Position;
 
 public class CalibrateIntakeEncoder extends CommandGroup {
-    static final DoubleConsumer setSpeed = Robot.myIntake.controller::setOldPercent;
+    static final DoubleConsumer setSpeed = Robot.myIntake::set;
     static final Supplier<Boolean> getReverseLimit =
             Robot.myIntake.controller::getReverseLimitSwitch;
 

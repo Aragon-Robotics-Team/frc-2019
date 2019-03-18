@@ -3,7 +3,7 @@ package frc.robot.controllers;
 import frc.robot.commands.intake.intake.CalibrateIntakeEncoder;
 import frc.robot.commands.intake.intake.ControlIntakeJoystick;
 import frc.robot.commands.intake.intake.SetIntakePosition;
-import frc.robot.commands.intake.intake.StowLiftAlways;
+import frc.robot.commands.intake.intake.StowIntakeAlways;
 import frc.robot.commands.lift.CalibrateLiftEncoder;
 import frc.robot.commands.lift.ControlLiftJoystick;
 import frc.robot.map.RobotMap;
@@ -24,7 +24,7 @@ public class ButtonBoard1 extends OIBase {
     }
 
     void setUpButtons() {
-        getButton(1).whenPressed(new StowLiftAlways());
+        getButton(1).whenPressed(new StowIntakeAlways());
 
         getButton(2).whenPressed(new SetIntakePosition(Intake.Position.Stowed));
         getButton(3).whenPressed(new SetIntakePosition(Intake.Position.Vertical));

@@ -45,11 +45,11 @@ public class TurnToAngle extends BetterSubsystem implements PIDOutput, BetterSen
     }
 
     public void periodic() {
-        if (Robot.myNavX.isRunning() && enabled) {// && !turnController.onTarget()) {
-            turnController.enable();
-        } else {
-            turnController.disable();
-        }
+        // if (Robot.myNavX.isRunning() && enabled) {// && !turnController.onTarget()) {
+        // turnController.enable();
+        // } else {
+        // turnController.disable();
+        // }
     }
 
     public void setAngle(double angle) {
