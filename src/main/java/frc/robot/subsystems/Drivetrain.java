@@ -30,7 +30,6 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
     double y;
 
     static final double DRIVE_SPEED = 1000;
-    static final Deadband TURN_DEADBAND = new Deadband(0.25, 0);
 
     DrivetrainSendable drivetrainSendable;
 
@@ -106,8 +105,6 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
     }
 
     public void control(double x, double y) {
-        // double max = slowMode ? 0.7 : 1.0;
-
         // DesireOutput * max(liftPos) * max actual (instead of velocity PID) * swerve
         // compensate
         leftController.setOldPercent(x * slowMode.v);
@@ -127,9 +124,6 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
 
         // Implementation stolen from DifferentialDrive.class WPILib
 
-        // y = TURN_DEADBAND.calc(y, true) - 0.25;
-
-        // double new_y = Math.min(Math.abs(y), 0.75);
         y *= 0.75;
 
         final double epsilon = 0.0001;

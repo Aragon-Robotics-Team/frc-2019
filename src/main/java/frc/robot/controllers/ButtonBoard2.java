@@ -21,9 +21,6 @@ public class ButtonBoard2 extends OIBase {
     }
 
     void setUpButtons() {
-        // getButton(1).whenPressed(new SetVacuum(true));
-        // getButton(2).whenPressed(new SetVacuum(false));
-
         getButton(1).whenPressed(new SetSlowMode(SlowModes.Normal));
         getButton(2).whenPressed(new SetSlowMode(SlowModes.Fast));
 
