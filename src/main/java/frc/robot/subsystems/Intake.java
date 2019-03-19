@@ -8,8 +8,10 @@ import frc.robot.commands.intake.intake.CalibrateIntakeEncoder;
 import frc.robot.commands.intake.intake.ControlIntakeJoystick;
 import frc.robot.commands.intake.intake.ResetIntakeEncoder;
 import frc.robot.commands.intake.vacuum.ControlVacuumJoystick;
+import frc.robot.commands.intake.vacuum.SetVacuum;
 import frc.robot.util.BetterSendable;
 import frc.robot.util.BetterSolenoid;
+import frc.robot.util.BetterSpeedController;
 import frc.robot.util.BetterSubsystem;
 import frc.robot.util.BetterTalonSRX;
 import frc.robot.util.BetterTalonSRXConfig;
@@ -17,7 +19,8 @@ import frc.robot.util.Disableable;
 import frc.robot.util.Mock;
 import frc.robot.util.SendableMaster;
 
-public class Intake extends BetterSubsystem implements BetterSendable, Disableable {
+public class Intake extends BetterSubsystem
+        implements BetterSendable, Disableable, BetterSpeedController {
     public BetterTalonSRX controller;
     public Talon vacuumController;
     BetterSolenoid pistonController;
@@ -27,9 +30,11 @@ public class Intake extends BetterSubsystem implements BetterSendable, Disableab
 
     Position lastPosition;
     boolean isVacuumOn;
+    Position savedPosition;
 
     public enum Position {
-        Stowed(0), Intake(1967), Vertical(349), Horizontal(2733), Max(Horizontal.pos);
+        Stowed(0), Intake(2045), Vertical(563), Horizontal(Intake.pos), Max(
+                Horizontal.pos), ClearOfLift(Intake.pos);
 
         final double pos;
         public static final double ticksPerInch = 1;
@@ -54,9 +59,11 @@ public class Intake extends BetterSubsystem implements BetterSendable, Disableab
         config.slot0.allowableClosedloopError = 5;
         config.motionCruiseVelocity = 300;
         config.motionAcceleration = 300 * 2;
-        config.forwardSoftLimitEnable = true;
-        config.forwardSoftLimitThreshold = Position.Max.toTicks();
+        // config.forwardSoftLimitEnable = true;
+        // config.forwardSoftLimitThreshold = Position.Max.toTicks();
         config.openloopRamp = 0.25;
+        // config.reverseLimitSwitchNormal = LimitSwitchNormal.NormallyClosed;
+        // config.forwardLimitSwitchNormal = LimitSwitchNormal.NormallyClosed;
 
         controller = new BetterTalonSRX(map.controllerCanID(), config);
 
@@ -84,8 +91,10 @@ public class Intake extends BetterSubsystem implements BetterSendable, Disableab
         master.add(new ResetIntakeEncoder());
         master.add("Intake Joystick", new ControlIntakeJoystick());
         master.add(new ControlVacuumJoystick());
+        master.add("Sol", pistonController);
 
         Robot.instance.addCommand(new CalibrateIntakeEncoder(), true);
+        Robot.instance.addCommand(new SetVacuum(false), true);
     }
 
     public void resetEncoder() {
@@ -96,6 +105,22 @@ public class Intake extends BetterSubsystem implements BetterSendable, Disableab
         this.lastPosition = position;
         controller.setBrakeMode(true);
         controller.setMagic(position.pos);
+    }
+
+    public void pushPosition() {
+        savedPosition = lastPosition;
+    }
+
+    public void popPosition() {
+        setPosition(savedPosition);
+    }
+
+    public double getActualPosition() {
+        return controller.getEncoderPos();
+    }
+
+    public void set(double v) {
+        controller.setOldPercent(v);
     }
 
     public boolean isStowed() {
@@ -123,12 +148,21 @@ public class Intake extends BetterSubsystem implements BetterSendable, Disableab
 
 class IntakeSendable extends SendableBase {
     Intake intake;
+    static double ANGLE_ZERO = Intake.Position.Vertical.pos;
+    static double ANGLE_NINETY = 2800;
+    static double TICKS_PER_ANGLE = (ANGLE_NINETY - ANGLE_ZERO) / 90;
 
     public IntakeSendable(Intake intake) {
         this.intake = intake;
     }
 
+    double getAngle() {
+        return (intake.controller.getEncoderPos() - ANGLE_ZERO) / TICKS_PER_ANGLE;
+    }
+
     public void initSendable(SendableBuilder builder) {
+        builder.setSmartDashboardType("Gyro");
+        builder.addDoubleProperty("Value", this::getAngle, null);
         builder.addBooleanProperty("Vacuum", () -> intake.isVacuumOn, null);
     }
 }

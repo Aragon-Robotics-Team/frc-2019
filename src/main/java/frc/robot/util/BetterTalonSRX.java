@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 public class BetterTalonSRX implements BetterSendable, BetterSpeedController {
     final Deadband deadband;
 
-    final TalonSRX talon;
+    public final TalonSRX talon;
     final double ticksPerInch;
     int timeout = 300; // milliseconds
     final SendableSRX sendable;
@@ -151,6 +151,10 @@ public class BetterTalonSRX implements BetterSendable, BetterSpeedController {
         return isReal ? talon.getMotorOutputPercent() : lastOutput;
     }
 
+    public double getDesired() {
+        return this.lastOutput;
+    }
+
     // Encoder
 
     public double getEncoderRate() {
@@ -251,8 +255,12 @@ class SendableSRX extends SendableBase {
 
             b.addDoubleProperty("Wanted Inches", magic(t::getSet), t::set);
             b.addDoubleProperty("Current Inches", magic(t::getInch), null);
+
+            b.addDoubleProperty("Integral Accumator", magic(t.talon::getIntegralAccumulator), null);
         }
 
         b.addBooleanProperty("Reverse Limit", t::getReverseLimitSwitch, null);
+        b.addDoubleProperty("Desired Output", t::getDesired, null);
+        b.addBooleanProperty("Forward Limit", t::getForwardLimitSwitch, null);
     }
 }

@@ -1,8 +1,9 @@
 package frc.robot.controllers;
 
-import frc.robot.commands.intake.vacuum.SetVacuum;
+import frc.robot.commands.drivetrain.SetSlowMode;
 import frc.robot.commands.lift.SetLiftPosition;
 import frc.robot.map.RobotMap;
+import frc.robot.subsystems.Drivetrain.SlowModes;
 import frc.robot.subsystems.Lift;
 
 // Left
@@ -20,8 +21,8 @@ public class ButtonBoard2 extends OIBase {
     }
 
     void setUpButtons() {
-        getButton(1).whenPressed(new SetVacuum(true));
-        getButton(2).whenPressed(new SetVacuum(false));
+        getButton(1).whenPressed(new SetSlowMode(SlowModes.Normal));
+        getButton(2).whenPressed(new SetSlowMode(SlowModes.Fast));
 
         getButton(3).whenPressed(new SetLiftPosition(Lift.Position.Hatch1));
         getButton(4).whenPressed(new SetLiftPosition(Lift.Position.Hatch2));

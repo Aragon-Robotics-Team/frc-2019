@@ -22,7 +22,7 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
     BetterTalonSRX rightController;
     BetterFollower leftSlaveController;
     BetterFollower rightSlaveController;
-    boolean slow;
+    SlowModes slowMode = SlowModes.Normal;
 
     double distance;
     double x;
@@ -31,6 +31,18 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
     static final double DRIVE_SPEED = 1000;
 
     DrivetrainSendable drivetrainSendable;
+
+    public enum SlowModes {
+        Normal(0.85, 0.25), Fast(1, 0.05);
+
+        double v;
+        double r;
+
+        private SlowModes(double v, double r) {
+            this.v = v;
+            this.r = r;
+        }
+    }
 
     public Drivetrain() {
         var map = Robot.map.drivetrain;
@@ -70,7 +82,7 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
         stop();
         setBrake(true);
         reset();
-        setSlow(false);
+        setSlow(SlowModes.Normal);
     }
 
     public void createSendable(SendableMaster master) {
@@ -88,15 +100,14 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
     }
 
     public void periodic() {
-        updatePosition();
+        // updatePosition();
     }
 
     public void control(double x, double y) {
-        double max = slow ? 0.3 : 0.7;
-
-        // DesireOutput * max(liftPos) * max actual (instead of velocity PID) * swerve compensate
-        leftController.setOldPercent(x * max * 0.85 * 1.1);
-        rightController.setOldPercent(y * max * 0.85);
+        // DesireOutput * max(liftPos) * max actual (instead of velocity PID) * swerve
+        // compensate
+        leftController.setOldPercent(x * slowMode.v);
+        rightController.setOldPercent(y * slowMode.v);
     }
 
     public void controlArcade(double x, double y) { // x is up/down; y is right/left
@@ -111,6 +122,8 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
         // control(lp, rp);
 
         // Implementation stolen from DifferentialDrive.class WPILib
+
+        y *= 0.75;
 
         final double epsilon = 0.0001;
 
@@ -136,13 +149,13 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
         control(0, 0);
     }
 
-    public void setSlow(boolean slow) {
-        this.slow = slow;
-        System.out.println(slow);
+    public void setSlow(SlowModes slowMode) {
+        this.slowMode = slowMode;
 
-        double ramp = slow ? 1 : 0.2;
-        leftController.setOpenLoopRamp(ramp);
-        rightController.setOpenLoopRamp(ramp);
+        leftController.setOpenLoopRamp(slowMode.r);
+        rightController.setOpenLoopRamp(slowMode.r);
+
+        System.out.println("SlowMode: " + slowMode.v + " " + slowMode.r);
     }
 
     public void updatePosition() {

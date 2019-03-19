@@ -1,8 +1,10 @@
 package frc.robot.controllers;
 
+import frc.robot.commands.drivetrain.SetSlowMode;
 import frc.robot.commands.intake.piston.QuickPiston;
 import frc.robot.commands.intake.vacuum.SetVacuum;
 import frc.robot.map.RobotMap;
+import frc.robot.subsystems.Drivetrain.SlowModes;
 import frc.robot.util.Deadband;
 
 public class HotasX extends OIBase {
@@ -27,6 +29,9 @@ public class HotasX extends OIBase {
 
         getButton(6).whenPressed(new QuickPiston());
         getButton(9).whenPressed(new QuickPiston());
+
+        getButton(1).whenPressed(new SetSlowMode(SlowModes.Fast));
+        getButton(1).whenReleased(new SetSlowMode(SlowModes.Normal));
 
         // 10 : turn to visible target
 
