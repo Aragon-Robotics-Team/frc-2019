@@ -20,20 +20,15 @@ public class Lift extends BetterSubsystem implements BetterSendable, BetterSpeed
     double savedPos;
 
     public enum Position {
-        Stowed(0), Hatch1(0), Port1(2), Hatch2(4), Port2(6), Hatch3(8), Port3(10), Max(28), Manual(
-                -1);
+        Stowed(0), Hatch1(0), Port1(15), Hatch2(65), Port2(65), Hatch3(65), Port3(65), Max(
+                Port3.pos), Manual(-1);
 
         static final double POINT_OF_DISCONTINUITY = -1;
         static final double AREA_OF_INFLUENCE = -1;
         static final double WIDE_AREA_OF_INFLUENCE = -1;
 
         final double pos;
-        // Ticks per inch measured on the first layer outside the stationary part of the
-        // 2-stage lift, aka not the actual part of the intake.
-        // The actual intake ticksPerInch should be exactly 2x this one.
-        // Also, the intake is 19 5/8 inch above the ground measured at the center of
-        // the pison, at lift pos=0, at intake vertical.
-        public static final double ticksPerInch = 1040.3;
+        public static final double ticksPerInch = 254.625;
 
         private Position(double pos) {
             this.pos = pos;
@@ -56,7 +51,7 @@ public class Lift extends BetterSubsystem implements BetterSendable, BetterSpeed
         config.slot0.integralZone = 80;
         config.slot0.allowableClosedloopError = 5;
         config.motionCruiseVelocity = 1000;
-        config.motionAcceleration = 1000;
+        config.motionAcceleration = 1000 * 4;
         config.forwardSoftLimitEnable = true;
         config.forwardSoftLimitThreshold = Position.Max.toTicks();
         config.openloopRamp = 0.25;
@@ -65,8 +60,6 @@ public class Lift extends BetterSubsystem implements BetterSendable, BetterSpeed
         // config.forwardLimitSwitchNormal = LimitSwitchNormal.NormallyClosed;
         // config.forwardSoftLimitEnable = false;
         // config.reverseSoftLimitEnable = false;
-        config.peakOutputForward = 0.5;
-        config.peakOutputReverse = -0.5;
 
         controller = new BetterTalonSRX(map.controllerCanID(), config);
         // controller.talon.overrideLimitSwitchesEnable(false);
@@ -123,7 +116,7 @@ public class Lift extends BetterSubsystem implements BetterSendable, BetterSpeed
         return controller.getInch();
     }
 
-    void checkInDanger() {
+    void checkInDanger() { // Do not use; untested
         double pos = getActualPosition();
         double rawError = pos - Position.POINT_OF_DISCONTINUITY;
         double error = Math.abs(rawError);

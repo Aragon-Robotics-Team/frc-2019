@@ -1,10 +1,9 @@
 package frc.robot.commands.lift;
 
-import frc.robot.Robot;
-import frc.robot.commands.MoveUntilResult;
+import edu.wpi.first.wpilibj.command.Command;
 
-public class LiftClearReverseLimit extends MoveUntilResult<Boolean> {
-    public LiftClearReverseLimit() {
-        super(0.1, Robot.myLift::set, Robot.myLift.controller::getReverseLimitSwitch, false);
+public class LiftClearReverseLimit extends Command {
+    protected boolean isFinished() {
+        return true;
     }
 }
