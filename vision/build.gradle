@@ -1,92 +1,92 @@
 plugins {
     id 'java'
     id 'application'
-    id 'com.github.johnrengelman.shadow' version '4.0.3' apply false
+    id 'edu.wpi.first.GradleRIO'
 }
 
 mainClassName = 'frc.robot.vision.Main'
 
-apply plugin: 'com.github.johnrengelman.shadow'
-apply plugin: 'jaci.gradle.EmbeddedTools'
-apply plugin: 'edu.wpi.first.GradleRIO'
-
 repositories {
-	jcenter()
     mavenCentral()
 }
 
 dependencies {
     compile 'com.google.code.gson:gson:2.8.5'
 
-	compile wpi.deps.wpilib()
+    compile wpi.deps.wpilib()
     compile wpi.deps.vendor.java()
     nativeZip wpi.deps.vendor.jni(wpi.platforms.raspbian)
-	nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
 }
 
 //wrapper {
-    //gradleVersion = '5.0'
+//gradleVersion = '5.0'
 //}
+
+jar {
+    // Add all dependencies to a single .jar
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    
+    // Define main class to run
+    manifest { attributes( 'Main-Class': mainClassName ) }
+}
+
+// Disable deploying libraries that are already included on the WPILib FRCVision Pi image
+afterEvaluate { project -> 
+    project.tasks.deployJreRpi { onlyIf { return false } }
+    project.tasks.deployNativeLibsRpi { onlyIf { return false } }
+    project.tasks.deployNativeZipRpi { onlyIf { return false } }
+    project.tasks.deployRoborioCommandsRpi { onlyIf { return false } }
+}
 
 deploy {
     targets {
-		target('rpi') {
-			directory = '/home/pi'
-			failOnMissing = true
-			timeout = 10
-			
-			locations {
-				ssh {
-					address = '10.8.40.19' // 'frcvision.local'
-					user = 'pi'
-					password = '840robotics'
-				}
-			}
-		}
-	}
-	
-	artifacts {
-		all {
-			directory = '.'
-			targets << 'rpi'
-		}
-		
-		commandArtifact('visionRW') {
-			command = '/usr/bin/sudo /bin/mount -o remount,rw / '
-			dependsOn('deployVisionRWBootRpi')
-		}
-		
-		commandArtifact('visionRWBoot') {
-			command = '/usr/bin/sudo /bin/mount -o remount,rw /boot '
-		}
-		
-		fileArtifact('visionCombinedJar') {
-			file = file("build/libs/${project.name}-all.jar")
-			filename = 'uploaded.jar'
-			
-			dependsOn('build')
-			dependsOn('deployVisionRWRpi')
-		}
-		
-		fileArtifact('visionRunCamera') {
-			file = file('runCamera')
-			filename = 'runCamera.tmp'
-			
-			dependsOn('deployVisionCombinedJarRpi')
-			dependsOn('deployVisionRWRpi')
-			
-			postdeploy << { execute '/usr/bin/sudo /bin/chown 1000:1000 ./runCamera.tmp'}
-			postdeploy << { execute 'tr -d \'\\r\' < "runCamera.tmp" | tee "runCamera"'}
-			postdeploy << { execute '/usr/bin/sudo /bin/chown 1000:1000 ./runCamera'}
-			postdeploy << { execute '/usr/bin/sudo /bin/chmod +x ./runCamera'}
-			postdeploy << { execute '/usr/bin/sudo /bin/rm -fdr ./runCamera.tmp'}
-			
-			postdeploy << { execute '/usr/bin/sudo /usr/bin/killall java'}
-			postdeploy << { execute '/usr/bin/sudo /usr/bin/killall -9 java'}
-			postdeploy << { execute '/usr/bin/sudo /bin/bash ./runService'}
-			
-			postdeploy << { execute '/usr/bin/sudo /bin/mount -o remount,ro / ' }
-			postdeploy << { execute '/usr/bin/sudo /bin/mount -o remount,ro /boot ' }
-		}
-	}
+        target('rpi') {
+            directory = '/home/pi'
+            failOnMissing = true
+            timeout = 10
+            
+            locations {
+                ssh {
+                    address = '10.8.40.19' // 'frcvision.local'
+                    user = 'pi'
+                    password = '840robotics'
+                }
+            }
+        }
+    }
+    
+    artifacts {
+        all {
+            directory = '.'
+            targets << 'rpi'
+        }
+        
+        javaArtifact('combinedJar') {
+            filename = 'uploaded.jar'
+            
+            // Mount filesystems read/write before upload
+            predeploy << { execute '/usr/bin/sudo /bin/mount -o remount,rw /' }
+            predeploy << { execute '/usr/bin/sudo /bin/mount -o remount,rw /boot' } 
+        }
+        
+        fileArtifact('runCamera') {
+            file = file('runCamera')
+            filename = 'runCamera.tmp'
+            
+            dependsOn('deployCombinedJarRpi')
+            
+            postdeploy << { execute '/usr/bin/sudo /bin/chown 1000:1000 ./runCamera.tmp'}
+            postdeploy << { execute 'tr -d \'\\r\' < "runCamera.tmp" | tee "runCamera"'}
+            postdeploy << { execute '/usr/bin/sudo /bin/chown 1000:1000 ./runCamera'}
+            postdeploy << { execute '/usr/bin/sudo /bin/chmod +x ./runCamera'}
+            postdeploy << { execute '/usr/bin/sudo /bin/rm -fdr ./runCamera.tmp'}
+            
+            postdeploy << { execute '/usr/bin/sudo /usr/bin/killall java'}
+            postdeploy << { execute '/usr/bin/sudo /usr/bin/killall -9 java'}
+            postdeploy << { execute '/usr/bin/sudo /bin/bash ./runService'}
+            
+            postdeploy << { execute '/usr/bin/sudo /bin/mount -o remount,ro / ' }
+            postdeploy << { execute '/usr/bin/sudo /bin/mount -o remount,ro /boot ' }
+        }
+    }
 }
