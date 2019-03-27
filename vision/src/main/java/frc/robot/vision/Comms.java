@@ -9,7 +9,6 @@ import java.util.function.BiConsumer;
 import edu.wpi.cscore.CvSource;
 import edu.wpi.cscore.VideoSource;
 import edu.wpi.first.networktables.EntryListenerFlags;
-import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.vision.VisionThread;
@@ -124,6 +123,9 @@ public class Comms {
                         synchronized (ping) {
                             ping = Duration.between(ping_instant, clock.instant());
                         }
+                        System.out.println("pong");
+                    } else {
+                        System.out.println(event.value.getString());
                     }
                 }, EntryListenerFlags.kUpdate | EntryListenerFlags.kLocal);
                 time.schedule(this, 0, 200);
