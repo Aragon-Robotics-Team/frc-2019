@@ -1,6 +1,6 @@
 package frc.robot.controllers;
 
-import frc.robot.commands.angle.TurnAbsoluteCardinalAndDrive;
+import frc.robot.commands.angle.TurnAbsoluteCardinal;
 import frc.robot.commands.drivetrain.SetSlowMode;
 import frc.robot.commands.intake.piston.QuickPiston;
 import frc.robot.commands.intake.vacuum.SetVacuum;
@@ -30,7 +30,7 @@ public class HotasX extends OIBase {
 
         getButton(6).whenPressed(new QuickPiston());
         getButton(9).whenPressed(new QuickPiston());
-        getPOVTrigger().whenActive(new TurnAbsoluteCardinalAndDrive());
+        getPOVTrigger().whileActive(new TurnAbsoluteCardinal());
 
         getButton(1).whenPressed(new SetSlowMode(SlowModes.Fast));
         getButton(1).whenReleased(new SetSlowMode(SlowModes.Normal));

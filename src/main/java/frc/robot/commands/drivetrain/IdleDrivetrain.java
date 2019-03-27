@@ -8,7 +8,6 @@ public class IdleDrivetrain extends CommandGroup {
         setRunWhenDisabled(true);
         requires(Robot.myDrivetrain);
 
-        // addSequential(new StopDrivetrain());
         addSequential(new ControlArcadeDrivetrain());
     }
 }

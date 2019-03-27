@@ -163,7 +163,7 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
         double rightPos = rightController.getInch();
         double newDistance = (leftPos + rightPos) / 2;
 
-        double angle = Robot.myNavX.ahrs.getYaw();
+        double angle = Robot.myNavX.getYaw();
 
         rawUpdatePosition(newDistance, angle);
     }

@@ -12,7 +12,7 @@ import frc.robot.util.Mock;
 import frc.robot.util.SendableMaster;
 
 public class NavX implements BetterSendable {
-    public AHRS ahrs;
+    private AHRS ahrs;
     boolean isReal;
     NavXSendable sendable;
 
@@ -57,6 +57,14 @@ public class NavX implements BetterSendable {
 
         ahrs.reset(); // Might be either reset() or zeroYaw()
     }
+
+    public double getYaw() {
+        return ahrs.getYaw();
+    }
+
+    public AHRS getAHRS() {
+        return ahrs;
+    }
 }
 
 
@@ -68,7 +76,7 @@ class NavXSendable extends SendableBase {
     }
 
     public void initSendable(SendableBuilder builder) {
-        builder.addDoubleProperty("NavX Angle", navx.ahrs::getYaw, null);
+        builder.addDoubleProperty("NavX Angle", navx::getYaw, null);
         builder.addBooleanProperty("NavX Enabled", navx::isRunning, null);
     }
 }

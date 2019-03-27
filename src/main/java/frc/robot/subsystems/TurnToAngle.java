@@ -26,9 +26,9 @@ public class TurnToAngle extends BetterSubsystem implements PIDOutput, BetterSen
     AngleSendable sendable;
 
     public TurnToAngle() {
-        turnController = new PIDController(kP, kI, kD, kF, Robot.myNavX.ahrs, this);
+        turnController = new PIDController(kP, kI, kD, kF, Robot.myNavX.getAHRS(), this);
         turnController.setInputRange(-180.0f, 180.0f);
-        turnController.setOutputRange(-5.0, 5.0);
+        turnController.setOutputRange(-0.5, 0.5);
         turnController.setAbsoluteTolerance(kToleranceDegrees);
         turnController.setContinuous(true);
         turnController.disable();
@@ -45,11 +45,19 @@ public class TurnToAngle extends BetterSubsystem implements PIDOutput, BetterSen
     }
 
     public void periodic() {
-        // if (Robot.myNavX.isRunning() && enabled) {// && !turnController.onTarget()) {
-        // turnController.enable();
-        // } else {
-        // turnController.disable();
-        // }
+        if (Robot.myNavX.isRunning() && enabled) { // && !turnController.onTarget()) {
+            turnController.enable();
+        } else {
+            turnController.disable();
+        }
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public double getActualAngle() {
+        return Robot.myNavX.getYaw();
     }
 
     public void setAngle(double angle) {
@@ -70,6 +78,10 @@ public class TurnToAngle extends BetterSubsystem implements PIDOutput, BetterSen
         disableAndReset();
     }
 
+    public boolean isOnTarget() {
+        return (!enabled || turnController.onTarget());
+    }
+
     public void pidWrite(double output) {
         pidOut = output;
         Robot.myDrivetrain.controlArcade(0, output);
@@ -87,7 +99,7 @@ class AngleSendable extends SendableBase {
     public void initSendable(SendableBuilder builder) {
         builder.addDoubleProperty("Set Angle", () -> angle.currentAngle, null);
         builder.addDoubleProperty("Diff Angle",
-                () -> (Robot.myNavX.ahrs.getYaw() - angle.currentAngle + 180) % 360 - 180, null);
+                () -> (Robot.myNavX.getYaw() - angle.currentAngle + 180) % 360 - 180, null);
         builder.addDoubleProperty("PID Out", () -> angle.pidOut, null);
     }
 }

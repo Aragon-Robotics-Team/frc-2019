@@ -12,7 +12,7 @@ public class TestNavX extends Command {
             return;
         }
 
-        AHRS ahrs = Robot.myNavX.ahrs;
+        AHRS ahrs = Robot.myNavX.getAHRS();
 
         // Begin copypaste from
         // https://github.com/kauailabs/navxmxp/tree/master/roborio/java/navXMXP_Java_DataMonitor

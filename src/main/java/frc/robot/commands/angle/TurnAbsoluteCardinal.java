@@ -5,11 +5,12 @@ import frc.robot.Robot;
 
 public class TurnAbsoluteCardinal extends Command {
     public TurnAbsoluteCardinal() {
+        requires(Robot.myDrivetrain);
         requires(Robot.myAngle);
+        setTimeout(2);
     }
 
     protected void initialize() {
-        setTimeout(2);
         Integer pov = Robot.map.oi.getPOV();
         if (pov != null) {
             double angle = TurnCardinal.angles[pov];

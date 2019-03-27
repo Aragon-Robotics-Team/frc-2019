@@ -68,23 +68,23 @@ public abstract class OIBase extends SendableBase implements OI {
 
     public Integer getPOV() {
         int pov = getJoystick().getPOV();
-        switch (pov) {
+        switch (pov) { // -180 to 180
             case 0:
-                return 0;
-            case 45:
-                return 1;
-            case 90:
-                return 2;
-            case 135:
                 return 3;
-            case 180:
+            case 45:
                 return 4;
-            case 225:
+            case 90:
                 return 5;
-            case 270:
+            case 135:
                 return 6;
-            case 315:
+            case 180:
                 return 7;
+            case 225:
+                return 0;
+            case 270:
+                return 1;
+            case 315:
+                return 2;
         }
         return null;
     }

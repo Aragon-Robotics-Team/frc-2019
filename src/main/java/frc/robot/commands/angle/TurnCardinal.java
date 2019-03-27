@@ -8,10 +8,10 @@ public class TurnCardinal extends Command {
             new double[] {-118.75, -90, -61.25, 0, 61.25, 90, 118.75, 180};
     public static double target = 0;
     public static int target_index = -1;
-    public static double tollerance = .5; // tollerance degrees
 
     public TurnCardinal(boolean direction) {
         requires(Robot.myDrivetrain);
+        requires(Robot.myAngle);
         if (target_index == -1) {
             target = getClosestAngle(direction);
             Robot.myAngle.setAngle(target);
@@ -22,29 +22,29 @@ public class TurnCardinal extends Command {
         }
     }
 
-    public double getClosestAngle(boolean direction) {
-        int l = 0;
-        int h = angles.length - 1;
-        int m;
-        double current_angle = Robot.myNavX.ahrs.getAngle();
-        while (l <= h) {
-            m = (l + h) / 2;
-            if (angles[m] < current_angle) {
-                l = m + 1;
-            } else if (angles[m] == current_angle) {
-                return angles[m];
+    public static double getClosestAngle(boolean direction) { // if True: round down (left)
+        int low = 0;
+        int high = angles.length - 1;
+        int middle;
+        double current_angle = Robot.myNavX.getYaw();
+        while (low <= high) {
+            middle = (low + high) / 2;
+            if (angles[middle] < current_angle) {
+                low = middle + 1;
+            } else if (angles[middle] == current_angle) {
+                return angles[middle];
             } else {
-                h = m - 1;
+                high = middle - 1;
             }
         }
-        if (direction == true) {
-            return angles[h];
+        if (direction) {
+            return angles[high];
         } else {
-            return angles[l];
+            return angles[low];
         }
     }
 
-    public double getNextAngle(boolean direction) {
+    double getNextAngle(boolean direction) {
         if (direction) {
             target_index--;
             return angles[target_index];
@@ -60,11 +60,6 @@ public class TurnCardinal extends Command {
     }
 
     protected boolean isFinished() {
-        return (!Robot.myAngle.enabled
-                || equalsWithTollerance(Robot.myNavX.ahrs.getAngle(), target));
-    }
-
-    public boolean equalsWithTollerance(double angle1, double angle2) {
-        return tollerance > Math.abs(angle1 - angle2);
+        return Robot.myAngle.isOnTarget();
     }
 }
