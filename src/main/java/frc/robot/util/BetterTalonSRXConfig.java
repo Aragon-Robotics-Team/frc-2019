@@ -66,6 +66,7 @@ public class BetterTalonSRXConfig extends TalonSRXConfiguration {
         // Probably only good if not using high current things. Drivetrain + Compressor > 12V
         voltageCompSaturation = 12;
         feedbackNotContinuous = true; // Do not wrap absolute 4095 -> 4096. Always 4095 -> 0
+        peakCurrentLimit = 0;
 
         // Todo: current limit, voltage compensation
     }

@@ -10,7 +10,7 @@ public class TurnAbsoluteCardinal extends Command {
         setTimeout(2);
     }
 
-    protected void initialize() {
+    protected void execute() {
         Integer pov = Robot.map.oi.getPOV();
         if (pov != null) {
             double angle = TurnCardinal.angles[pov];

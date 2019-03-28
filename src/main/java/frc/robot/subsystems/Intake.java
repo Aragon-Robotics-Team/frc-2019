@@ -64,6 +64,9 @@ public class Intake extends BetterSubsystem
         config.openloopRamp = 0.25;
         // config.reverseLimitSwitchNormal = LimitSwitchNormal.NormallyClosed;
         // config.forwardLimitSwitchNormal = LimitSwitchNormal.NormallyClosed;
+        config.peakCurrentLimit = 5;
+        config.peakCurrentDuration = 50;
+        config.continuousCurrentLimit = 2;
 
         controller = new BetterTalonSRX(map.controllerCanID(), config);
 

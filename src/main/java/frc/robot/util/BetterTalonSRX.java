@@ -55,6 +55,10 @@ public class BetterTalonSRX implements BetterSendable, BetterSpeedController {
             talon.enableVoltageCompensation(true);
         }
 
+        if (config.peakCurrentLimit != 0.0) {
+            talon.enableCurrentLimit(true);
+        }
+
         sendable = new SendableSRX(this);
         // If two different sensors are configured, we have a second sensor
         sendable.secondSensor =
@@ -262,5 +266,6 @@ class SendableSRX extends SendableBase {
         b.addBooleanProperty("Reverse Limit", t::getReverseLimitSwitch, null);
         b.addDoubleProperty("Desired Output", t::getDesired, null);
         b.addBooleanProperty("Forward Limit", t::getForwardLimitSwitch, null);
+        b.addDoubleProperty("Current", t.talon::getOutputCurrent, null);
     }
 }

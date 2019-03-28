@@ -47,8 +47,8 @@ public class Lift extends BetterSubsystem implements BetterSendable, BetterSpeed
         config.invertEncoder = map.invertLiftEncoder();
         config.ticksPerInch = Position.ticksPerInch;
         config.slot0.kP = 2.0;
-        config.slot0.kI = 0.01;
-        config.slot0.integralZone = 80;
+        // config.slot0.kI = 0.01;
+        // config.slot0.integralZone = 80;
         config.slot0.allowableClosedloopError = 5;
         config.motionCruiseVelocity = 1000;
         config.motionAcceleration = 1000 * 4;
@@ -60,6 +60,10 @@ public class Lift extends BetterSubsystem implements BetterSendable, BetterSpeed
         // config.forwardLimitSwitchNormal = LimitSwitchNormal.NormallyClosed;
         // config.forwardSoftLimitEnable = false;
         // config.reverseSoftLimitEnable = false;
+        config.peakCurrentLimit = 10;
+        config.peakCurrentDuration = 500;
+        config.continuousCurrentLimit = 7;
+        config.peakOutputReverse = -0.5;
 
         controller = new BetterTalonSRX(map.controllerCanID(), config);
         // controller.talon.overrideLimitSwitchesEnable(false);
