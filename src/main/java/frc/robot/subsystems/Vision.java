@@ -92,8 +92,9 @@ public class Vision extends BetterSubsystem implements BetterSendable {
                 synchronized (concretes) {
                     synchronized (Robot.myDrivetrain.syncLock) {
                         for (int i = 0; i < history_length; i++) {
-                            concretes.add(new Pose(new Point(Robot.myDrivetrain.x, Robot.myDrivetrain.y),
-                                    Robot.myNavX.ahrs.getAngle()));
+                            concretes.add(
+                                    new Pose(new Point(Robot.myDrivetrain.x, Robot.myDrivetrain.y),
+                                            Robot.myNavX.ahrs.getAngle()));
                         }
                     }
                 }
@@ -143,8 +144,10 @@ public class Vision extends BetterSubsystem implements BetterSendable {
 
             public void UpdatePoseHistory(Pose p, double trust) {
                 Pose oldPose = getPose(p.time);
-                Pose delta = new Pose(new Point((p.position.x - oldPose.position.x) * trust,
-                        (p.position.y - oldPose.position.y) * trust), (p.angle - oldPose.angle) * trust, 0);
+                Pose delta = new Pose(
+                        new Point((p.position.x - oldPose.position.x) * trust,
+                                (p.position.y - oldPose.position.y) * trust),
+                        (p.angle - oldPose.angle) * trust, 0);
                 synchronized (concretes) {
                     for (int i = 0; i < concretes.size(); i++) {
                         concretes.get(i).position.x += delta.position.x;
@@ -164,22 +167,27 @@ public class Vision extends BetterSubsystem implements BetterSendable {
             NetworkTableEntry latency = table.getEntry("latency");
             latency.addListener((event) -> {
                 double time = Timer.getFPGATimestamp();
-                Duration latency_val = ByteArrayInput.getNetworkObject(Duration.ofDays(0), "table", "latency");
-                double[] angles = ByteArrayInput.getNetworkObject(new double[0], "table", "target_offsets");
+                Duration latency_val =
+                        ByteArrayInput.getNetworkObject(Duration.ofDays(0), "table", "latency");
+                double[] angles =
+                        ByteArrayInput.getNetworkObject(new double[0], "table", "target_offsets");
                 int validAngles = angles.length;
                 if (angles.length != 0) {
-                    Pose oldPose = poseHistory.getPose((double) latency_val.getSeconds()
-                            + latency_val.getNano() / 1000000000 - Timer.getFPGATimestamp());
+                    Pose oldPose = poseHistory.getPose(time - ((double) latency_val.getSeconds()
+                            + latency_val.getNano() / 1000000000));
                     Point avgNewPos = new Point(0, 0);
+                    double avgNewAngle = 0;
                     double map_angle;
                     Point newPos;
                     for (double angle : angles) {
                         map_angle = oldPose.angle + 90 - angle;
-                        Target[] t = MapInference.get_closest_targets_by_angle(oldPose.position, map_angle);
+                        Target[] t = MapInference.get_closest_targets_by_angle(oldPose.position,
+                                map_angle);
                         if (t.length > 0) {
                             newPos = MapInference.getPos(oldPose.position, map_angle, t[0]);
                             avgNewPos.x += newPos.x;
                             avgNewPos.y += newPos.y;
+                            avgNewAngle += map_angle;
                         } else {
                             validAngles -= 1;
                         }
@@ -187,14 +195,16 @@ public class Vision extends BetterSubsystem implements BetterSendable {
                     if (validAngles > 0) {
                         avgNewPos.x /= angles.length;
                         avgNewPos.y /= angles.length;
-                        poseHistory.UpdatePoseHistory(
-                                new Pose(avgNewPos,
-                                        time - (double) latency_val.getSeconds() + latency_val.getNano() / 1000000000),
+                        avgNewAngle /= angles.length;
+                        poseHistory.UpdatePoseHistory(new Pose(avgNewPos, avgNewAngle,
+                                time - (double) latency_val.getSeconds()
+                                        + latency_val.getNano() / 1000000000),
                                 0.1);
                     }
 
                 } else {
-                    System.out.println("latentcy.getDouble(-1) returned -1... This is not supposed to happen!!");
+                    System.out.println(
+                            "latentcy.getDouble(-1) returned -1... This is not supposed to happen!!");
                 }
             }, EntryListenerFlags.kUpdate | EntryListenerFlags.kLocal);
         }
