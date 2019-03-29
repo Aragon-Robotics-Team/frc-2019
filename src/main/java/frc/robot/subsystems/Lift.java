@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
 import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
+import edu.wpi.first.wpilibj.SendableBase;
+import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import frc.robot.Robot;
 import frc.robot.commands.lift.CalibrateLiftEncoder;
 import frc.robot.commands.lift.ControlLiftJoystick;
@@ -86,6 +88,7 @@ public class Lift extends BetterSubsystem implements BetterSendable, BetterSpeed
     }
 
     public void createSendable(SendableMaster master) {
+        master.add(new SendableLift(this));
         master.add(controller);
         master.add(new ResetLiftEncoder());
         master.add("Lift Joystick", new ControlLiftJoystick());
@@ -183,5 +186,51 @@ public class Lift extends BetterSubsystem implements BetterSendable, BetterSpeed
         }
 
         oldInDanger = inDanger;
+    }
+}
+
+
+class SendableLift extends SendableBase {
+    Lift lift;
+
+    public SendableLift(Lift lift) {
+        this.lift = lift;
+    }
+
+    final double getHatch() {
+        switch (lift.lastPosition) {
+            case Hatch1:
+                return 1;
+            case Hatch2:
+                return 2;
+            case Hatch3:
+                return 3;
+            default:
+                return 0;
+        }
+    }
+
+    final double getPort() {
+        switch (lift.lastPosition) {
+            case Port1:
+                return 1;
+            case Port2:
+                return 2;
+            case Port3:
+                return 3;
+            default:
+                return 0;
+        }
+    }
+
+    final double getError() {
+        final double error = lift.controller.getInch() - lift.lastPosition.pos;
+        return error / 15;
+    }
+
+    public void initSendable(SendableBuilder builder) {
+        builder.addDoubleProperty("Hatch", this::getHatch, null);
+        builder.addDoubleProperty("Port", this::getPort, null);
+        builder.addDoubleProperty("Error", this::getError, null);
     }
 }
