@@ -33,8 +33,8 @@ public class Intake extends BetterSubsystem
     Position savedPosition;
 
     public enum Position {
-        Stowed(0), Intake(1967), Vertical(349), Horizontal(2733), Max(Horizontal.pos), ClearOfLift(
-                Intake.pos);
+        Stowed(0), Intake(2045), Vertical(563), Horizontal(Intake.pos), Max(
+                Horizontal.pos), ClearOfLift(Intake.pos);
 
         final double pos;
         public static final double ticksPerInch = 1;
