@@ -28,13 +28,13 @@ public class Intake extends BetterSubsystem
     public BetterSubsystem vacuumSubsystem;
     public BetterSubsystem pistonSubsystem;
 
-    Position lastPosition;
+    Position lastPosition = Position.Stowed;
     boolean isVacuumOn;
     Position savedPosition;
 
     public enum Position {
         Stowed(0), Intake(2045), Vertical(563), Horizontal(Intake.pos), Max(
-                Horizontal.pos), ClearOfLift(Intake.pos);
+                Horizontal.pos), ClearOfLift(Intake.pos - 500);
 
         final double pos;
         public static final double ticksPerInch = 1;
