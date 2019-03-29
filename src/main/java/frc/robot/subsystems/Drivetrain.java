@@ -123,7 +123,7 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
 
         // Implementation stolen from DifferentialDrive.class WPILib
 
-        y *= 0.75;
+        y *= 0.60;
 
         final double epsilon = 0.0001;
 
