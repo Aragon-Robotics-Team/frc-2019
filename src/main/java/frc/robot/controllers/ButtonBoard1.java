@@ -24,7 +24,7 @@ public class ButtonBoard1 extends OIBase {
     }
 
     void setUpButtons() {
-        getButton(1).whenPressed(new StowIntakeAlways());
+        getButton(1).whenPressed(new StowIntakeAlways(false));
 
         getButton(2).whenPressed(new SetIntakePosition(Intake.Position.Stowed));
         getButton(3).whenPressed(new SetIntakePosition(Intake.Position.Vertical));
