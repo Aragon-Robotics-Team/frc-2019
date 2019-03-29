@@ -10,7 +10,7 @@ class DrivetrainImpl extends RobotMap.Drivetrain {
     }
 
     public Integer rightMainCanID() {
-        return null; // Removed loan from 6662, did not replace yet
+        return 5;
     }
 
     public Integer leftSlaveCanID() {

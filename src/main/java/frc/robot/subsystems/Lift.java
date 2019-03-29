@@ -20,8 +20,8 @@ public class Lift extends BetterSubsystem implements BetterSendable, BetterSpeed
     double savedPos;
 
     public enum Position {
-        Stowed(0), Hatch1(0), Port1(2), Hatch2(4), Port2(6), Hatch3(8), Port3(10), Max(28), Manual(
-                -1);
+        Stowed(0), Hatch1(0), Port1(3.9375), Hatch2(13.6875), Port2(17.8375), Hatch3(
+                27.6875), Port3(31.9375), Max(Port3.pos), Manual(-1);
 
         static final double POINT_OF_DISCONTINUITY = -1;
         static final double AREA_OF_INFLUENCE = -1;

@@ -7,13 +7,13 @@ import frc.robot.controllers.ButtonBoard2;
 import frc.robot.controllers.HotasX;
 import frc.robot.controllers.MultiOI;
 import frc.robot.controllers.OI;
-import frc.robot.map.practice.PracticeRobotMap;
+import frc.robot.map.comp.CompRobotMap;
 import frc.robot.util.BetterSendable;
 import frc.robot.util.SendableMaster;
 
 public abstract class RobotMap implements BetterSendable {
     public static RobotMap getMap() {
-        return new PracticeRobotMap();
+        return new CompRobotMap();
     }
 
     public OI oi;
