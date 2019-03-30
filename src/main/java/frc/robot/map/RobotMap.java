@@ -1,7 +1,6 @@
 package frc.robot.map;
 
 import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
-import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.controllers.ButtonBoard1;
 import frc.robot.controllers.ButtonBoard2;
 import frc.robot.controllers.HotasX;
@@ -9,6 +8,7 @@ import frc.robot.controllers.MultiOI;
 import frc.robot.controllers.OI;
 import frc.robot.map.comp.CompRobotMap;
 import frc.robot.util.BetterSendable;
+import frc.robot.util.BetterSubsystem;
 import frc.robot.util.SendableMaster;
 
 public abstract class RobotMap implements BetterSendable {
@@ -17,10 +17,7 @@ public abstract class RobotMap implements BetterSendable {
     }
 
     public OI oi;
-    public Subsystem oiSubsystem = new Subsystem("OI") {
-        protected void initDefaultCommand() {
-        }
-    };
+    public BetterSubsystem oiSubsystem = new BetterSubsystem();
 
     public void init() {
         if (oi == null) {
