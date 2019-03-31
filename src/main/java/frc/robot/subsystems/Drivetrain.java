@@ -33,14 +33,16 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
     DrivetrainSendable drivetrainSendable;
 
     public enum SlowModes {
-        Normal(0.85, 0.25), Fast(1, 0.05);
+        Normal(0.85, 0.1, .5), Fast(1, 0.05, .5), Slow(0.65, 0.1, 0.5 * 0.6);
 
         double v;
         double r;
+        double t;
 
-        private SlowModes(double v, double r) {
+        private SlowModes(double v, double r, double t) {
             this.v = v;
             this.r = r;
+            this.t = t;
         }
     }
 
@@ -123,7 +125,7 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
 
         // Implementation stolen from DifferentialDrive.class WPILib
 
-        y *= 0.60;
+        y *= slowMode.t;
 
         final double epsilon = 0.0001;
 
@@ -155,7 +157,7 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
         leftController.setOpenLoopRamp(slowMode.r);
         rightController.setOpenLoopRamp(slowMode.r);
 
-        System.out.println("SlowMode: " + slowMode.v + " " + slowMode.r);
+        System.out.println("SlowMode: " + slowMode.v + " " + slowMode.r + " " + slowMode.t);
     }
 
     public void updatePosition() {

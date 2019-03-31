@@ -28,12 +28,13 @@ public class HotasX extends OIBase {
         getButton(3).whenPressed(new SetVacuum(false));
         getButton(4).whenPressed(new SetVacuum(false));
 
-        getButton(6).whenPressed(new QuickPiston());
         getButton(9).whenPressed(new QuickPiston());
         getPOVTrigger().whileActive(new TurnAbsoluteCardinal());
 
         getButton(1).whenPressed(new SetSlowMode(SlowModes.Fast));
         getButton(1).whenReleased(new SetSlowMode(SlowModes.Normal));
+        getButton(5).whenPressed(new SetSlowMode(SlowModes.Slow));
+        getButton(5).whenReleased(new SetSlowMode(SlowModes.Normal));
 
         // 10 : turn to visible target
 
