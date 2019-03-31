@@ -28,6 +28,7 @@ public class ButtonBoard2 extends OIBase {
         // getButton(5).whenPressed(new SetLiftPosition(Lift.Position.Hatch3));
 
         // getButton(6).whenPressed(new SetLiftPosition(Lift.Position.Port3));
+        getButton(6).whenPressed(new SetLiftPosition(Lift.Position.CargoPort));
         getButton(7).whenPressed(new SetLiftPosition(Lift.Position.Port2));
         getButton(8).whenPressed(new SetLiftPosition(Lift.Position.Port1));
 
