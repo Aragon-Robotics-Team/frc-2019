@@ -1,13 +1,9 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.SendableBase;
-import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import frc.robot.Robot;
-import frc.robot.commands.drivetrain.ControlArcadeDrivetrain;
 import frc.robot.commands.drivetrain.IdleDrivetrain;
-import frc.robot.commands.drivetrain.ResetDrivetrainLocator;
-import frc.robot.commands.drivetrain.SetBrakeMode;
 import frc.robot.util.BetterFollower;
 import frc.robot.util.BetterFollowerConfig;
 import frc.robot.util.BetterSendable;
@@ -92,13 +88,6 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
 
         master.add("Left Wheels", leftController);
         master.add("Right Wheels", rightController);
-
-        master.add(new ResetDrivetrainLocator());
-        master.add("Brake", new SetBrakeMode(true));
-        master.add("Coast", new SetBrakeMode(false));
-        master.add("Reset Encoder", new InstantCommand(this::resetEncoders));
-        master.add("Reset Position", new InstantCommand(this::reset));
-        master.add(new ControlArcadeDrivetrain());
     }
 
     public void periodic() {
@@ -223,9 +212,7 @@ class DrivetrainSendable extends SendableBase {
 
     public void initSendable(SendableBuilder builder) {
         builder.setSmartDashboardType("DifferentialDrive");
-        builder.addDoubleProperty("Left Motor Speed", left::get, left::setPercent);
-        builder.addDoubleProperty("Right Motor Speed", right::get, right::setPercent);
-        builder.addDoubleProperty("X", drivetrain::getX, null);
-        builder.addDoubleProperty("Y", drivetrain::getY, null);
+        builder.addDoubleProperty("Left Motor Speed", left::getDesired, null);
+        builder.addDoubleProperty("Right Motor Speed", right::getDesired, null);;
     }
 }

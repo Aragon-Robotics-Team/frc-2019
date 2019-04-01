@@ -240,32 +240,5 @@ class SendableSRX extends SendableBase {
     }
 
     public void initSendable(SendableBuilder b) {
-        if (t.debug) {
-            System.out.printf("%s Magic %s 2Sensor %s", t.talon.getBaseID(), isMagic, secondSensor);
-        }
-
-        b.addDoubleProperty("Output", t::get, t::set);
-        b.addDoubleProperty("Velocity", t::getEncoderRate, null);
-        b.addDoubleProperty("Distance", t::getEncoderPos, null);
-        if (secondSensor) {
-            b.addDoubleProperty("Distance 2", () -> t.talon.getSelectedSensorPosition(1), null);
-        }
-
-        if (isMagic) {
-            b.addDoubleProperty("MagicError", magic(t.talon::getClosedLoopError), null);
-            b.addDoubleProperty("MagicTarget", magic(t.talon::getClosedLoopTarget), null);
-            b.addDoubleProperty("MagicVel", magic(t.talon::getActiveTrajectoryVelocity), null);
-            b.addDoubleProperty("MagicPos", magic(t.talon::getActiveTrajectoryPosition), null);
-
-            b.addDoubleProperty("Wanted Inches", magic(t::getSet), t::set);
-            b.addDoubleProperty("Current Inches", magic(t::getInch), null);
-
-            b.addDoubleProperty("Integral Accumator", magic(t.talon::getIntegralAccumulator), null);
-        }
-
-        b.addBooleanProperty("Reverse Limit", t::getReverseLimitSwitch, null);
-        b.addDoubleProperty("Desired Output", t::getDesired, null);
-        b.addBooleanProperty("Forward Limit", t::getForwardLimitSwitch, null);
-        b.addDoubleProperty("Current", t.talon::getOutputCurrent, null);
     }
 }

@@ -24,7 +24,6 @@ public class Vision extends BetterSubsystem implements BetterSendable {
         var map = Robot.map.vision;
 
         if (map.ledPort() != null) { // Sigh... I just can't get rid of this
-            master.add(ledController);
         }
     }
 

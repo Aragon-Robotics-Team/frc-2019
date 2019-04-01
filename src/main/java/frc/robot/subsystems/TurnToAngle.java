@@ -41,7 +41,6 @@ public class TurnToAngle extends BetterSubsystem implements PIDOutput, BetterSen
     }
 
     public void createSendable(SendableMaster master) {
-        master.add("TurnToAngle", sendable);
     }
 
     public void periodic() {
@@ -97,9 +96,5 @@ class AngleSendable extends SendableBase {
     }
 
     public void initSendable(SendableBuilder builder) {
-        builder.addDoubleProperty("Set Angle", () -> angle.currentAngle, null);
-        builder.addDoubleProperty("Diff Angle",
-                () -> (Robot.myNavX.getYaw() - angle.currentAngle + 180) % 360 - 180, null);
-        builder.addDoubleProperty("PID Out", () -> angle.pidOut, null);
     }
 }
