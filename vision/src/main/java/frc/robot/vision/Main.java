@@ -10,6 +10,7 @@ package frc.robot.vision;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.Clock;
 import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.Gson;
@@ -18,8 +19,11 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import edu.wpi.cscore.CvSource;
+import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.VideoSource;
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.vision.VisionThread;
 
@@ -30,14 +34,15 @@ public final class Main {
 		public String name;
 		public String path;
 		public JsonObject config;
+		public JsonElement streamConfig;
 	}
 
 	public static int team;
 	public static boolean server;
-	public static List<CameraConfig> cameras = new ArrayList<>();
+	public static List<CameraConfig> cameraConfigs = new ArrayList<>();
 
-	private static VisionThread visionThread;
-	private static final Object imgLock = new Object();
+	public static CvSource AugmentCam;
+	public static Clock clock = Clock.systemUTC();
 
 	private Main() {
 	}
@@ -71,9 +76,12 @@ public final class Main {
 		}
 		cam.path = pathElement.getAsString();
 
+		// stream properties
+		cam.streamConfig = config.get("stream");
+
 		cam.config = config;
 
-		cameras.add(cam);
+		cameraConfigs.add(cam);
 		return true;
 	}
 
@@ -136,17 +144,25 @@ public final class Main {
 	/**
 	 * Start running the camera.
 	 */
-	public static void startCamera(CameraConfig config) {
+	public static VideoSource startCamera(CameraConfig config) {
 		System.out.println("Starting camera '" + config.name + "' on " + config.path);
-		VideoSource camera =
-				CameraServer.getInstance().startAutomaticCapture(config.name, config.path);
+		CameraServer inst = CameraServer.getInstance();
+		UsbCamera camera = new UsbCamera(config.name, config.path);
+		// MjpegServer server = inst.startAutomaticCapture(camera);
+
+		// setup a cvSource where you can put furames and it should just work
+		AugmentCam = inst.putVideo("Augmented", 320, 240);
 
 		Gson gson = new GsonBuilder().create();
 
 		camera.setConfigJson(gson.toJson(config.config));
+		camera.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen);
 
-		visionThread = new VisionThread(camera, new Grip(), Main::pipelineProcess);
+		if (config.streamConfig != null) {
+			// server.setConfigJson(gson.toJson(config.streamConfig));
+		}
 
+		return camera;
 	}
 
 	/**
@@ -171,10 +187,48 @@ public final class Main {
 			System.out.println("Setting up NetworkTables client for team " + team);
 			ntinst.startClientTeam(team);
 		}
+		// send Timestamp to RIO for synchronization
+		System.out.println("main");
+		System.out.println(clock.instant());
+		ByteArrayOutput.setNetworkObject(clock.instant(), "table", "target_offsets");
 
 		// start cameras
-		for (CameraConfig camera : cameras) {
-			startCamera(camera);
+		List<VideoSource> cameras = new ArrayList<>();
+		for (CameraConfig cameraConfig : cameraConfigs) {
+			cameras.add(startCamera(cameraConfig));
+		}
+
+		// start image processing on camera 0 if present
+		if (cameras.size() >= 1) {
+			VisionThread visionThread =
+					new VisionThread(cameras.get(0), new GripPostProcessing(), pipeline -> {
+						// do something with pipeline results
+						// System.out.println("start callback pipeline");
+						AugmentCam.putFrame(pipeline.AugmentCamOutput);
+						// System.out.println(pipeline.grip.filterContoursOutput());
+						// System.out.println(pipeline.grip.filterContoursOutput());
+						// ByteArrayOutput.setNetworkObject(pipeline.visionTargets, "table",
+						// "visionTargets");
+						double[] x_offset_angles = new double[pipeline.visionTargets.size()];
+						for (int i = 0; i < pipeline.visionTargets.size(); i++) {
+							GripPostProcessing.VisionTarget v = pipeline.visionTargets.get(i);
+							x_offset_angles[i] = CoordTransform.transformCoordsToOffsetAngle(
+									new double[] {(double) v.bounding.x + 0.5 * v.bounding.width,
+											(double) v.bounding.y + 0.5 * v.bounding.height})[0];
+						}
+						for (int i = 0; i < x_offset_angles.length; i++) {
+							System.out.print(x_offset_angles[i]*180/Math.PI + " ");
+						}
+						System.out.println();
+						ByteArrayOutput.setNetworkObject(x_offset_angles, "table",
+								"target_offsets");
+					});
+			/*
+			 * something like this for GRIP: VisionThread visionThread = new
+			 * VisionThread(cameras.get(0), new GripPipeline(), pipeline -> { ... });
+			 */
+			System.out.println("start visionthread");
+			visionThread.start();
 		}
 
 		// loop forever
@@ -187,7 +241,21 @@ public final class Main {
 		}
 	}
 
-	public static void pipelineProcess(Grip pipeline) {
-		System.out.println(pipeline.filterContoursOutput());
-	}
+	// public static void pipelineProcess(GripPostProcessing pipeline) {
+	// System.out.println(pipeline.grip.filterContoursOutput());
+	// // ByteArrayOutput.setNetworkObject(pipeline.visionTargets, "table",
+	// // "visionTargets");
+	// double[] x_offset_angles = new double[pipeline.visionTargets.size()];
+	// for (int i = 0; i < pipeline.visionTargets.size(); i++) {
+	// GripPostProcessing.VisionTarget v = pipeline.visionTargets.get(i);
+	// x_offset_angles[i] = CoordTransform.transformCoordsToOffsetAngle(
+	// new double[] {(double) v.bounding.height, (double) v.bounding.width})[0];
+	// }
+	// for (int i = 0; i < x_offset_angles.length; i++) {
+	// System.out.print(x_offset_angles[i] + "");
+	// }
+	// ByteArrayOutput.setNetworkObject(x_offset_angles, "table", "target_offsets");
+	// AugmentCam.putFrame(pipeline.AugmentCamOutput);
+
+	// }
 }

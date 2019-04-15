@@ -12,7 +12,6 @@ import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
-import edu.wpi.first.vision.VisionPipeline;
 
 /**
  * Grip class.
@@ -22,13 +21,13 @@ import edu.wpi.first.vision.VisionPipeline;
  *
  * @author GRIP
  */
-public class Grip implements VisionPipeline {
+public class Grip implements GripInterface {
 
 	// Outputs
-	private Mat normalizeOutput = new Mat();
 	private Mat hslThresholdOutput = new Mat();
+	private Mat cvDilate0Output = new Mat();
 	private Mat cvErodeOutput = new Mat();
-	private Mat cvDilateOutput = new Mat();
+	private Mat cvDilate1Output = new Mat();
 	private ArrayList<MatOfPoint> findContoursOutput = new ArrayList<MatOfPoint>();
 	private ArrayList<MatOfPoint> filterContoursOutput = new ArrayList<MatOfPoint>();
 
@@ -40,52 +39,55 @@ public class Grip implements VisionPipeline {
 	 * This is the primary method that runs the entire pipeline and updates the outputs.
 	 */
 	public void process(Mat source0) {
-		// Step Normalize0:
-		Mat normalizeInput = source0;
-		int normalizeType = Core.NORM_MINMAX;
-		double normalizeAlpha = 0.0;
-		double normalizeBeta = 255;
-		normalize(normalizeInput, normalizeType, normalizeAlpha, normalizeBeta, normalizeOutput);
-
 		// Step HSL_Threshold0:
-		Mat hslThresholdInput = normalizeOutput;
-		double[] hslThresholdHue = {0.0, 41.77474402730375};
-		double[] hslThresholdSaturation = {146.76258992805754, 255.0};
-		double[] hslThresholdLuminance = {0.0, 255.0};
+		Mat hslThresholdInput = source0;
+		double[] hslThresholdHue = {56.972550646190605, 84.745763249346};
+		double[] hslThresholdSaturation = {107.53717321372572, 255.0};
+		double[] hslThresholdLuminance = {64.83050847457626, 255.0};
 		hslThreshold(hslThresholdInput, hslThresholdHue, hslThresholdSaturation,
 				hslThresholdLuminance, hslThresholdOutput);
 
+		// Step CV_dilate0:
+		Mat cvDilate0Src = hslThresholdOutput;
+		Mat cvDilate0Kernel = new Mat();
+		Point cvDilate0Anchor = new Point(-1, -1);
+		double cvDilate0Iterations = 1.0;
+		int cvDilate0Bordertype = Core.BORDER_CONSTANT;
+		Scalar cvDilate0Bordervalue = new Scalar(-1);
+		cvDilate(cvDilate0Src, cvDilate0Kernel, cvDilate0Anchor, cvDilate0Iterations,
+				cvDilate0Bordertype, cvDilate0Bordervalue, cvDilate0Output);
+
 		// Step CV_erode0:
-		Mat cvErodeSrc = hslThresholdOutput;
+		Mat cvErodeSrc = cvDilate0Output;
 		Mat cvErodeKernel = new Mat();
 		Point cvErodeAnchor = new Point(-1, -1);
-		double cvErodeIterations = 8.0;
+		double cvErodeIterations = 2.0;
 		int cvErodeBordertype = Core.BORDER_CONSTANT;
 		Scalar cvErodeBordervalue = new Scalar(-1);
 		cvErode(cvErodeSrc, cvErodeKernel, cvErodeAnchor, cvErodeIterations, cvErodeBordertype,
 				cvErodeBordervalue, cvErodeOutput);
 
-		// Step CV_dilate0:
-		Mat cvDilateSrc = cvErodeOutput;
-		Mat cvDilateKernel = new Mat();
-		Point cvDilateAnchor = new Point(-1, -1);
-		double cvDilateIterations = 6.0;
-		int cvDilateBordertype = Core.BORDER_CONSTANT;
-		Scalar cvDilateBordervalue = new Scalar(-1);
-		cvDilate(cvDilateSrc, cvDilateKernel, cvDilateAnchor, cvDilateIterations,
-				cvDilateBordertype, cvDilateBordervalue, cvDilateOutput);
+		// Step CV_dilate1:
+		Mat cvDilate1Src = cvErodeOutput;
+		Mat cvDilate1Kernel = new Mat();
+		Point cvDilate1Anchor = new Point(-1, -1);
+		double cvDilate1Iterations = 1.0;
+		int cvDilate1Bordertype = Core.BORDER_CONSTANT;
+		Scalar cvDilate1Bordervalue = new Scalar(-1);
+		cvDilate(cvDilate1Src, cvDilate1Kernel, cvDilate1Anchor, cvDilate1Iterations,
+				cvDilate1Bordertype, cvDilate1Bordervalue, cvDilate1Output);
 
 		// Step Find_Contours0:
-		Mat findContoursInput = cvDilateOutput;
+		Mat findContoursInput = cvDilate1Output;
 		boolean findContoursExternalOnly = false;
 		findContours(findContoursInput, findContoursExternalOnly, findContoursOutput);
 
 		// Step Filter_Contours0:
 		ArrayList<MatOfPoint> filterContoursContours = findContoursOutput;
-		double filterContoursMinArea = 0.0;
-		double filterContoursMinPerimeter = 150.0;
+		double filterContoursMinArea = 75.0;
+		double filterContoursMinPerimeter = 0.0;
 		double filterContoursMinWidth = 0.0;
-		double filterContoursMaxWidth = 10000.0;
+		double filterContoursMaxWidth = 1000.0;
 		double filterContoursMinHeight = 0.0;
 		double filterContoursMaxHeight = 1000.0;
 		double[] filterContoursSolidity = {0, 100};
@@ -102,21 +104,21 @@ public class Grip implements VisionPipeline {
 	}
 
 	/**
-	 * This method is a generated getter for the output of a Normalize.
-	 * 
-	 * @return Mat output from Normalize.
-	 */
-	public Mat normalizeOutput() {
-		return normalizeOutput;
-	}
-
-	/**
 	 * This method is a generated getter for the output of a HSL_Threshold.
 	 * 
 	 * @return Mat output from HSL_Threshold.
 	 */
 	public Mat hslThresholdOutput() {
 		return hslThresholdOutput;
+	}
+
+	/**
+	 * This method is a generated getter for the output of a CV_dilate.
+	 * 
+	 * @return Mat output from CV_dilate.
+	 */
+	public Mat cvDilate0Output() {
+		return cvDilate0Output;
 	}
 
 	/**
@@ -133,8 +135,8 @@ public class Grip implements VisionPipeline {
 	 * 
 	 * @return Mat output from CV_dilate.
 	 */
-	public Mat cvDilateOutput() {
-		return cvDilateOutput;
+	public Mat cvDilate1Output() {
+		return cvDilate1Output;
 	}
 
 	/**
@@ -155,19 +157,6 @@ public class Grip implements VisionPipeline {
 		return filterContoursOutput;
 	}
 
-
-	/**
-	 * Normalizes or remaps the values of pixels in an image.
-	 * 
-	 * @param input  The image on which to perform the Normalize.
-	 * @param type   The type of normalization.
-	 * @param a      The minimum value.
-	 * @param b      The maximum value.
-	 * @param output The image in which to store the output.
-	 */
-	private void normalize(Mat input, int type, double a, double b, Mat output) {
-		Core.normalize(input, output, a, b, type);
-	}
 
 	/**
 	 * Segment an image based on hue, saturation, and luminance ranges.
@@ -315,3 +304,4 @@ public class Grip implements VisionPipeline {
 
 
 }
+
