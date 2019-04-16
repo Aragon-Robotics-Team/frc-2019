@@ -21,7 +21,7 @@ public class AutoAlign extends Command {
         double[] angles = ByteArrayInput.getNetworkObject(new double[0], "table", "target_offsets");
         if (angles.length != 0) {
             if (angles[0] != last_angles[0]) {
-                double targetAngle = angles[0] + Robot.myNavX.ahrs.getAngle();
+                double targetAngle = angles[0] + Robot.myNavX.getYaw();
                 Robot.myAngle.setAngle(targetAngle);
                 last_angles = angles;
             }
