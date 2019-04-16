@@ -101,7 +101,7 @@ public class Comms {
     public static class TimeServices {
         public Clock clock = Clock.systemUTC();
         public Timer time = new Timer();
-        public Duration ping;
+        public Duration ping = Duration.ZERO;
         public Instant ping_instant;
         public Pinger pinger;
 
