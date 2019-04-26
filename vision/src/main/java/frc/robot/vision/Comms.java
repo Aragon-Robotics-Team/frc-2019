@@ -34,13 +34,24 @@ public class Comms {
 
     public static void gripProcessVideo(GripPostProcessing p, CvSource outputVideo) {
         // outputVideo.putFrame(p.AugmentCamOutput);
-        double[] x_offset_angles = new double[p.visionTargets.size()];
-        for (int i = 0; i < p.visionTargets.size(); i++) {
-            GripPostProcessing.VisionTarget v = p.visionTargets.get(i);
-            x_offset_angles[i] = CoordTransform
-                    .transformCoordsToOffsetAngle(new double[] { (double) v.bounding.x + 0.5 * v.bounding.width,
-                            (double) v.bounding.y + 0.5 * v.bounding.height })[0];
+
+        // double[] x_offset_angles = new double[p.visionTargets.size()];
+        // for (int i = 0; i < p.visionTargets.size(); i++) {
+        // GripPostProcessing.VisionTarget v = p.visionTargets.get(i);
+        // x_offset_angles[i] = CoordTransform
+        // .transformCoordsToOffsetAngle(new double[] { (double) v.bounding.x + 0.5 *
+        // v.bounding.width,
+        // (double) v.bounding.y + 0.5 * v.bounding.height })[0];
+        // }
+
+        double[] x_offset_angles;
+        if (p.visionTargets.size() > 0) {
+            GripPostProcessing.VisionTarget v = p.visionTargets.get(0);
+            x_offset_angles = new double[] { v.x, v.y };
+        } else {
+            x_offset_angles = new double[0];
         }
+
         ByteArrayOutput.setNetworkObject(x_offset_angles, "table", "target_offsets");
         if (p.visionTargets.size() > 0) {
             NetworkTableInstance inst = NetworkTableInstance.getDefault();
@@ -54,13 +65,14 @@ public class Comms {
             entry.setBoolean(false);
         }
 
-        Duration latency;
-        synchronized (Comms.timeServices.ping) {
-            latency = Comms.timeServices.ping;
-        }
-
-        latency = latency.plus(Duration.between(p.t, Comms.timeServices.clock.instant()));
-        ByteArrayOutput.setNetworkObject(latency, "table", "latency");
+        // Duration latency;
+        // synchronized (Comms.timeServices.ping) {
+        // latency = Comms.timeServices.ping;
+        // }
+        //
+        // latency = latency.plus(Duration.between(p.t,
+        // Comms.timeServices.clock.instant()));
+        // ByteArrayOutput.setNetworkObject(latency, "table", "latency");
 
     }
 
