@@ -12,7 +12,6 @@ public class AutoAlign extends Command {
     public AutoAlign() {
         requires(Robot.myDrivetrain);
         requires(Robot.myAngle);
-        setTimeout(5);
     }
 
     protected void initialize() {
@@ -40,7 +39,6 @@ public class AutoAlign extends Command {
     }
 
     protected boolean isFinished() {
-        return isTimedOut();
+        return false;
     }
-
 }

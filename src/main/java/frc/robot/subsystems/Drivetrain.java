@@ -10,6 +10,7 @@ import frc.robot.util.BetterSendable;
 import frc.robot.util.BetterSubsystem;
 import frc.robot.util.BetterTalonSRX;
 import frc.robot.util.BetterTalonSRXConfig;
+import frc.robot.util.Deadband;
 import frc.robot.util.Disableable;
 import frc.robot.util.SendableMaster;
 
@@ -53,6 +54,7 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
         // leftConfig.slot0.kF = (1023.0 / 1112.0) * 1.13;
         leftConfig.slot0.kP = 0.7;
         leftConfig.ticksPerInch = 76.485294;
+        leftConfig.deadband = new Deadband(0.1, 0.0);
         leftController = new BetterTalonSRX(map.leftMainCanID(), leftConfig);
 
         BetterTalonSRXConfig rightConfig = new BetterTalonSRXConfig();
@@ -61,6 +63,7 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
         rightConfig.maxTickVelocity = 1142.0;
         rightConfig.slot0.kP = 0.7;
         rightConfig.ticksPerInch = 76.485294;
+        rightConfig.deadband = new Deadband(0.1, 0.0);
         rightController = new BetterTalonSRX(map.rightMainCanID(), rightConfig);
 
         BetterFollowerConfig leftSlaveConfig = new BetterFollowerConfig();
@@ -99,6 +102,11 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
         // compensate
         leftController.setOldPercent(x * slowMode.v);
         rightController.setOldPercent(y * slowMode.v);
+    }
+
+    public void controlRaw(double x, double y) {
+        leftController.setOldPercent(x);
+        rightController.setOldPercent(y);
     }
 
     public void controlArcade(double x, double y) { // x is up/down; y is right/left
@@ -213,6 +221,6 @@ class DrivetrainSendable extends SendableBase {
     public void initSendable(SendableBuilder builder) {
         builder.setSmartDashboardType("DifferentialDrive");
         builder.addDoubleProperty("Left Motor Speed", left::getDesired, null);
-        builder.addDoubleProperty("Right Motor Speed", right::getDesired, null);;
+        builder.addDoubleProperty("Right Motor Speed", right::getDesired, null);
     }
 }

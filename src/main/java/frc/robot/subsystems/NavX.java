@@ -4,6 +4,7 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SendableBase;
+import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import frc.robot.Robot;
 import frc.robot.util.BetterSendable;
@@ -36,6 +37,9 @@ public class NavX implements BetterSendable {
     }
 
     public void createSendable(SendableMaster master) {
+        master.add("NavX", sendable);
+        master.add("Yaw", ahrs);
+        master.add("Reset Yaw", new InstantCommand("Reset Yaw", this::zeroYaw));
     }
 
     public boolean isRunning() {
