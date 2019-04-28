@@ -1,18 +1,48 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.SendableBase;
+import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import frc.robot.Robot;
 import frc.robot.util.BetterSendable;
 import frc.robot.util.BetterSubsystem;
+import frc.robot.util.GyroSendable;
 import frc.robot.util.Mock;
 import frc.robot.util.SendableMaster;
 
 public class Vision extends BetterSubsystem implements BetterSendable {
-    // public Instant pi_instant;
-    // public Instant rio_instant;
-    // public Clock clock = Clock.systemUTC();;
-
     Relay ledController;
+
+    public boolean seeTarget;
+    public double[] targetPos = new double[2];
+    public double calculatedYaw;
+
+    static NetworkTable networkTable = NetworkTableInstance.getDefault().getTable("table");
+    static NetworkTableEntry positionEntry = networkTable.getEntry("target_offsets");
+    static NetworkTableEntry existsEntry = networkTable.getEntry("target_sighted");
+
+    static final int imgWidth = 320;
+    static final int imgHeight = 240;
+    static final int aspectH = 16;
+    static final int aspectV = 9;
+    static final double fovD = Math.toRadians(68.5);
+
+    static final double centerH = (imgWidth / 2.0) + 0.5;
+    // static final double centerV = (imgHeight / 2.0) + 0.5;
+
+    static final double aspectD = Math.hypot(aspectH, aspectV);
+    static final double fovH = Math.atan(Math.tan(fovD / 2.0) * (aspectH / aspectD)) * 2.0;
+    // static double fovV = Math.atan(Math.tan(fovD / 2.0) * (aspectV / aspectD)) * 2.0;
+
+    static final double focalH = imgWidth / (2.0 * Math.tan(fovH / 2.0));
+    // static final double focalV = imgWidth / (2.0 * Math.tan(fovV / 2.0));
+
+    static final double calculateYaw(double pixelH) {
+        return Math.toDegrees(Math.atan2(pixelH - centerH, focalH));
+    }
 
     public Vision() {
         var map = Robot.map.vision;
@@ -22,38 +52,47 @@ public class Vision extends BetterSubsystem implements BetterSendable {
         ledController.setSafetyEnabled(false);
 
         setLeds(false);
-
-        // NetworkTableInstance netInst = NetworkTableInstance.getDefault();
-        // NetworkTable table = netInst.getTable("table");
-        // table.addEntryListener("timestamp", new init_time_listener(this),
-        // EntryListenerFlags.kUpdate);
     }
 
     public void createSendable(SendableMaster master) {
+        master.add(new SendableVision(this));
+        master.add("Yaw", new GyroSendable(() -> calculatedYaw));
         var map = Robot.map.vision;
 
         if (map.ledPort() != null) { // Sigh... I just can't get rid of this
         }
     }
 
+    public void periodic() {
+        updateTarget();
+    }
+
+    public void updateTarget() {
+        targetPos = positionEntry.getDoubleArray(new double[2]);
+        seeTarget = existsEntry.getBoolean(false);
+        calculatedYaw = seeTarget ? calculateYaw(targetPos[0]) : 0.0;
+    }
+
     public void setLeds(boolean on) {
         if (on) {
             ledController.set(Relay.Value.kOn);
+        } else {
             ledController.set(Relay.Value.kOff);
         }
     }
+}
 
-    // public class init_time_listener implements TableEntryListener {
-    // public Vision parent;
 
-    // public init_time_listener(Vision parent) {
-    // this.parent = parent;
-    // }
+class SendableVision extends SendableBase {
+    Vision vision;
 
-    // public void valueChanged(NetworkTable table, String key, NetworkTableEntry entry,
-    // NetworkTableValue value, int flags) {
-    // ByteArrayInput.deserialize(this.parent.pi_instant, value.getRaw());
-    // this.parent.rio_instant = this.parent.clock.instant();
-    // }
-    // }
+    public SendableVision(Vision vision) {
+        this.vision = vision;
+    }
+
+    public void initSendable(SendableBuilder builder) {
+        // builder.addBooleanProperty("Target", () -> vision.seeTarget, null);
+        builder.addDoubleProperty("X", () -> vision.targetPos[0], null);
+        // builder.addDoubleProperty("Y", () -> vision.targetPos[1], null);
+    }
 }

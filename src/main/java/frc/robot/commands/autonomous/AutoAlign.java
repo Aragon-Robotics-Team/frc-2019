@@ -1,13 +1,11 @@
 package frc.robot.commands.autonomous;
 
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
-import frc.robot.subsystems.ByteArrayInput;
 
 public class AutoAlign extends Command {
     public int state; // 0-stopped, 1-turning
-    public double[] last_angles = new double[2];
+    public double lastAngle;
 
     public AutoAlign() {
         requires(Robot.myDrivetrain);
@@ -15,16 +13,15 @@ public class AutoAlign extends Command {
     }
 
     protected void initialize() {
+        end();
     }
 
     protected void execute() {
-        double[] angles = ByteArrayInput.getNetworkObject(new double[0], "table", "target_offsets");
-        SmartDashboard.putNumberArray("table_table", angles);
-        if (angles.length != 0) {
-            if (angles[0] != last_angles[0]) {
-                double targetAngle = angles[0] + Robot.myNavX.getYaw();
-                Robot.myAngle.setAngle(targetAngle);
-                last_angles = angles;
+        if (Robot.myVision.seeTarget) {
+            double yaw = Robot.myVision.calculatedYaw;
+            if (yaw != lastAngle) {
+                lastAngle = yaw;
+                Robot.myAngle.setAngleOffset(yaw);
             }
             if (state == 0) {
                 state = 1;
@@ -40,5 +37,9 @@ public class AutoAlign extends Command {
 
     protected boolean isFinished() {
         return false;
+    }
+
+    protected void end() {
+        Robot.myAngle.disableAndReset();
     }
 }
