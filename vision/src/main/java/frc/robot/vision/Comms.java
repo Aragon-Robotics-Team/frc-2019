@@ -16,17 +16,20 @@ import edu.wpi.first.vision.VisionThread;
 
 public class Comms {
     public static TimeServices timeServices;
+    static NetworkTable table = NetworkTableInstance.getDefault().getTable("table");
+    static NetworkTableEntry positionEntry = table.getEntry("target_offsets");
+    static NetworkTableEntry existsEntry = table.getEntry("target_sighted");
 
     public static void createVisionThread(VideoSource camera, CvSource outputVideo,
             BiConsumer<GripPostProcessing, CvSource> callback) {
 
         System.out.println("init visionthread");
         GripPostProcessing pipeline = new GripPostProcessing();
-        VisionThread visionThread = new VisionThread(camera, pipeline, (p) -> callback.accept(p, outputVideo));
+        VisionThread visionThread =
+                new VisionThread(camera, pipeline, (p) -> callback.accept(p, outputVideo));
         /*
          * something like this for GRIP: VisionThread visionThread = new
-         * VisionThread(cameras.get(0), new GripPipeline(), pipeline -> { ...
-         * });CvSource
+         * VisionThread(cameras.get(0), new GripPipeline(), pipeline -> { ... });CvSource
          */
         visionThread.start();
         System.out.println("started visionthread");
@@ -44,26 +47,17 @@ public class Comms {
         // (double) v.bounding.y + 0.5 * v.bounding.height })[0];
         // }
 
-        double[] x_offset_angles;
-        if (p.visionTargets.size() > 0) {
-            GripPostProcessing.VisionTarget v = p.visionTargets.get(0);
-            x_offset_angles = new double[] { v.x, v.y };
+        double[] pos;
+        boolean exists = p.visionTargets.size() > 0;
+        if (exists) {
+            var rect = p.visionTargets.get(0);
+            pos = new double[] {rect.x, rect.y};
         } else {
-            x_offset_angles = new double[0];
+            pos = new double[2];
         }
 
-        ByteArrayOutput.setNetworkObject(x_offset_angles, "table", "target_offsets");
-        if (p.visionTargets.size() > 0) {
-            NetworkTableInstance inst = NetworkTableInstance.getDefault();
-            edu.wpi.first.networktables.NetworkTable table = inst.getTable("table");
-            NetworkTableEntry entry = table.getEntry("target_sighted");
-            entry.setBoolean(true);
-        } else {
-            NetworkTableInstance inst = NetworkTableInstance.getDefault();
-            edu.wpi.first.networktables.NetworkTable table = inst.getTable("table");
-            NetworkTableEntry entry = table.getEntry("target_sighted");
-            entry.setBoolean(false);
-        }
+        positionEntry.setDoubleArray(pos);
+        existsEntry.setBoolean(exists);
 
         // Duration latency;
         // synchronized (Comms.timeServices.ping) {
@@ -73,7 +67,6 @@ public class Comms {
         // latency = latency.plus(Duration.between(p.t,
         // Comms.timeServices.clock.instant()));
         // ByteArrayOutput.setNetworkObject(latency, "table", "latency");
-
     }
 
     public static void gripProcessVideoDiagnostic(GripPostProcessing p, CvSource outputVideo) {
@@ -81,9 +74,9 @@ public class Comms {
         double[] x_offset_angles = new double[p.visionTargets.size()];
         for (int i = 0; i < p.visionTargets.size(); i++) {
             GripPostProcessing.VisionTarget v = p.visionTargets.get(i);
-            x_offset_angles[i] = CoordTransform
-                    .transformCoordsToOffsetAngle(new double[] { (double) v.bounding.x + 0.5 * v.bounding.width,
-                            (double) v.bounding.y + 0.5 * v.bounding.height })[0];
+            x_offset_angles[i] = CoordTransform.transformCoordsToOffsetAngle(
+                    new double[] {(double) v.bounding.x + 0.5 * v.bounding.width,
+                            (double) v.bounding.y + 0.5 * v.bounding.height})[0];
         }
         ByteArrayOutput.setNetworkObject(x_offset_angles, "table", "target_offsets");
         if (p.visionTargets.size() > 0) {
@@ -126,8 +119,8 @@ public class Comms {
         }
 
         public class Pinger extends TimerTask {
-            public NetworkTableEntry ping_service = NetworkTableInstance.getDefault().getTable("table")
-                    .getEntry("ping_service");
+            public NetworkTableEntry ping_service =
+                    NetworkTableInstance.getDefault().getTable("table").getEntry("ping_service");
 
             public Pinger() {
                 ping_service.addListener((event) -> {
