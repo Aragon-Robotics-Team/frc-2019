@@ -36,7 +36,7 @@ public class Comms {
     }
 
     public static void gripProcessVideo(GripPostProcessing p, CvSource outputVideo) {
-        // outputVideo.putFrame(p.AugmentCamOutput);
+        outputVideo.putFrame(p.AugmentCamOutput);
 
         // double[] x_offset_angles = new double[p.visionTargets.size()];
         // for (int i = 0; i < p.visionTargets.size(); i++) {

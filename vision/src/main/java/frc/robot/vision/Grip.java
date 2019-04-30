@@ -39,7 +39,7 @@ public class Grip implements GripInterface {
 		Mat hslThresholdInput = source0;
 		double[] hslThresholdHue = {56.972550646190605, 84.745763249346};
 		double[] hslThresholdSaturation = {107.53717321372572, 255.0};
-		double[] hslThresholdLuminance = {64.83050847457626, 255.0};
+		double[] hslThresholdLuminance = {64.83050847457626, 245.0};
 		hslThreshold(hslThresholdInput, hslThresholdHue, hslThresholdSaturation,
 				hslThresholdLuminance, hslThresholdOutput);
 
