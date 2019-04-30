@@ -6,6 +6,8 @@ import edu.wpi.first.wpilibj.SendableBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import frc.robot.Robot;
 import frc.robot.commands.lift.CalibrateLiftEncoder;
+import frc.robot.commands.lift.ControlLiftJoystick;
+import frc.robot.commands.lift.ResetLiftEncoder;
 import frc.robot.util.BetterSendable;
 import frc.robot.util.BetterSpeedController;
 import frc.robot.util.BetterSubsystem;
@@ -20,8 +22,8 @@ public class Lift extends BetterSubsystem implements BetterSendable, BetterSpeed
     double savedPos;
 
     public enum Position {
-        Stowed(0), Hatch1(0), Port1(3.9375), CargoPort(10.5), Hatch2(13.6875), Port2(
-                17.8375), Hatch3(27.6875), Port3(31.9375), Max(21), Manual(-1);
+        Stowed(0), Hatch1(0), Port1(3.9375), CargoPort(10.5), Hatch2(13.6875), Port2(17.8375), Hatch3(27.6875),
+        Port3(31.9375), Max(21), Manual(-1);
 
         static final double POINT_OF_DISCONTINUITY = Hatch2.pos - 1;
         static final double AREA_OF_INFLUENCE = -1;
@@ -86,6 +88,11 @@ public class Lift extends BetterSubsystem implements BetterSendable, BetterSpeed
     }
 
     public void createSendable(SendableMaster master) {
+        master.add(new SendableLift(this));
+        master.add(controller);
+        master.add(new ResetLiftEncoder());
+        master.add("Lift Joystick", new ControlLiftJoystick());
+
         Robot.instance.addCommand(new CalibrateLiftEncoder(), true);
     }
 
@@ -182,7 +189,6 @@ public class Lift extends BetterSubsystem implements BetterSendable, BetterSpeed
     }
 }
 
-
 class SendableLift extends SendableBase {
     Lift lift;
 
@@ -192,27 +198,27 @@ class SendableLift extends SendableBase {
 
     final double getHatch() {
         switch (lift.lastPosition) {
-            case Hatch1:
-                return 1;
-            case Hatch2:
-                return 2;
-            case Hatch3:
-                return 3;
-            default:
-                return 0;
+        case Hatch1:
+            return 1;
+        case Hatch2:
+            return 2;
+        case Hatch3:
+            return 3;
+        default:
+            return 0;
         }
     }
 
     final double getPort() {
         switch (lift.lastPosition) {
-            case Port1:
-                return 1;
-            case Port2:
-                return 2;
-            case Port3:
-                return 3;
-            default:
-                return 0;
+        case Port1:
+            return 1;
+        case Port2:
+            return 2;
+        case Port3:
+            return 3;
+        default:
+            return 0;
         }
     }
 
@@ -222,5 +228,8 @@ class SendableLift extends SendableBase {
     }
 
     public void initSendable(SendableBuilder builder) {
+        builder.addDoubleProperty("Hatch", this::getHatch, null);
+        builder.addDoubleProperty("Port", this::getPort, null);
+        builder.addDoubleProperty("Error", this::getError, null);
     }
 }

@@ -143,5 +143,6 @@ public abstract class RobotMap implements BetterSendable {
 
     public void createSendable(SendableMaster master) {
         init();
+        master.add("OI", (BetterSendable) oi);
     }
 }

@@ -76,5 +76,7 @@ class NavXSendable extends SendableBase {
     }
 
     public void initSendable(SendableBuilder builder) {
+        builder.addDoubleProperty("NavX Angle", navx::getYaw, null);
+        builder.addBooleanProperty("NavX Enabled", navx::isRunning, null);
     }
 }

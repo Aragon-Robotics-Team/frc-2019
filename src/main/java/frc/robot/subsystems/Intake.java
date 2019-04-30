@@ -5,6 +5,9 @@ import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import frc.robot.Robot;
 import frc.robot.commands.intake.intake.CalibrateIntakeEncoder;
+import frc.robot.commands.intake.intake.ControlIntakeJoystick;
+import frc.robot.commands.intake.intake.ResetIntakeEncoder;
+import frc.robot.commands.intake.vacuum.ControlVacuumJoystick;
 import frc.robot.commands.intake.vacuum.SetVacuum;
 import frc.robot.util.BetterSendable;
 import frc.robot.util.BetterSolenoid;
@@ -86,6 +89,13 @@ public class Intake extends BetterSubsystem
     }
 
     public void createSendable(SendableMaster master) {
+        master.add(controller);
+        master.add(new IntakeSendable(this));
+        master.add(new ResetIntakeEncoder());
+        master.add("Intake Joystick", new ControlIntakeJoystick());
+        master.add(new ControlVacuumJoystick());
+        master.add("Sol", pistonController);
+
         Robot.instance.addCommand(new CalibrateIntakeEncoder(), true);
         Robot.instance.addCommand(new SetVacuum(false), true);
     }
@@ -154,5 +164,8 @@ class IntakeSendable extends SendableBase {
     }
 
     public void initSendable(SendableBuilder builder) {
+        builder.setSmartDashboardType("Gyro");
+        builder.addDoubleProperty("Value", this::getAngle, null);
+        builder.addBooleanProperty("Vacuum", () -> intake.isVacuumOn, null);
     }
 }

@@ -35,5 +35,11 @@ public interface OI extends BetterSendable, Sendable {
     }
 
     public default void initSendable(SendableBuilder builder) {
+        builder.setSmartDashboardType("Gyro");
+        builder.addDoubleProperty("Value", this::getAngle, null);
+        builder.addDoubleProperty("Y", this::getLeftSpeed, null);
+        builder.addDoubleProperty("X", this::getLeftRotation, null);
+        builder.addBooleanProperty("SloMo", this::getSlowMode, null);
+        builder.addBooleanProperty("Disable Compressor", this::disableCompressor, null);
     }
 }
