@@ -47,7 +47,7 @@ deploy {
             
             locations {
                 ssh {
-                    address = '10.8.40.19' // 'frcvision.local'
+                    address = '10.8.40.1' //' 10.8.40.19' // 'frcvision.local'
                     user = 'pi'
                     password = '840robotics'
                 }
