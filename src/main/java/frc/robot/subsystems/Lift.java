@@ -3,11 +3,13 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
 import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
 import edu.wpi.first.wpilibj.SendableBase;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import frc.robot.Robot;
 import frc.robot.commands.lift.CalibrateLiftEncoder;
 import frc.robot.commands.lift.ControlLiftJoystick;
 import frc.robot.commands.lift.ResetLiftEncoder;
+import frc.robot.commands.lift.SetLiftPosition;
 import frc.robot.util.BetterSendable;
 import frc.robot.util.BetterSpeedController;
 import frc.robot.util.BetterSubsystem;
@@ -18,16 +20,17 @@ import frc.robot.util.SendableMaster;
 public class Lift extends BetterSubsystem implements BetterSendable, BetterSpeedController {
     public BetterTalonSRX controller;
     Position lastPosition = Position.Stowed;
+    Position oldSavedPosition = Position.Stowed;
     boolean oldInDanger;
-    double savedPos;
+    double savedPos = -1;
 
     public enum Position {
-        Stowed(0), Hatch1(0), Port1(3.9375), CargoPort(10.5), Hatch2(13.6875), Port2(17.8375), Hatch3(27.6875),
-        Port3(31.9375), Max(21), Manual(-1);
+        Stowed(0), Hatch1(0), Port1(3.9375), CargoPort(10.5), Hatch2(13.6875), Port2(
+                17.8375), Hatch3(27.6875), Port3(31.9375), Max(28.5), Manual(-1), Paused(-1);
 
-        static final double POINT_OF_DISCONTINUITY = Hatch2.pos - 1;
-        static final double AREA_OF_INFLUENCE = -1;
-        static final double WIDE_AREA_OF_INFLUENCE = -1;
+        static final double POINT_OF_DISCONTINUITY = 11.0;
+        static final double AREA_OF_INFLUENCE = 2.0;
+        static final double WIDE_AREA_OF_INFLUENCE = 2.0;
 
         final double pos;
         // Ticks per inch measured on the first layer outside the stationary part of the
@@ -78,10 +81,11 @@ public class Lift extends BetterSubsystem implements BetterSendable, BetterSpeed
         setPosition(Position.Stowed);
     }
 
-    // public void periodic() {
-    // Robot.myDrivetrain.setSlow(controller.getInch() >= 20);
-    // checkInDanger();
-    // }
+    public void periodic() {
+        // Robot.myDrivetrain.setSlow(controller.getInch() >= 20);
+        // checkInDanger();
+        newCheckInDanger();
+    }
 
     public String getTabName() {
         return "Lift";
@@ -92,6 +96,12 @@ public class Lift extends BetterSubsystem implements BetterSendable, BetterSpeed
         master.add(controller);
         master.add(new ResetLiftEncoder());
         master.add("Lift Joystick", new ControlLiftJoystick());
+
+        for (Position pos : new Position[] {Position.Stowed, Position.Port1, Position.CargoPort,
+                Position.Hatch2, Position.Port2, Position.Hatch3, Position.Port3}) {
+            String name = "Pos " + pos.toTicks();
+            master.add(name, new SetLiftPosition(pos));
+        }
 
         Robot.instance.addCommand(new CalibrateLiftEncoder(), true);
     }
@@ -105,6 +115,10 @@ public class Lift extends BetterSubsystem implements BetterSendable, BetterSpeed
     }
 
     public void setPosition(Position position) {
+        rawSetPosition(position);
+    }
+
+    public void oldSetPosition(Position position) {
         if (position != Position.Manual) {
             boolean crossing = ((lastPosition.pos <= Position.POINT_OF_DISCONTINUITY
                     && position.pos >= Position.POINT_OF_DISCONTINUITY)
@@ -136,7 +150,7 @@ public class Lift extends BetterSubsystem implements BetterSendable, BetterSpeed
     void rawSetPosition(Position position) {
         this.lastPosition = position;
         double pos;
-        if (position == Position.Manual) {
+        if (position == Position.Manual || position == Position.Paused) {
             pos = savedPos / Position.ticksPerInch;
         } else {
             pos = position.pos;
@@ -154,6 +168,54 @@ public class Lift extends BetterSubsystem implements BetterSendable, BetterSpeed
 
     double getActualPosition() {
         return controller.getInch();
+    }
+
+    void newCheckInDanger() {
+        double pos = getActualPosition();
+        double wantPos = lastPosition.pos;
+        double POD = Position.POINT_OF_DISCONTINUITY;
+        double radius = Position.AREA_OF_INFLUENCE;
+        double error = Math.abs(pos - POD); // current dist from POD
+
+        boolean intakeNotOk = Robot.myIntake.getActualPosition() < Intake.Position.ClearOfLift.pos;
+        boolean wantToCross = (wantPos <= POD) == (POD <= pos);
+        boolean inBadZone = (error <= radius);
+        boolean inDanger = (wantToCross || inBadZone);
+
+        // Todo: wantToCross should be "enter danger zone OR cross POD"
+        // if Cargo pos is in danger zone, and want to enter, then inDanger = true
+        // even if not currently in danger zone or not want to cross POD
+        // Should wantToCross include "leave danger zone"?
+        // No, because should not pause before leaving if not crossing POD
+
+        if (inBadZone) {
+            if (wantToCross && intakeNotOk && (lastPosition != Position.Paused)) {
+                oldSavedPosition = lastPosition;
+                setCustomSetpoint(pos);
+                setPosition(Position.Paused);
+            } else if (!intakeNotOk && (lastPosition == Position.Paused)) {
+                setPosition(oldSavedPosition);
+            }
+        }
+
+        if (inDanger) {
+            System.out.println(Timer.getFPGATimestamp() + " in danger!");
+            if (!oldInDanger) {
+                System.out.println("and it's new");
+                Robot.myIntake.pushPosition();
+            }
+            if (intakeNotOk) {
+                System.out.println("moving out of the way");
+                Robot.myIntake.setPosition(Intake.Position.Intake);
+            }
+        } else {
+            if (oldInDanger) {
+                System.out.println(Timer.getFPGATimestamp() + " not in danger anymore");
+                Robot.myIntake.popPosition();
+            }
+        }
+
+        oldInDanger = inDanger;
     }
 
     void checkInDanger() {
@@ -189,6 +251,7 @@ public class Lift extends BetterSubsystem implements BetterSendable, BetterSpeed
     }
 }
 
+
 class SendableLift extends SendableBase {
     Lift lift;
 
@@ -198,27 +261,27 @@ class SendableLift extends SendableBase {
 
     final double getHatch() {
         switch (lift.lastPosition) {
-        case Hatch1:
-            return 1;
-        case Hatch2:
-            return 2;
-        case Hatch3:
-            return 3;
-        default:
-            return 0;
+            case Hatch1:
+                return 1;
+            case Hatch2:
+                return 2;
+            case Hatch3:
+                return 3;
+            default:
+                return 0;
         }
     }
 
     final double getPort() {
         switch (lift.lastPosition) {
-        case Port1:
-            return 1;
-        case Port2:
-            return 2;
-        case Port3:
-            return 3;
-        default:
-            return 0;
+            case Port1:
+                return 1;
+            case Port2:
+                return 2;
+            case Port3:
+                return 3;
+            default:
+                return 0;
         }
     }
 

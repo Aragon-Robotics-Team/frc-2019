@@ -111,13 +111,13 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
     public void control(double x, double y) {
         // DesireOutput * max(liftPos) * max actual (instead of velocity PID) * swerve
         // compensate
-        leftController.setOldPercent(x * slowMode.v);
-        rightController.setOldPercent(y * slowMode.v);
+        // leftController.setOldPercent(x * slowMode.v);
+        // rightController.setOldPercent(y * slowMode.v);
     }
 
     public void controlRaw(double x, double y) {
-        leftController.setOldPercent(x);
-        rightController.setOldPercent(y);
+        // leftController.setOldPercent(x);
+        // rightController.setOldPercent(y);
     }
 
     public void controlArcade(double x, double y) { // x is up/down; y is right/left

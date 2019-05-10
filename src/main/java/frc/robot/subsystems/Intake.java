@@ -7,6 +7,7 @@ import frc.robot.Robot;
 import frc.robot.commands.intake.intake.CalibrateIntakeEncoder;
 import frc.robot.commands.intake.intake.ControlIntakeJoystick;
 import frc.robot.commands.intake.intake.ResetIntakeEncoder;
+import frc.robot.commands.intake.intake.SetIntakePosition;
 import frc.robot.commands.intake.vacuum.ControlVacuumJoystick;
 import frc.robot.commands.intake.vacuum.SetVacuum;
 import frc.robot.util.BetterSendable;
@@ -95,6 +96,12 @@ public class Intake extends BetterSubsystem
         master.add("Intake Joystick", new ControlIntakeJoystick());
         master.add(new ControlVacuumJoystick());
         master.add("Sol", pistonController);
+
+        for (Position pos : new Position[] {Position.Stowed, Position.Intake, Position.Vertical,
+                Position.Horizontal}) {
+            String name = "Pos " + pos.toTicks();
+            master.add(name, new SetIntakePosition(pos));
+        }
 
         Robot.instance.addCommand(new CalibrateIntakeEncoder(), true);
         Robot.instance.addCommand(new SetVacuum(false), true);
