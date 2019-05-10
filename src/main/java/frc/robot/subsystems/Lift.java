@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
 import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
+
 import edu.wpi.first.wpilibj.SendableBase;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
@@ -25,8 +26,8 @@ public class Lift extends BetterSubsystem implements BetterSendable, BetterSpeed
     double savedPos = -1;
 
     public enum Position {
-        Stowed(0), Hatch1(0), Port1(3.9375), CargoPort(10.5), Hatch2(13.6875), Port2(
-                17.8375), Hatch3(27.6875), Port3(31.9375), Max(28.5), Manual(-1), Paused(-1);
+        Stowed(0), Hatch1(0), Port1(3.9375), CargoPort(10.5), Hatch2(13.6875), Port2(17.8375), Hatch3(27.6875),
+        Port3(31.9375), Max(28.5), Manual(-1), Paused(-1);
 
         static final double POINT_OF_DISCONTINUITY = 11.0;
         static final double AREA_OF_INFLUENCE = 2.0;
@@ -97,8 +98,8 @@ public class Lift extends BetterSubsystem implements BetterSendable, BetterSpeed
         master.add(new ResetLiftEncoder());
         master.add("Lift Joystick", new ControlLiftJoystick());
 
-        for (Position pos : new Position[] {Position.Stowed, Position.Port1, Position.CargoPort,
-                Position.Hatch2, Position.Port2, Position.Hatch3, Position.Port3}) {
+        for (Position pos : new Position[] { Position.Stowed, Position.Port1, Position.CargoPort, Position.Hatch2,
+                Position.Port2, Position.Hatch3, Position.Port3 }) {
             String name = "Pos " + pos.toTicks();
             master.add(name, new SetLiftPosition(pos));
         }
@@ -170,16 +171,22 @@ public class Lift extends BetterSubsystem implements BetterSendable, BetterSpeed
         return controller.getInch();
     }
 
+    private boolean inZone(double pos, double POD, double radius) {
+        return (Math.abs(pos - POD) <= radius);
+    }
+
     void newCheckInDanger() {
         double pos = getActualPosition();
-        double wantPos = lastPosition.pos;
+        boolean isPaused = (lastPosition == Position.Paused);
+        double wantPos = isPaused ? oldSavedPosition.pos : lastPosition.pos;
         double POD = Position.POINT_OF_DISCONTINUITY;
         double radius = Position.AREA_OF_INFLUENCE;
-        double error = Math.abs(pos - POD); // current dist from POD
+        double largeRadius = Position.WIDE_AREA_OF_INFLUENCE;
 
         boolean intakeNotOk = Robot.myIntake.getActualPosition() < Intake.Position.ClearOfLift.pos;
         boolean wantToCross = (wantPos <= POD) == (POD <= pos);
-        boolean inBadZone = (error <= radius);
+        wantToCross |= inZone(wantPos, POD, largeRadius);
+        boolean inBadZone = inZone(pos, POD, radius);
         boolean inDanger = (wantToCross || inBadZone);
 
         // Todo: wantToCross should be "enter danger zone OR cross POD"
@@ -189,11 +196,14 @@ public class Lift extends BetterSubsystem implements BetterSendable, BetterSpeed
         // No, because should not pause before leaving if not crossing POD
 
         if (inBadZone) {
-            if (wantToCross && intakeNotOk && (lastPosition != Position.Paused)) {
+            if (wantToCross && intakeNotOk && !isPaused) {
+                // If this point is reached, inDanger is true and the intake is/will be moving
+                System.out.println("Pausing movement to wait for intake");
                 oldSavedPosition = lastPosition;
                 setCustomSetpoint(pos);
                 setPosition(Position.Paused);
-            } else if (!intakeNotOk && (lastPosition == Position.Paused)) {
+            } else if (!intakeNotOk && isPaused) {
+                System.out.println("The Intake is now good, resuming movement");
                 setPosition(oldSavedPosition);
             }
         }
@@ -251,7 +261,6 @@ public class Lift extends BetterSubsystem implements BetterSendable, BetterSpeed
     }
 }
 
-
 class SendableLift extends SendableBase {
     Lift lift;
 
@@ -261,27 +270,27 @@ class SendableLift extends SendableBase {
 
     final double getHatch() {
         switch (lift.lastPosition) {
-            case Hatch1:
-                return 1;
-            case Hatch2:
-                return 2;
-            case Hatch3:
-                return 3;
-            default:
-                return 0;
+        case Hatch1:
+            return 1;
+        case Hatch2:
+            return 2;
+        case Hatch3:
+            return 3;
+        default:
+            return 0;
         }
     }
 
     final double getPort() {
         switch (lift.lastPosition) {
-            case Port1:
-                return 1;
-            case Port2:
-                return 2;
-            case Port3:
-                return 3;
-            default:
-                return 0;
+        case Port1:
+            return 1;
+        case Port2:
+            return 2;
+        case Port3:
+            return 3;
+        default:
+            return 0;
         }
     }
 
