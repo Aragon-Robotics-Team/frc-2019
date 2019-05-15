@@ -58,8 +58,8 @@ public class Intake extends BetterSubsystem
         config.ticksPerInch = Position.ticksPerInch;
         config.slot0.kP = 4;
         config.slot0.allowableClosedloopError = 5;
-        config.motionCruiseVelocity = 300;
-        config.motionAcceleration = 300 * 2;
+        config.motionCruiseVelocity = 400;
+        config.motionAcceleration = 700;
         // config.forwardSoftLimitEnable = true;
         // config.forwardSoftLimitThreshold = Position.Max.toTicks();
         config.openloopRamp = 0.25;
@@ -97,9 +97,8 @@ public class Intake extends BetterSubsystem
         master.add(new ControlVacuumJoystick());
         master.add("Sol", pistonController);
 
-        for (Position pos : new Position[] {Position.Stowed, Position.Intake, Position.Vertical,
-                Position.Horizontal}) {
-            String name = "Pos " + pos.toTicks();
+        for (Position pos : new Position[] {Position.Stowed, Position.Intake, Position.Vertical}) {
+            String name = "Pos " + pos + " " + pos.pos;
             master.add(name, new SetIntakePosition(pos));
         }
 
@@ -122,7 +121,7 @@ public class Intake extends BetterSubsystem
     }
 
     public void popPosition() {
-        setPosition(savedPosition);
+        (new SetIntakePosition(savedPosition)).start(); // setPosition(savedPosition);
     }
 
     public double getActualPosition() {

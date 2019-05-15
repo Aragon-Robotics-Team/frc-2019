@@ -2,11 +2,11 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
 import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
-
 import edu.wpi.first.wpilibj.SendableBase;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import frc.robot.Robot;
+import frc.robot.commands.intake.intake.SetIntakePosition;
 import frc.robot.commands.lift.CalibrateLiftEncoder;
 import frc.robot.commands.lift.ControlLiftJoystick;
 import frc.robot.commands.lift.ResetLiftEncoder;
@@ -16,22 +16,26 @@ import frc.robot.util.BetterSpeedController;
 import frc.robot.util.BetterSubsystem;
 import frc.robot.util.BetterTalonSRX;
 import frc.robot.util.BetterTalonSRXConfig;
+import frc.robot.util.Disableable;
 import frc.robot.util.SendableMaster;
 
-public class Lift extends BetterSubsystem implements BetterSendable, BetterSpeedController {
+
+public class Lift extends BetterSubsystem
+        implements BetterSendable, BetterSpeedController, Disableable {
     public BetterTalonSRX controller;
     Position lastPosition = Position.Stowed;
     Position oldSavedPosition = Position.Stowed;
     boolean oldInDanger;
     double savedPos = -1;
+    private final boolean debugDanger = true;
 
     public enum Position {
-        Stowed(0), Hatch1(0), Port1(3.9375), CargoPort(10.5), Hatch2(13.6875), Port2(17.8375), Hatch3(27.6875),
-        Port3(31.9375), Max(28.5), Manual(-1), Paused(-1);
+        Stowed(0), Hatch1(0), Port1(3.9375), CargoPort(10.5), Hatch2(13.6875), Port2(
+                17.8375), Hatch3(27.6875), Port3(31.9375), Max(28.5), Manual(-1), Paused(-1);
 
-        static final double POINT_OF_DISCONTINUITY = 11.0;
-        static final double AREA_OF_INFLUENCE = 2.0;
-        static final double WIDE_AREA_OF_INFLUENCE = 2.0;
+        static final double POINT_OF_DISCONTINUITY = 11.5;
+        static final double AREA_OF_INFLUENCE = 2.5;
+        static final double WIDE_AREA_OF_INFLUENCE = 2.5;
 
         final double pos;
         // Ticks per inch measured on the first layer outside the stationary part of the
@@ -61,8 +65,8 @@ public class Lift extends BetterSubsystem implements BetterSendable, BetterSpeed
         // config.slot0.kI = 0.01;
         // config.slot0.integralZone = 80;
         config.slot0.allowableClosedloopError = 5;
-        config.motionCruiseVelocity = 1000;
-        config.motionAcceleration = 1000;
+        config.motionCruiseVelocity = 1500;
+        config.motionAcceleration = 2000;
         config.forwardSoftLimitEnable = true;
         config.forwardSoftLimitThreshold = Position.Max.toTicks();
         config.openloopRamp = 0.25;
@@ -74,7 +78,7 @@ public class Lift extends BetterSubsystem implements BetterSendable, BetterSpeed
         config.peakCurrentLimit = 10;
         config.peakCurrentDuration = 500;
         config.continuousCurrentLimit = 7;
-        config.peakOutputReverse = -0.5;
+        // config.peakOutputReverse = -0.5;
 
         controller = new BetterTalonSRX(map.controllerCanID(), config);
         // controller.talon.overrideLimitSwitchesEnable(false);
@@ -98,9 +102,9 @@ public class Lift extends BetterSubsystem implements BetterSendable, BetterSpeed
         master.add(new ResetLiftEncoder());
         master.add("Lift Joystick", new ControlLiftJoystick());
 
-        for (Position pos : new Position[] { Position.Stowed, Position.Port1, Position.CargoPort, Position.Hatch2,
-                Position.Port2, Position.Hatch3, Position.Port3 }) {
-            String name = "Pos " + pos.toTicks();
+        for (Position pos : new Position[] {Position.Stowed, Position.Port1, Position.CargoPort,
+                Position.Hatch2, Position.Port2, Position.Hatch3, Position.Port3}) {
+            String name = "Pos " + pos + " " + pos.pos;
             master.add(name, new SetLiftPosition(pos));
         }
 
@@ -149,12 +153,32 @@ public class Lift extends BetterSubsystem implements BetterSendable, BetterSpeed
     }
 
     void rawSetPosition(Position position) {
-        this.lastPosition = position;
+        if (debugDanger) {
+            System.out.println("Start SetRawPos: " + position + " " + position.pos);
+        }
+        if (position == Position.Paused) {
+            if (debugDanger) {
+                System.out.print("SetRawPos: Pause: " + savedPos + "\n");
+            }
+            // Stop movement for 1 frame
+            controller.setOldPercent(0.0);
+            (new SetLiftPosition(Position.Manual)).start();
+            return;
+        }
+
         double pos;
-        if (position == Position.Manual || position == Position.Paused) {
-            pos = savedPos / Position.ticksPerInch;
+        this.lastPosition = position;
+
+        if (position == Position.Manual) {
+            if (debugDanger && savedPos < 0.0) {
+                System.out.println("Tried to go to Manual Pos, but savedPos is not set");
+            }
+            pos = savedPos;
         } else {
             pos = position.pos;
+        }
+        if (debugDanger) {
+            System.out.println("SetRawPos: " + pos);
         }
         controller.setMagic(pos);
     }
@@ -177,7 +201,8 @@ public class Lift extends BetterSubsystem implements BetterSendable, BetterSpeed
 
     void newCheckInDanger() {
         double pos = getActualPosition();
-        boolean isPaused = (lastPosition == Position.Paused);
+        // boolean isPaused = (lastPosition == Position.Manual || lastPosition == Position.Paused);
+        boolean isPaused = (savedPos > 0.0);
         double wantPos = isPaused ? oldSavedPosition.pos : lastPosition.pos;
         double POD = Position.POINT_OF_DISCONTINUITY;
         double radius = Position.AREA_OF_INFLUENCE;
@@ -185,7 +210,9 @@ public class Lift extends BetterSubsystem implements BetterSendable, BetterSpeed
 
         boolean intakeNotOk = Robot.myIntake.getActualPosition() < Intake.Position.ClearOfLift.pos;
         boolean wantToCross = (wantPos <= POD) == (POD <= pos);
+        // System.out.print(wantToCross + " ");
         wantToCross |= inZone(wantPos, POD, largeRadius);
+        // System.out.println(inZone(wantPos, POD, largeRadius) + " " + wantToCross);
         boolean inBadZone = inZone(pos, POD, radius);
         boolean inDanger = (wantToCross || inBadZone);
 
@@ -195,33 +222,66 @@ public class Lift extends BetterSubsystem implements BetterSendable, BetterSpeed
         // Should wantToCross include "leave danger zone"?
         // No, because should not pause before leaving if not crossing POD
 
+        StringBuilder b;
+        boolean print;
+        if (debugDanger) {
+            print = false;
+            b = new StringBuilder(Double.toString(Timer.getFPGATimestamp()));
+            b.append(" Pause: " + isPaused + " Cross: " + wantToCross + "\n");
+        }
         if (inBadZone) {
             if (wantToCross && intakeNotOk && !isPaused) {
                 // If this point is reached, inDanger is true and the intake is/will be moving
-                System.out.println("Pausing movement to wait for intake");
                 oldSavedPosition = lastPosition;
+
+                if (debugDanger) {
+                    b.append("Pausing movement to wait for intake\n");
+                    print = true;
+
+                    b.append("Saved: " + oldSavedPosition.pos + "\n");
+                    b.append("New:   " + pos);
+                }
                 setCustomSetpoint(pos);
                 setPosition(Position.Paused);
+                // b.append("Pos: " + oldSavedPosition.pos + "\n");
             } else if (!intakeNotOk && isPaused) {
-                System.out.println("The Intake is now good, resuming movement");
+                if (debugDanger) {
+                    b.append("The Intake is now good, resuming movement\n");
+                    print = true;
+                }
+                savedPos = -1.0;
                 setPosition(oldSavedPosition);
             }
         }
 
         if (inDanger) {
-            System.out.println(Timer.getFPGATimestamp() + " in danger!");
             if (!oldInDanger) {
-                System.out.println("and it's new");
+                if (debugDanger) {
+                    b.append("New In Danger\n");
+                    print = true;
+                }
                 Robot.myIntake.pushPosition();
             }
-            if (intakeNotOk) {
-                System.out.println("moving out of the way");
-                Robot.myIntake.setPosition(Intake.Position.Intake);
+            if (!oldInDanger && intakeNotOk) {
+                // System.out.println("moving out of the way");
+                // Robot.myIntake.setPosition(Intake.Position.Intake);
+
+                (new SetIntakePosition(Intake.Position.Intake)).start();
             }
         } else {
             if (oldInDanger) {
-                System.out.println(Timer.getFPGATimestamp() + " not in danger anymore");
+                if (debugDanger) {
+                    b.append("Not In Danger Anymore\n");
+                    print = true;
+                }
                 Robot.myIntake.popPosition();
+            }
+        }
+        if (debugDanger) {
+            b.append("\n");
+
+            if (print) {
+                System.out.print(b.toString() + "\n");
             }
         }
 
@@ -259,7 +319,19 @@ public class Lift extends BetterSubsystem implements BetterSendable, BetterSpeed
 
         oldInDanger = inDanger;
     }
+
+    public void disable() {
+        controller.setBrakeMode(false);
+    }
+
+    public void enable() {
+        oldInDanger = false;
+        savedPos = -1;
+        lastPosition = Position.Stowed;
+        oldSavedPosition = Position.Stowed;
+    }
 }
+
 
 class SendableLift extends SendableBase {
     Lift lift;
@@ -270,27 +342,27 @@ class SendableLift extends SendableBase {
 
     final double getHatch() {
         switch (lift.lastPosition) {
-        case Hatch1:
-            return 1;
-        case Hatch2:
-            return 2;
-        case Hatch3:
-            return 3;
-        default:
-            return 0;
+            case Hatch1:
+                return 1;
+            case Hatch2:
+                return 2;
+            case Hatch3:
+                return 3;
+            default:
+                return 0;
         }
     }
 
     final double getPort() {
         switch (lift.lastPosition) {
-        case Port1:
-            return 1;
-        case Port2:
-            return 2;
-        case Port3:
-            return 3;
-        default:
-            return 0;
+            case Port1:
+                return 1;
+            case Port2:
+                return 2;
+            case Port3:
+                return 3;
+            default:
+                return 0;
         }
     }
 
