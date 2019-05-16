@@ -20,8 +20,7 @@ import frc.robot.util.Disableable;
 import frc.robot.util.Mock;
 import frc.robot.util.SendableMaster;
 
-public class Intake extends BetterSubsystem
-        implements BetterSendable, Disableable, BetterSpeedController {
+public class Intake extends BetterSubsystem implements BetterSendable, Disableable, BetterSpeedController {
     public BetterTalonSRX controller;
     public Talon vacuumController;
     BetterSolenoid pistonController;
@@ -34,8 +33,8 @@ public class Intake extends BetterSubsystem
     Position savedPosition;
 
     public enum Position {
-        Stowed(0), Intake(2330), Vertical(563), Horizontal(Intake.pos), Max(
-                Horizontal.pos), ClearOfLift(Intake.pos - 1000);
+        Stowed(0), Intake(2330), Vertical(563), Horizontal(Intake.pos), Max(Horizontal.pos), ClearOfLift(1000),
+        WantClearOfLift(1500);
 
         final double pos;
         public static final double ticksPerInch = 1;
@@ -81,12 +80,6 @@ public class Intake extends BetterSubsystem
         intakeSubsystem = new BetterSubsystem();
         vacuumSubsystem = new BetterSubsystem();
         pistonSubsystem = new BetterSubsystem();
-
-        lastPosition = Position.Stowed;
-
-        setPosition(Position.Stowed);
-        setVacuum(false);
-        setPiston(false);
     }
 
     public void createSendable(SendableMaster master) {
@@ -97,7 +90,7 @@ public class Intake extends BetterSubsystem
         master.add(new ControlVacuumJoystick());
         master.add("Sol", pistonController);
 
-        for (Position pos : new Position[] {Position.Stowed, Position.Intake, Position.Vertical}) {
+        for (Position pos : new Position[] { Position.Stowed, Position.Intake, Position.Vertical }) {
             String name = "Pos " + pos + " " + pos.pos;
             master.add(name, new SetIntakePosition(pos));
         }
@@ -149,11 +142,18 @@ public class Intake extends BetterSubsystem
         pistonController.set(on);
     }
 
+    public void enable() {
+        disable();
+    }
+
     public void disable() {
-        controller.setBrakeMode(false);
+        lastPosition = Position.Stowed;
+
+        setPosition(Position.Stowed);
+        setVacuum(false);
+        setPiston(false);
     }
 }
-
 
 class IntakeSendable extends SendableBase {
     Intake intake;

@@ -1,6 +1,9 @@
 package frc.robot.map;
 
 import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
+
+import frc.robot.controllers.Attack3;
+import frc.robot.controllers.GuestController;
 import frc.robot.controllers.NullOI;
 import frc.robot.controllers.OI;
 import frc.robot.map.comp.CompRobotMap;
@@ -14,13 +17,17 @@ public abstract class RobotMap implements BetterSendable {
     }
 
     public OI oi;
+    public OI guestOI;
     public BetterSubsystem oiSubsystem = new BetterSubsystem();
 
     public void init() {
         if (oi == null) {
             // oi = new MultiOI(new HotasX(), new ButtonBoard1(), new ButtonBoard2());
             // oi = new F310();
-            oi = new NullOI();
+            // oi = new NullOI();
+            oi = new Attack3(1);
+
+            guestOI = new GuestController(4);
         }
     }
 
@@ -145,5 +152,6 @@ public abstract class RobotMap implements BetterSendable {
     public void createSendable(SendableMaster master) {
         init();
         master.add("OI", (BetterSendable) oi);
+        master.add("Guest OI", (BetterSendable) guestOI);
     }
 }

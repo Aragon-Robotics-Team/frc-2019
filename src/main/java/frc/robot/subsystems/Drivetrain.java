@@ -4,10 +4,13 @@ import edu.wpi.first.wpilibj.SendableBase;
 import edu.wpi.first.wpilibj.command.InstantCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import frc.robot.Robot;
+import frc.robot.commands.autonomous.VisionMode;
 import frc.robot.commands.drivetrain.ControlArcadeDrivetrain;
 import frc.robot.commands.drivetrain.IdleDrivetrain;
 import frc.robot.commands.drivetrain.ResetDrivetrainLocator;
 import frc.robot.commands.drivetrain.SetBrakeMode;
+import frc.robot.commands.guest.GuestMode;
+import frc.robot.commands.teleop.DriverMode;
 import frc.robot.util.BetterFollower;
 import frc.robot.util.BetterFollowerConfig;
 import frc.robot.util.BetterSendable;
@@ -34,7 +37,7 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
     DrivetrainSendable drivetrainSendable;
 
     public enum SlowModes {
-        Normal(0.85, 0.1, .5), Fast(1, 0.05, .5), Slow(0.65, 0.1, 0.5 * 0.6);
+        Normal(0.85, 0.1, .5), Fast(1, 0.05, .5), Slow(0.65, 0.1, 0.5 * 0.6), Guest(0.85 * 0.5, 0.15, .6);
 
         double v;
         double r;
@@ -83,11 +86,6 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
         rightController.addFollower(rightSlaveController);
 
         drivetrainSendable = new DrivetrainSendable(this);
-
-        stop();
-        setBrake(true);
-        reset();
-        setSlow(SlowModes.Normal);
     }
 
     public void createSendable(SendableMaster master) {
@@ -102,6 +100,10 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
         master.add("Reset Encoder", new InstantCommand(this::resetEncoders));
         master.add("Reset Position", new InstantCommand(this::reset));
         master.add(new ControlArcadeDrivetrain());
+
+        master.add(new DriverMode());
+        master.add(new GuestMode());
+        master.add(new VisionMode());
     }
 
     public void periodic() {
@@ -111,13 +113,13 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
     public void control(double x, double y) {
         // DesireOutput * max(liftPos) * max actual (instead of velocity PID) * swerve
         // compensate
-        // leftController.setOldPercent(x * slowMode.v);
-        // rightController.setOldPercent(y * slowMode.v);
+        leftController.setOldPercent(x * slowMode.v);
+        rightController.setOldPercent(y * slowMode.v);
     }
 
     public void controlRaw(double x, double y) {
-        // leftController.setOldPercent(x);
-        // rightController.setOldPercent(y);
+        leftController.setOldPercent(x);
+        rightController.setOldPercent(y);
     }
 
     public void controlArcade(double x, double y) { // x is up/down; y is right/left
@@ -209,14 +211,16 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
     }
 
     public void disable() {
+        stop();
         setBrake(true);
+        reset();
+        setSlow(SlowModes.Normal);
     }
 
     public void initDefaultCommand() {
         setDefaultCommand(new IdleDrivetrain());
     }
 }
-
 
 class DrivetrainSendable extends SendableBase {
     Drivetrain drivetrain;

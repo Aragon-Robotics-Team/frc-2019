@@ -3,6 +3,7 @@ package frc.robot.controllers;
 import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import frc.robot.util.BetterSendable;
+import frc.robot.util.GyroSendable;
 import frc.robot.util.SendableMaster;
 
 public interface OI extends BetterSendable, Sendable {
@@ -31,12 +32,13 @@ public interface OI extends BetterSendable, Sendable {
     }
 
     public default void createSendable(SendableMaster master) {
-        master.add((Sendable) this);
+        master.add("OI", (Sendable) this);
+        master.add("Gyro", new GyroSendable(this::getAngle));
     }
 
     public default void initSendable(SendableBuilder builder) {
-        builder.setSmartDashboardType("Gyro");
-        builder.addDoubleProperty("Value", this::getAngle, null);
+        // builder.setSmartDashboardType("Gyro");
+        // builder.addDoubleProperty("Value", this::getAngle, null);
         builder.addDoubleProperty("Y", this::getLeftSpeed, null);
         builder.addDoubleProperty("X", this::getLeftRotation, null);
         builder.addBooleanProperty("SloMo", this::getSlowMode, null);

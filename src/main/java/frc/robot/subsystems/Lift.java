@@ -19,9 +19,7 @@ import frc.robot.util.BetterTalonSRXConfig;
 import frc.robot.util.Disableable;
 import frc.robot.util.SendableMaster;
 
-
-public class Lift extends BetterSubsystem
-        implements BetterSendable, BetterSpeedController, Disableable {
+public class Lift extends BetterSubsystem implements BetterSendable, BetterSpeedController, Disableable {
     public BetterTalonSRX controller;
     Position lastPosition = Position.Stowed;
     Position oldSavedPosition = Position.Stowed;
@@ -30,8 +28,8 @@ public class Lift extends BetterSubsystem
     private final boolean debugDanger = true;
 
     public enum Position {
-        Stowed(0), Hatch1(0), Port1(3.9375), CargoPort(10.5), Hatch2(13.6875), Port2(
-                17.8375), Hatch3(27.6875), Port3(31.9375), Max(28.5), Manual(-1), Paused(-1);
+        Stowed(0), Hatch1(0), Port1(3.9375), CargoPort(10.5), Hatch2(13.6875), Port2(17.8375), Hatch3(27.6875),
+        Port3(31.9375), Max(28.5), Manual(-1), Paused(-1);
 
         static final double POINT_OF_DISCONTINUITY = 11.5;
         static final double AREA_OF_INFLUENCE = 2.5;
@@ -83,7 +81,6 @@ public class Lift extends BetterSubsystem
         controller = new BetterTalonSRX(map.controllerCanID(), config);
         // controller.talon.overrideLimitSwitchesEnable(false);
         resetEncoder();
-        setPosition(Position.Stowed);
     }
 
     public void periodic() {
@@ -102,8 +99,8 @@ public class Lift extends BetterSubsystem
         master.add(new ResetLiftEncoder());
         master.add("Lift Joystick", new ControlLiftJoystick());
 
-        for (Position pos : new Position[] {Position.Stowed, Position.Port1, Position.CargoPort,
-                Position.Hatch2, Position.Port2, Position.Hatch3, Position.Port3}) {
+        for (Position pos : new Position[] { Position.Stowed, Position.Port1, Position.CargoPort, Position.Hatch2,
+                Position.Port2, Position.Hatch3, Position.Port3 }) {
             String name = "Pos " + pos + " " + pos.pos;
             master.add(name, new SetLiftPosition(pos));
         }
@@ -167,11 +164,12 @@ public class Lift extends BetterSubsystem
         }
 
         double pos;
-        this.lastPosition = position;
 
         if (position == Position.Manual) {
             if (debugDanger && savedPos < 0.0) {
                 System.out.println("Tried to go to Manual Pos, but savedPos is not set");
+                setPosition(oldSavedPosition);
+                return;
             }
             pos = savedPos;
         } else {
@@ -180,6 +178,7 @@ public class Lift extends BetterSubsystem
         if (debugDanger) {
             System.out.println("SetRawPos: " + pos);
         }
+        this.lastPosition = position;
         controller.setMagic(pos);
     }
 
@@ -201,8 +200,13 @@ public class Lift extends BetterSubsystem
 
     void newCheckInDanger() {
         double pos = getActualPosition();
-        // boolean isPaused = (lastPosition == Position.Manual || lastPosition == Position.Paused);
+        // boolean isPaused = (lastPosition == Position.Manual || lastPosition ==
+        // Position.Paused);
         boolean isPaused = (savedPos > 0.0);
+        if (isPaused && lastPosition != Position.Manual && lastPosition != Position.Paused) {
+            System.out.println("Waa");
+            return;
+        }
         double wantPos = isPaused ? oldSavedPosition.pos : lastPosition.pos;
         double POD = Position.POINT_OF_DISCONTINUITY;
         double radius = Position.AREA_OF_INFLUENCE;
@@ -266,7 +270,7 @@ public class Lift extends BetterSubsystem
                 // System.out.println("moving out of the way");
                 // Robot.myIntake.setPosition(Intake.Position.Intake);
 
-                (new SetIntakePosition(Intake.Position.Intake)).start();
+                (new SetIntakePosition(Intake.Position.WantClearOfLift)).start();
             }
         } else {
             if (oldInDanger) {
@@ -321,7 +325,9 @@ public class Lift extends BetterSubsystem
     }
 
     public void disable() {
+        setPosition(Position.Stowed);
         controller.setBrakeMode(false);
+        enable();
     }
 
     public void enable() {
@@ -332,7 +338,6 @@ public class Lift extends BetterSubsystem
     }
 }
 
-
 class SendableLift extends SendableBase {
     Lift lift;
 
@@ -342,27 +347,27 @@ class SendableLift extends SendableBase {
 
     final double getHatch() {
         switch (lift.lastPosition) {
-            case Hatch1:
-                return 1;
-            case Hatch2:
-                return 2;
-            case Hatch3:
-                return 3;
-            default:
-                return 0;
+        case Hatch1:
+            return 1;
+        case Hatch2:
+            return 2;
+        case Hatch3:
+            return 3;
+        default:
+            return 0;
         }
     }
 
     final double getPort() {
         switch (lift.lastPosition) {
-            case Port1:
-                return 1;
-            case Port2:
-                return 2;
-            case Port3:
-                return 3;
-            default:
-                return 0;
+        case Port1:
+            return 1;
+        case Port2:
+            return 2;
+        case Port3:
+            return 3;
+        default:
+            return 0;
         }
     }
 
