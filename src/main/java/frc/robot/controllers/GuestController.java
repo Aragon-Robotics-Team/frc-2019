@@ -1,11 +1,13 @@
 package frc.robot.controllers;
 
 import edu.wpi.first.wpilibj.command.PrintCommand;
+import frc.robot.commands.intake.intake.SetIntakePosition;
 import frc.robot.commands.intake.piston.QuickPistonAndVacuum;
 import frc.robot.commands.intake.vacuum.SetVacuum;
 import frc.robot.commands.lift.SetLiftPosition;
 import frc.robot.map.RobotMap;
 import frc.robot.subsystems.Lift;
+import frc.robot.subsystems.Intake;
 
 public class GuestController extends Attack3 {
     public GuestController() {
@@ -23,7 +25,9 @@ public class GuestController extends Attack3 {
     void setUpButtons() {
         getButton(3).whenPressed(new PrintCommand("Guest 3"));
         getButton(6).whenPressed(new SetLiftPosition(Lift.Position.CargoPort));
+        getButton(6).whenPressed(new SetIntakePosition(Intake.Position.Cargo));
         getButton(7).whenPressed(new SetLiftPosition(Lift.Position.Stowed));
+        getButton(7).whenPressed(new SetIntakePosition(Intake.Position.Intake));
         getButton(2).whenPressed(new SetVacuum(true));
         getButton(1).whenPressed(new QuickPistonAndVacuum());
     }

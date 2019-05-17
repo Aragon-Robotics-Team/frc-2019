@@ -33,8 +33,8 @@ public class Intake extends BetterSubsystem implements BetterSendable, Disableab
     Position savedPosition;
 
     public enum Position {
-        Stowed(0), Intake(2330), Vertical(563), Horizontal(Intake.pos), Max(Horizontal.pos), ClearOfLift(1000),
-        WantClearOfLift(1500);
+        Stowed(0), Intake(2330), Vertical(563), Horizontal(Intake.pos), Max(Horizontal.pos), ClearOfLift(550),
+        WantClearOfLift(950), Cargo(950);
 
         final double pos;
         public static final double ticksPerInch = 1;
@@ -90,7 +90,8 @@ public class Intake extends BetterSubsystem implements BetterSendable, Disableab
         master.add(new ControlVacuumJoystick());
         master.add("Sol", pistonController);
 
-        for (Position pos : new Position[] { Position.Stowed, Position.Intake, Position.Vertical }) {
+        for (Position pos : new Position[] { Position.Stowed, Position.Intake, Position.Vertical, Position.ClearOfLift,
+                Position.Cargo }) {
             String name = "Pos " + pos + " " + pos.pos;
             master.add(name, new SetIntakePosition(pos));
         }
