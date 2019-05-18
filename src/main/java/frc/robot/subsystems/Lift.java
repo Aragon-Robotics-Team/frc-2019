@@ -26,7 +26,7 @@ public class Lift extends BetterSubsystem
     Position oldSavedPosition = Position.Stowed;
     boolean oldInDanger;
     double savedPos = -1;
-    private final boolean debugDanger = true;
+    private final boolean debugDanger = false;
 
     public enum Position {
         Stowed(0), Hatch1(0), Port1(3.9375), CargoPort(10.5), Hatch2(13.6875), Port2(
