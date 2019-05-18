@@ -37,7 +37,8 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
     DrivetrainSendable drivetrainSendable;
 
     public enum SlowModes {
-        Normal(0.85, 0.1, .5), Fast(1, 0.05, .5), Slow(0.65, 0.1, 0.5 * 0.6), Guest(0.85 * 0.5, 0.15, .6);
+        Normal(0.85, 0.1, .5), Fast(1, 0.05, .5), Slow(0.65, 0.1, 0.5 * 0.6), Guest(0.85 * 0.3,
+                0.15, .6);
 
         double v;
         double r;
@@ -221,6 +222,7 @@ public class Drivetrain extends BetterSubsystem implements BetterSendable, Disab
         setDefaultCommand(new IdleDrivetrain());
     }
 }
+
 
 class DrivetrainSendable extends SendableBase {
     Drivetrain drivetrain;

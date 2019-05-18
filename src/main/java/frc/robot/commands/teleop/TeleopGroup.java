@@ -1,17 +1,17 @@
 package frc.robot.commands.teleop;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
-import frc.robot.Robot;
-import frc.robot.commands.SetCompressorEnabled;
-import frc.robot.commands.drivetrain.ControlArcadeDrivetrain;
+import edu.wpi.first.wpilibj.command.WaitCommand;
+import frc.robot.commands.guest.GuestMode;
 
 public class TeleopGroup extends CommandGroup {
 
     public TeleopGroup() {
-        addParallel(new SetCompressorEnabled(() -> !Robot.map.oi.getSlowMode()));
+        // addParallel(new SetCompressorEnabled(() -> !Robot.map.oi.getSlowMode()));
         // addParallel(new ResetLiftEncoder());
         // addParallel(new ResetIntakeEncoder());
-        addParallel(new ControlArcadeDrivetrain());
+        addSequential(new WaitCommand(1.0));
+        addParallel(new GuestMode());
         // addParallel(new AutoAlign());
     }
 }

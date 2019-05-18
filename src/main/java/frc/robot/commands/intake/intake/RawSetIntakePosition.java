@@ -8,7 +8,7 @@ public class RawSetIntakePosition extends Command {
     Position pos;
 
     public RawSetIntakePosition(Position pos) {
-        requires(Robot.myIntake.intakeSubsystem);
+        // requires(Robot.myIntake.intakeSubsystem);
         setRunWhenDisabled(true);
 
         this.pos = pos;
