@@ -8,7 +8,7 @@ public class RawSetLiftPosition extends Command {
     Position pos;
 
     public RawSetLiftPosition(Position pos) {
-        // requires(Robot.myLift);
+        requires(Robot.myLift);
         setRunWhenDisabled(true);
 
         this.pos = pos;

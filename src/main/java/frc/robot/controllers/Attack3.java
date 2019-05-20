@@ -1,8 +1,16 @@
 package frc.robot.controllers;
 
-import frc.robot.commands.intake.piston.QuickPiston;
+import frc.robot.commands.autonomous.VisionMode;
+import frc.robot.commands.intake.intake.CalibrateIntakeEncoder;
+import frc.robot.commands.intake.intake.SetIntakePosition;
+import frc.robot.commands.intake.piston.QuickPistonAndVacuum;
 import frc.robot.commands.intake.vacuum.SetVacuum;
+import frc.robot.commands.lift.CalibrateLiftEncoder;
+import frc.robot.commands.lift.SetLiftPosition;
+import frc.robot.commands.teleop.DriverMode;
 import frc.robot.map.RobotMap;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Lift;
 import frc.robot.util.Deadband;
 
 public class Attack3 extends OIBase {
@@ -21,10 +29,22 @@ public class Attack3 extends OIBase {
     }
 
     void setUpButtons() {
-        getButton(1).whenPressed(new QuickPiston());
+        getButton(1).whenPressed(new QuickPistonAndVacuum());
 
         getButton(3).whenPressed(new SetVacuum(true));
         getButton(2).whenPressed(new SetVacuum(false));
+
+        getButton(10).whenPressed(new DriverMode());
+        getButton(11).whenPressed(new VisionMode());
+
+        getButton(5).whenPressed(new SetIntakePosition(Intake.Position.Stowed));
+        getButton(4).whenPressed(new SetIntakePosition(Intake.Position.Cargo));
+
+        getButton(6).whenPressed(new SetLiftPosition(Lift.Position.Hatch2));
+        getButton(7).whenPressed(new SetLiftPosition(Lift.Position.Stowed));
+
+        getButton(9).whenPressed(new CalibrateIntakeEncoder());
+        getButton(8).whenPressed(new CalibrateLiftEncoder());
     }
 
     public double getLeftSpeed() {

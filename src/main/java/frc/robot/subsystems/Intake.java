@@ -20,8 +20,7 @@ import frc.robot.util.Disableable;
 import frc.robot.util.Mock;
 import frc.robot.util.SendableMaster;
 
-public class Intake extends BetterSubsystem
-        implements BetterSendable, Disableable, BetterSpeedController {
+public class Intake extends BetterSubsystem implements BetterSendable, Disableable, BetterSpeedController {
     public BetterTalonSRX controller;
     public Talon vacuumController;
     BetterSolenoid pistonController;
@@ -34,8 +33,8 @@ public class Intake extends BetterSubsystem
     Position savedPosition;
 
     public enum Position {
-        Stowed(0), Intake(2200), Vertical(563), Horizontal(Intake.pos), Max(
-                Horizontal.pos), ClearOfLift(550), WantClearOfLift(950), Cargo(950);
+        Stowed(0), Intake(2250), Vertical(563), Horizontal(Intake.pos), Max(Horizontal.pos), ClearOfLift(550),
+        WantClearOfLift(950), Cargo(950);
 
         final double pos;
         public static final double ticksPerInch = 1;
@@ -91,8 +90,8 @@ public class Intake extends BetterSubsystem
         master.add(new ControlVacuumJoystick());
         master.add("Sol", pistonController);
 
-        for (Position pos : new Position[] {Position.Stowed, Position.Intake, Position.Vertical,
-                Position.ClearOfLift, Position.Cargo}) {
+        for (Position pos : new Position[] { Position.Stowed, Position.Intake, Position.Vertical, Position.ClearOfLift,
+                Position.Cargo }) {
             String name = "Pos " + pos + " " + pos.pos;
             master.add(name, new SetIntakePosition(pos));
         }
@@ -156,7 +155,6 @@ public class Intake extends BetterSubsystem
         setPiston(false);
     }
 }
-
 
 class IntakeSendable extends SendableBase {
     Intake intake;
