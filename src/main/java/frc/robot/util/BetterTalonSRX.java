@@ -260,12 +260,13 @@ class SendableSRX extends SendableBase {
             b.addDoubleProperty("Wanted Inches", magic(t::getSet), t::set);
             b.addDoubleProperty("Current Inches", magic(t::getInch), null);
 
-            b.addDoubleProperty("Integral Accumator", magic(t.talon::getIntegralAccumulator), null);
+            // b.addDoubleProperty("Integral Accumator", magic(t.talon::getIntegralAccumulator),
+            // null);
         }
 
         b.addBooleanProperty("Reverse Limit", t::getReverseLimitSwitch, null);
         b.addDoubleProperty("Desired Output", t::getDesired, null);
-        b.addBooleanProperty("Forward Limit", t::getForwardLimitSwitch, null);
+        // b.addBooleanProperty("Forward Limit", t::getForwardLimitSwitch, null);
         b.addDoubleProperty("Current", t.talon::getOutputCurrent, null);
     }
 }
