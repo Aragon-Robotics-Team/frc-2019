@@ -40,7 +40,7 @@ public class Attack3 extends OIBase {
         getButton(5).whenPressed(new SetIntakePosition(Intake.Position.Stowed));
         getButton(4).whenPressed(new SetIntakePosition(Intake.Position.Cargo));
 
-        getButton(6).whenPressed(new SetLiftPosition(Lift.Position.Hatch2));
+        getButton(6).whenPressed(new SetLiftPosition(Lift.Position.Port2));
         getButton(7).whenPressed(new SetLiftPosition(Lift.Position.Stowed));
 
         getButton(9).whenPressed(new CalibrateIntakeEncoder());

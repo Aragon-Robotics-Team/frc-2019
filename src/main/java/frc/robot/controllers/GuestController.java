@@ -25,7 +25,7 @@ public class GuestController extends Attack3 {
 
     void setUpButtons() {
         getButton(3).whenPressed(new PrintCommand("Guest 3"));
-        getButton(6).whenPressed(new SetLiftPosition(Lift.Position.Port2));
+        getButton(6).whenPressed(new SetLiftPosition(Lift.Position.CargoPort));
         getButton(6).whenPressed(new SetIntakePosition(Intake.Position.Stowed));
         getButton(7).whenPressed(new SetLiftPosition(Lift.Position.Stowed));
         getButton(7).whenPressed(new SetIntakePosition(Intake.Position.Intake));
