@@ -10,6 +10,8 @@ import frc.robot.commands.intake.intake.ResetIntakeEncoder;
 import frc.robot.commands.intake.intake.SetIntakePosition;
 import frc.robot.commands.intake.vacuum.ControlVacuumJoystick;
 import frc.robot.commands.intake.vacuum.SetVacuum;
+import frc.robot.commands.lift.SetLiftPosition;
+import frc.robot.util.BetterDigitalInput;
 import frc.robot.util.BetterSendable;
 import frc.robot.util.BetterSolenoid;
 import frc.robot.util.BetterSpeedController;
@@ -27,6 +29,7 @@ public class Intake extends BetterSubsystem implements BetterSendable, Disableab
     public BetterSubsystem intakeSubsystem;
     public BetterSubsystem vacuumSubsystem;
     public BetterSubsystem pistonSubsystem;
+    public BetterDigitalInput pressureSwitch;
 
     Position lastPosition = Position.Stowed;
     boolean isVacuumOn;
@@ -80,6 +83,9 @@ public class Intake extends BetterSubsystem implements BetterSendable, Disableab
         intakeSubsystem = new BetterSubsystem();
         vacuumSubsystem = new BetterSubsystem();
         pistonSubsystem = new BetterSubsystem();
+
+        pressureSwitch = new BetterDigitalInput(9, true);
+        pressureSwitch.debouncingSamples = 5;
     }
 
     public void createSendable(SendableMaster master) {
@@ -90,8 +96,11 @@ public class Intake extends BetterSubsystem implements BetterSendable, Disableab
         master.add(new ControlVacuumJoystick());
         master.add("Sol", pistonController);
 
+        master.add("Pressure Switch", pressureSwitch);
+        pressureSwitch.whenActive(new SetLiftPosition(Lift.Position.CargoPort));
+
         for (Position pos : new Position[] { Position.Stowed, Position.Intake, Position.Vertical, Position.ClearOfLift,
-                Position.Cargo }) {
+				Position.Cargo }) {
             String name = "Pos " + pos + " " + pos.pos;
             master.add(name, new SetIntakePosition(pos));
         }
