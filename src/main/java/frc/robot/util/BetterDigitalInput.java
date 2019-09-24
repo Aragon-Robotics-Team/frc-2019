@@ -2,13 +2,14 @@ package frc.robot.util;
 
 import edu.wpi.first.wpilibj.buttons.Trigger;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Timer;
 
 public class BetterDigitalInput extends Trigger {
     public DigitalInput input;
     public boolean invert;
-    public int debouncingSamples = 1;
+    public double debounceTime = 0.0;
 
-    int timesOn;
+    double onTime = -1;
 
     public BetterDigitalInput(int channel) {
         super();
@@ -18,7 +19,7 @@ public class BetterDigitalInput extends Trigger {
 
     public BetterDigitalInput(int channel, boolean invert) {
         this(channel);
-
+        
         this.invert = invert;
     }
 
@@ -30,10 +31,13 @@ public class BetterDigitalInput extends Trigger {
         boolean on = input.get();
 
         if (on) {
-            timesOn++;
-            return timesOn >= debouncingSamples;
+            if (onTime < 0) {
+                onTime = Timer.getFPGATimestamp();
+            }
+
+            return (Timer.getFPGATimestamp() - onTime) >= debounceTime;
         } else {
-            timesOn = 0;
+            onTime = -1;
             return false;
         }
     }

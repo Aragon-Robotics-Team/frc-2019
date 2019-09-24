@@ -85,7 +85,7 @@ public class Intake extends BetterSubsystem implements BetterSendable, Disableab
         pistonSubsystem = new BetterSubsystem();
 
         pressureSwitch = new BetterDigitalInput(9, true);
-        pressureSwitch.debouncingSamples = 5;
+        pressureSwitch.debounceTime = 0.1;
     }
 
     public void createSendable(SendableMaster master) {
