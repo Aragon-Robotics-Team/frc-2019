@@ -39,7 +39,7 @@ public class Intake extends BetterSubsystem implements BetterSendable, Disableab
         Stowed(0), Intake(2250), Vertical(563), Horizontal(Intake.pos), Max(Horizontal.pos), ClearOfLift(550),
         WantClearOfLift(950), Cargo(950);
 
-        final double pos;
+        public final double pos;
         public static final double ticksPerInch = 1;
 
         private Position(double pos) {

@@ -105,8 +105,6 @@ public class Lift extends BetterSubsystem
             String name = "Pos " + pos + " " + pos.pos;
             master.add(name, new SetLiftPosition(pos));
         }
-
-        Robot.instance.addCommand(new CalibrateLiftEncoder(), true);
     }
 
     public void resetEncoder() {
