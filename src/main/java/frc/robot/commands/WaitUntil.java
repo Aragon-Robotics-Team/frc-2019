@@ -1,16 +1,16 @@
 package frc.robot.commands;
 
-import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 import edu.wpi.first.wpilibj.command.Command;
 
 public class WaitUntil extends Command {
-    BooleanSupplier predicate;
+    Supplier<Boolean> predicate;
 
-    public WaitUntil(BooleanSupplier predicate) {
+    public WaitUntil(Supplier<Boolean> predicate) {
         this.predicate = predicate;
     }
 
     public boolean isFinished() {
-        return predicate.getAsBoolean();
+        return predicate.get();
     }
 }
