@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.SendableBase;
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.buttons.Trigger;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import frc.robot.Robot;
 import frc.robot.commands.intake.intake.CalibrateIntakeEncoder;
@@ -10,7 +11,6 @@ import frc.robot.commands.intake.intake.ResetIntakeEncoder;
 import frc.robot.commands.intake.intake.SetIntakePosition;
 import frc.robot.commands.intake.vacuum.ControlVacuumJoystick;
 import frc.robot.commands.intake.vacuum.SetVacuum;
-import frc.robot.commands.lift.SetLiftPosition;
 import frc.robot.util.BetterDigitalInput;
 import frc.robot.util.BetterSendable;
 import frc.robot.util.BetterSolenoid;
@@ -18,6 +18,7 @@ import frc.robot.util.BetterSpeedController;
 import frc.robot.util.BetterSubsystem;
 import frc.robot.util.BetterTalonSRX;
 import frc.robot.util.BetterTalonSRXConfig;
+import frc.robot.util.BetterTrigger;
 import frc.robot.util.Disableable;
 import frc.robot.util.Mock;
 import frc.robot.util.SendableMaster;
@@ -26,10 +27,11 @@ public class Intake extends BetterSubsystem implements BetterSendable, Disableab
     public BetterTalonSRX controller;
     public Talon vacuumController;
     BetterSolenoid pistonController;
+    BetterSolenoid hatchController;
     public BetterSubsystem intakeSubsystem;
     public BetterSubsystem vacuumSubsystem;
     public BetterSubsystem pistonSubsystem;
-    public BetterDigitalInput pressureSwitch;
+    public Trigger pressureSwitch;
 
     Position lastPosition = Position.Stowed;
     boolean isVacuumOn;
@@ -79,13 +81,16 @@ public class Intake extends BetterSubsystem implements BetterSendable, Disableab
 
         // pistonController = Mock.createMockable(Solenoid.class, map.pistonPCMPort());
         pistonController = new BetterSolenoid(map.pistonPCMPort());
+        hatchController = new BetterSolenoid(map.hatchPCMPort());
 
         intakeSubsystem = new BetterSubsystem();
         vacuumSubsystem = new BetterSubsystem();
         pistonSubsystem = new BetterSubsystem();
 
-        pressureSwitch = new BetterDigitalInput(9, true);
-        pressureSwitch.debounceTime = 0.1;
+        BetterDigitalInput rawPressureSwitch = new BetterDigitalInput(9, true);
+        rawPressureSwitch.debounceTime = 0.1;
+
+        pressureSwitch = new BetterTrigger(rawPressureSwitch, new BetterTrigger(() -> isVacuumOn));
     }
 
     public void createSendable(SendableMaster master) {
@@ -97,7 +102,7 @@ public class Intake extends BetterSubsystem implements BetterSendable, Disableab
         master.add("Sol", pistonController);
 
         master.add("Pressure Switch", pressureSwitch);
-        pressureSwitch.whenActive(new SetLiftPosition(Lift.Position.CargoPort));
+        // pressureSwitch.whenActive(new SetLiftPosition(Lift.Position.CargoPort));
 
         for (Position pos : new Position[] { Position.Stowed, Position.Intake, Position.Vertical, Position.ClearOfLift,
 				Position.Cargo }) {
@@ -152,6 +157,14 @@ public class Intake extends BetterSubsystem implements BetterSendable, Disableab
         pistonController.set(on);
     }
 
+    public void setHatch(boolean on) {
+        hatchController.set(on);
+    }
+
+    public boolean getHatch() {
+        return hatchController.get();
+    }
+
     public void enable() {
         disable();
     }
@@ -162,6 +175,7 @@ public class Intake extends BetterSubsystem implements BetterSendable, Disableab
         setPosition(Position.Stowed);
         setVacuum(false);
         setPiston(false);
+        setHatch(false);
     }
 }
 

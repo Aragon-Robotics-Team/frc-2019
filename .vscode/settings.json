@@ -19,7 +19,7 @@
         "**/lib": true // vision/lib jars
     },
     "java.format.settings.url": "https://raw.githubusercontent.com/google/styleguide/gh-pages/eclipse-java-google-style.xml",
-    "editor.formatOnSave": true,
+    "editor.formatOnSave": false,
     "wpilib.autoStartRioLog": false,
     "wpilib.autoSaveOnDeploy": true,
     "wpilib.skipTests": true,

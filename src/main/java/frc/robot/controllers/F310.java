@@ -1,7 +1,8 @@
 package frc.robot.controllers;
 
-import frc.robot.commands.autonomous.AutoAlign;
-import frc.robot.commands.drivetrain.ControlArcadeDrivetrain;
+import frc.robot.commands.intake.hatch.SetHatch;
+import frc.robot.commands.intake.piston.QuickPiston;
+import frc.robot.commands.intake.vacuum.HoldVacuumOn;
 import frc.robot.map.RobotMap;
 import frc.robot.util.Deadband;
 
@@ -21,24 +22,10 @@ public class F310 extends OIBase {
     }
 
     void setUpButtons() {
-        getButton(1).whenPressed(new ControlArcadeDrivetrain());
-        getButton(2).whileActive(new AutoAlign());
-        getButton(2).whenReleased(new ControlArcadeDrivetrain());
-    }
+        getButton(1).whenPressed(new SetHatch(true));
+        getButton(1).whenReleased(new SetHatch(false));
+        getButton(2).whenPressed(new QuickPiston());
 
-    public double getLeftSpeed() {
-        return -1.0 * getJoystick().getRawAxis(1);
-    }
-
-    public double getLeftRotation() {
-        return getJoystick().getRawAxis(4);
-    }
-
-    public double getRightSpeed() {
-        return -1.0 * deadband.calc(getJoystick().getRawAxis(5), true);
-    }
-
-    public boolean getSlowMode() {
-        return getButton(6).get();
+        getButton(3).toggleWhenActive(new HoldVacuumOn());
     }
 }

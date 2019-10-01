@@ -1,8 +1,8 @@
 package frc.robot.util;
 
-import edu.wpi.first.wpilibj.buttons.Trigger;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.buttons.Trigger;
 
 public class BetterDigitalInput extends Trigger {
     public DigitalInput input;
@@ -19,7 +19,7 @@ public class BetterDigitalInput extends Trigger {
 
     public BetterDigitalInput(int channel, boolean invert) {
         this(channel);
-        
+
         this.invert = invert;
     }
 

@@ -59,6 +59,10 @@ class IntakeImpl extends RobotMap.Intake {
         return 0;
     }
 
+    public Integer hatchPCMPort() {
+        return null;
+    }
+
     public boolean invertIntake() {
         return true;
     }

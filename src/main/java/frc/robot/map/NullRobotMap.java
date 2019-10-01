@@ -58,6 +58,10 @@ class IntakeImpl extends RobotMap.Intake {
     public Integer pistonPCMPort() {
         return null;
     }
+    
+    public Integer hatchPCMPort() {
+        return null;
+    }
 
     public boolean invertIntake() {
         return false;
