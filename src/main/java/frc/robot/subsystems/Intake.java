@@ -39,7 +39,7 @@ public class Intake extends BetterSubsystem implements BetterSendable, Disableab
     Position savedPosition;
 
     public enum Position {
-        Stowed(0), Intake(2250), Vertical(563), Horizontal(2500), Max(Horizontal.pos), ClearOfLift(550),
+        Stowed(0), Intake(2250), Vertical(563), Horizontal(2800), Max(Horizontal.pos), ClearOfLift(550),
         WantClearOfLift(950), Cargo(950);
 
         final double pos;
@@ -183,9 +183,9 @@ public class Intake extends BetterSubsystem implements BetterSendable, Disableab
 
 class IntakeSendable extends SendableBase {
     Intake intake;
-    static double ANGLE_ZERO = Intake.Position.Vertical.pos;
-    static double ANGLE_NINETY = 2800;
-    static double TICKS_PER_ANGLE = (ANGLE_NINETY - ANGLE_ZERO) / 90;
+    static final double ANGLE_ZERO = Intake.Position.Vertical.pos;
+    static final double ANGLE_NINETY = Intake.Position.Horizontal.pos;
+    static final double TICKS_PER_ANGLE = (ANGLE_NINETY - ANGLE_ZERO) / 90;
 
     public IntakeSendable(Intake intake) {
         this.intake = intake;

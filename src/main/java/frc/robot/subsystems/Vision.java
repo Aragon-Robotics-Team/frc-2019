@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -52,6 +53,8 @@ public class Vision extends BetterSubsystem implements BetterSendable {
         ledController.setSafetyEnabled(false);
 
         setLeds(false);
+        
+        CameraServer.getInstance().startAutomaticCapture("Sandstorm", 0);
     }
 
     public void createSendable(SendableMaster master) {
