@@ -11,6 +11,7 @@ import frc.robot.commands.intake.intake.ResetIntakeEncoder;
 import frc.robot.commands.intake.intake.SetIntakePosition;
 import frc.robot.commands.intake.vacuum.ControlVacuumJoystick;
 import frc.robot.commands.intake.vacuum.SetVacuum;
+import frc.robot.commands.lift.SetLiftPosition;
 import frc.robot.util.BetterDigitalInput;
 import frc.robot.util.BetterSendable;
 import frc.robot.util.BetterSolenoid;
@@ -38,7 +39,7 @@ public class Intake extends BetterSubsystem implements BetterSendable, Disableab
     Position savedPosition;
 
     public enum Position {
-        Stowed(0), Intake(2250), Vertical(563), Horizontal(Intake.pos), Max(Horizontal.pos), ClearOfLift(550),
+        Stowed(0), Intake(2250), Vertical(563), Horizontal(2500), Max(Horizontal.pos), ClearOfLift(550),
         WantClearOfLift(950), Cargo(950);
 
         final double pos;
@@ -102,7 +103,8 @@ public class Intake extends BetterSubsystem implements BetterSendable, Disableab
         master.add("Sol", pistonController);
 
         master.add("Pressure Switch", pressureSwitch);
-        // pressureSwitch.whenActive(new SetLiftPosition(Lift.Position.CargoPort));
+        pressureSwitch.whenActive(new SetLiftPosition(Lift.Position.CargoPort));
+        pressureSwitch.whenActive(new SetIntakePosition(Intake.Position.Vertical));
 
         for (Position pos : new Position[] { Position.Stowed, Position.Intake, Position.Vertical, Position.ClearOfLift,
 				Position.Cargo }) {

@@ -7,7 +7,6 @@ public class SetHatch extends Command {
     boolean enabled;
 
     public SetHatch(boolean enabled) {
-        // requires(Robot.myIntake.pistonSubsystem);
         setRunWhenDisabled(true);
 
         this.enabled = enabled;
