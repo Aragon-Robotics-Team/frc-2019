@@ -1,20 +1,14 @@
 package frc.robot.controllers;
 
-import edu.wpi.first.wpilibj.command.CommandGroup;
 import frc.robot.commands.CargoPickupMode;
 import frc.robot.commands.HatchPickupMode;
-import frc.robot.commands.autonomous.VisionMode;
 import frc.robot.commands.drivetrain.SetSlowMode;
+import frc.robot.commands.intake.hatch.SetHatch;
 import frc.robot.commands.intake.intake.CalibrateIntakeEncoder;
-import frc.robot.commands.intake.intake.SetIntakePosition;
 import frc.robot.commands.intake.piston.QuickPistonAndVacuum;
 import frc.robot.commands.intake.vacuum.SetVacuum;
 import frc.robot.commands.lift.CalibrateLiftEncoder;
-import frc.robot.commands.lift.SetLiftPosition;
-import frc.robot.commands.teleop.DriverMode;
 import frc.robot.map.RobotMap;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Lift;
 import frc.robot.subsystems.Drivetrain.SlowModes;
 import frc.robot.util.Deadband;
 
@@ -46,7 +40,10 @@ public class Attack3 extends OIBase {
         getButton(8).whenPressed(new CalibrateLiftEncoder());
         
         getButton(10).whenPressed(new HatchPickupMode());
-        getButton(10).whenPressed(new CargoPickupMode());
+        getButton(11).whenPressed(new CargoPickupMode());
+        
+        getButton(4).whenPressed(new SetHatch(true));
+        getButton(5).whenPressed(new SetHatch(false));
     }
 
     public double getLeftSpeed() {

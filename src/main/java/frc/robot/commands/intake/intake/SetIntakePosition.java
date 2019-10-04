@@ -15,6 +15,10 @@ public class SetIntakePosition extends CommandGroup {
         if (pos == Position.Intake) {
             addParallel(new SetHatch(true));
         }
+        
+        if (pos == Position.Horizontal) {
+            addParallel(new SetHatch(false));
+        }
 
         addSequential(new IntakeClearReverseLimit());
         addSequential(new RawSetIntakePosition(pos));

@@ -1,6 +1,5 @@
 package frc.robot.controllers;
 
-import frc.robot.commands.intake.hatch.HatchPosition;
 import frc.robot.commands.intake.intake.SetIntakePosition;
 import frc.robot.commands.lift.SetLiftPosition;
 import frc.robot.map.RobotMap;
@@ -25,7 +24,7 @@ public class ButtonBoard1 extends OIBase {
         getButton(2).whenPressed(new SetIntakePosition(Intake.Position.Stowed));
         getButton(3).whenPressed(new SetIntakePosition(Intake.Position.Vertical));
         getButton(4).whenPressed(new SetIntakePosition(Intake.Position.Intake));
-        getButton(5).whenPressed(new HatchPosition());
+        getButton(5).whenPressed(new SetIntakePosition(Intake.Position.Horizontal));
 
 
         getButton(6).whenPressed(new SetLiftPosition(Lift.Position.Stowed));
