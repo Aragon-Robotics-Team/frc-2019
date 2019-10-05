@@ -105,6 +105,8 @@ public class Intake extends BetterSubsystem implements BetterSendable, Disableab
         master.add("Pressure Switch", pressureSwitch);
         pressureSwitch.whenActive(new SetLiftPosition(Lift.Position.CargoPort));
         pressureSwitch.whenActive(new SetIntakePosition(Intake.Position.Vertical));
+        
+        master.add("Hatch", hatchController);
 
         for (Position pos : new Position[] { Position.Stowed, Position.Intake, Position.Vertical, Position.ClearOfLift,
 				Position.Cargo }) {

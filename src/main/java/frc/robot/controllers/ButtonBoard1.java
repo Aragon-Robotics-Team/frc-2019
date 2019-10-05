@@ -26,12 +26,11 @@ public class ButtonBoard1 extends OIBase {
         getButton(4).whenPressed(new SetIntakePosition(Intake.Position.Intake));
         getButton(5).whenPressed(new SetIntakePosition(Intake.Position.Horizontal));
 
-
         getButton(6).whenPressed(new SetLiftPosition(Lift.Position.Stowed));
-        getButton(7).whenPressed(new SetLiftPosition(Lift.Position.Port1));
-        getButton(8).whenPressed(new SetLiftPosition(Lift.Position.CargoPort));
+        getButton(7).whenPressed(new SetLiftPosition(Lift.Position.Hatch1));
+        getButton(8).whenPressed(new SetLiftPosition(Lift.Position.Port1));
         getButton(9).whenPressed(new SetLiftPosition(Lift.Position.Hatch2));
-        getButton(1).whenPressed(new SetLiftPosition(Lift.Position.Port2));
+        getButton(1).whenPressed(new SetLiftPosition(Lift.Position.CargoPort));
         
         // 6 - 9 : Hab mechanism
         // 12 : Emergency stop

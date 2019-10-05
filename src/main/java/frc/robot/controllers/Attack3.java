@@ -42,8 +42,8 @@ public class Attack3 extends OIBase {
         getButton(10).whenPressed(new HatchPickupMode());
         getButton(11).whenPressed(new CargoPickupMode());
         
-        getButton(4).whenPressed(new SetHatch(true));
-        getButton(5).whenPressed(new SetHatch(false));
+        getButton(4).whenPressed(new SetHatch(false));
+        getButton(5).whenPressed(new SetHatch(true));
     }
 
     public double getLeftSpeed() {

@@ -29,7 +29,7 @@ public class Lift extends BetterSubsystem
     private final boolean debugDanger = false;
 
     public enum Position {
-        Stowed(0), Hatch1(0), Port1(4.9375), CargoPort(12.0), Hatch2(13.6875), Port2(
+        Stowed(0), Hatch1(4.76), Port1(4.9375), CargoPort(12.0), Hatch2(17.6875), Port2(
                 17.8375), Hatch3(27.6875), Port3(31.9375), Max(28.5), Manual(-1), Paused(-1);
 
         static final double POINT_OF_DISCONTINUITY = 11.5;
