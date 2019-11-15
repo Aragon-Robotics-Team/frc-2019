@@ -8,7 +8,8 @@ import frc.robot.util.Deadband;
 
 public class F310 extends OIBase {
     static Deadband deadband = new Deadband(0, 0.2);
-
+    static Deadband newDeadband = new Deadband(0, 0.1);
+    
     public F310() {
         super();
     }
@@ -30,11 +31,11 @@ public class F310 extends OIBase {
     }
     
     public double getLeftSpeed() {
-        return -1.0 * getJoystick().getRawAxis(1);
+        return -1.0 * newDeadband.calc(getJoystick().getRawAxis(1));
     }
 
     public double getLeftRotation() {
-        return getJoystick().getRawAxis(4);
+        return newDeadband.calc(getJoystick().getRawAxis(4));
     }
 
     public double getRightSpeed() {

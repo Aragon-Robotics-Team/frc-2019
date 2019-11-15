@@ -39,7 +39,7 @@ public class Intake extends BetterSubsystem implements BetterSendable, Disableab
     Position savedPosition;
 
     public enum Position {
-        Stowed(0), Intake(2250), Vertical(563), Horizontal(2800), Max(Horizontal.pos), ClearOfLift(550),
+        Stowed(0), Intake(2250), Vertical(563), Horizontal(2800), Max(Horizontal.pos), ClearOfLift(570),
         WantClearOfLift(950), Cargo(950);
 
         final double pos;
