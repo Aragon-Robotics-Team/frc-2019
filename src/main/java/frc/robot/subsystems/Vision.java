@@ -54,7 +54,7 @@ public class Vision extends BetterSubsystem implements BetterSendable {
 
         setLeds(false);
         
-        CameraServer.getInstance().startAutomaticCapture("Sandstorm", 0);
+        // CameraServer.getInstance().startAutomaticCapture("Sandstorm", 0);
     }
 
     public void createSendable(SendableMaster master) {

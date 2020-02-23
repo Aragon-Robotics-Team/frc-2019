@@ -6,14 +6,14 @@ import frc.robot.controllers.F310;
 import frc.robot.controllers.MultiOI;
 import frc.robot.controllers.NullOI;
 import frc.robot.controllers.OI;
-import frc.robot.map.comp.CompRobotMap;
+import frc.robot.map.twenty.TwentyRobotMap;
 import frc.robot.util.BetterSendable;
 import frc.robot.util.BetterSubsystem;
 import frc.robot.util.SendableMaster;
 
 public abstract class RobotMap implements BetterSendable {
     public static RobotMap getMap() {
-        return new CompRobotMap();
+        return new TwentyRobotMap();
     }
 
     public OI oi;
@@ -23,7 +23,7 @@ public abstract class RobotMap implements BetterSendable {
     public void init() {
         if (oi == null) {
             // oi = new MultiOI(new HotasX(), new ButtonBoard1(), new ButtonBoard2());
-            oi = new MultiOI(new F310(), new ButtonBoard1(5));
+            oi = new MultiOI(new F310(), new ButtonBoard1(1));
             // oi = new NullOI();
             // oi = new Attack3();
 

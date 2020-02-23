@@ -1,5 +1,6 @@
 package frc.robot;
 
+import com.fasterxml.jackson.annotation.JsonSetter.Value;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.commands.autonomous.AutonomousGroup;
 import frc.robot.commands.teleop.TeleopGroup;
@@ -38,6 +39,16 @@ public class Robot extends BetterRobot {
     }
 
     public void _teleopInit() {
+        // (new Command() {
+        //     protected void execute() {
+        //         final double val = 0.1;
+        //         myDrivetrain.controlRaw(val, val);
+        //     }
+
+        //     protected boolean isFinished() {
+        //         return false;
+        //     }
+        // }).start();
         teleopGroup.start();
     }
 

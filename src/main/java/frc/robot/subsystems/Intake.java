@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.wpilibj.SendableBase;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.buttons.Trigger;
@@ -26,7 +28,7 @@ import frc.robot.util.SendableMaster;
 
 public class Intake extends BetterSubsystem implements BetterSendable, Disableable, BetterSpeedController {
     public BetterTalonSRX controller;
-    public Talon vacuumController;
+    public VictorSPX vacuumController;
     BetterSolenoid pistonController;
     BetterSolenoid hatchController;
     public BetterSubsystem intakeSubsystem;
@@ -78,8 +80,7 @@ public class Intake extends BetterSubsystem implements BetterSendable, Disableab
 
         controller = new BetterTalonSRX(map.controllerCanID(), config);
 
-        vacuumController = Mock.createMockable(Talon.class, map.vacuumPort());
-        vacuumController.setSafetyEnabled(false);
+        vacuumController = Mock.createMockable(VictorSPX.class, map.vacuumPort());
         vacuumController.setInverted(map.invertVacuum());
 
         // pistonController = Mock.createMockable(Solenoid.class, map.pistonPCMPort());
@@ -152,9 +153,9 @@ public class Intake extends BetterSubsystem implements BetterSendable, Disableab
     public void setVacuum(boolean on) {
         isVacuumOn = on;
         if (on) {
-            vacuumController.set(1.0);
+            vacuumController.set(VictorSPXControlMode.PercentOutput, 1.0);
         } else {
-            vacuumController.set(0.0);
+            vacuumController.set(VictorSPXControlMode.PercentOutput,0.0);
             hasBall = false;
         }
     }
